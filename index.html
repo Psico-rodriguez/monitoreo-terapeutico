@@ -220,7 +220,7 @@
                     </div>
                     <div class="flex flex-wrap gap-2 no-print">
                         <button onclick="exportarPDF()" class="bg-slate-800 hover:bg-slate-900 text-white border border-slate-800 px-3.5 py-2 rounded-xl text-sm font-medium transition flex items-center gap-1.5 shadow-sm">
-                            <i class="fa-solid fa-file-pdf text-rose-400"></i> Descargar Reporte PDF
+                            <i class="fa-solid fa-file-pdf text-rose-400"></i> Descargar Ficha Completa (PDF)
                         </button>
                         <button onclick="liberarEspacioPaciente()" class="bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 px-3.5 py-2 rounded-xl text-sm font-medium transition flex items-center gap-1.5 shadow-sm">
                             <i class="fa-solid fa-trash-can"></i> Eliminar Paciente
@@ -248,7 +248,7 @@
                                     </div>
                                     <div>
                                         <h4 class="font-bold text-xs text-slate-900">Terapia de Activación Conductual</h4>
-                                        <span class="text-[10px] text-cyan-700 font-semibold">2 Tareas disponibles</span>
+                                        <span class="text-[10px] text-cyan-700 font-semibold">3 Tareas disponibles</span>
                                     </div>
                                 </div>
                                 <i id="iconCheckAC" class="fa-solid fa-circle-check text-cyan-600 text-lg"></i>
@@ -259,51 +259,71 @@
                     <!-- PASO 2: TAREAS SELECCIONABLES -->
                     <div id="containerTareasDisponibles" class="space-y-2 pt-2 border-t border-slate-200">
                         <span class="text-xs font-bold text-slate-500 uppercase tracking-wider block">2. Seleccionar Tarea a Observar y Gestionar Asignación:</span>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                             <!-- Tarea 1: Monitoreo Diario -->
                             <div id="cardTareaMonitoreo" onclick="seleccionarTarea('monitoreo')" class="cursor-pointer p-3.5 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-slate-200 hover:border-cyan-400">
                                 <div class="flex items-center space-x-3">
-                                    <div class="w-8 h-8 bg-cyan-50 text-cyan-700 border border-cyan-200 rounded-lg flex items-center justify-center text-sm font-bold">
+                                    <div class="w-8 h-8 bg-cyan-50 text-cyan-700 border border-cyan-200 rounded-lg flex items-center justify-center text-sm font-bold shrink-0">
                                         <i class="fa-regular fa-calendar-check"></i>
                                     </div>
                                     <div>
-                                        <h5 class="font-bold text-xs text-slate-900">Formulario de Monitoreo Diario de Actividades</h5>
-                                        <p class="text-[10px] text-slate-500">Evaluación de Disfrute (D), Importancia (I) y Ánimo</p>
+                                        <h5 class="font-bold text-xs text-slate-900">Monitoreo Diario de Actividades</h5>
+                                        <p class="text-[10px] text-slate-500">Disfrute (D), Importancia (I) y Ánimo</p>
                                     </div>
                                 </div>
-                                <div class="flex items-center space-x-3" onclick="event.stopPropagation()">
-                                    <label class="flex items-center space-x-1.5 cursor-pointer bg-slate-50 hover:bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200 transition" title="Activa o desactiva la tarea en el portal del paciente">
-                                        <input type="checkbox" id="chkModMonitoreo" onchange="toggleModuloAsignado('monitoreo')" class="w-4 h-4 text-cyan-600 rounded bg-white">
-                                        <span class="text-[11px] font-bold text-slate-700">Asignada</span>
+                                <div class="flex items-center space-x-2" onclick="event.stopPropagation()">
+                                    <label class="flex items-center space-x-1 cursor-pointer bg-slate-50 hover:bg-slate-100 px-2 py-1 rounded-lg border border-slate-200 transition" title="Activa o desactiva la tarea en el portal del paciente">
+                                        <input type="checkbox" id="chkModMonitoreo" onchange="toggleModuloAsignado('monitoreo')" class="w-3.5 h-3.5 text-cyan-600 rounded bg-white">
+                                        <span class="text-[10px] font-bold text-slate-700">Asignada</span>
                                     </label>
-                                    <i id="iconCheckTareaMonitoreo" class="fa-regular fa-circle text-slate-300 text-base"></i>
+                                    <i id="iconCheckTareaMonitoreo" class="fa-regular fa-circle text-slate-300 text-sm"></i>
                                 </div>
                             </div>
 
                             <!-- Tarea 2: Jerarquía de Actividades -->
                             <div id="cardTareaJerarquia" onclick="seleccionarTarea('jerarquia_actividades')" class="cursor-pointer p-3.5 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-slate-200 hover:border-cyan-400">
                                 <div class="flex items-center space-x-3">
-                                    <div class="w-8 h-8 bg-cyan-50 text-cyan-700 border border-cyan-200 rounded-lg flex items-center justify-center text-sm font-bold">
+                                    <div class="w-8 h-8 bg-cyan-50 text-cyan-700 border border-cyan-200 rounded-lg flex items-center justify-center text-sm font-bold shrink-0">
                                         <i class="fa-solid fa-list-ol"></i>
                                     </div>
                                     <div>
-                                        <h5 class="font-bold text-xs text-slate-900">Jerarquía de Actividades a Programar</h5>
+                                        <h5 class="font-bold text-xs text-slate-900">Jerarquía de Actividades</h5>
                                         <p class="text-[10px] text-slate-500">Lista ordenada por Importancia (1 a 15)</p>
                                     </div>
                                 </div>
-                                <div class="flex items-center space-x-3" onclick="event.stopPropagation()">
-                                    <label class="flex items-center space-x-1.5 cursor-pointer bg-slate-50 hover:bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200 transition" title="Activa o desactiva la tarea en el portal del paciente">
-                                        <input type="checkbox" id="chkModJerarquia" onchange="toggleModuloAsignado('jerarquia_actividades')" class="w-4 h-4 text-cyan-600 rounded bg-white">
-                                        <span class="text-[11px] font-bold text-slate-700">Asignada</span>
+                                <div class="flex items-center space-x-2" onclick="event.stopPropagation()">
+                                    <label class="flex items-center space-x-1 cursor-pointer bg-slate-50 hover:bg-slate-100 px-2 py-1 rounded-lg border border-slate-200 transition" title="Activa o desactiva la tarea en el portal del paciente">
+                                        <input type="checkbox" id="chkModJerarquia" onchange="toggleModuloAsignado('jerarquia_actividades')" class="w-3.5 h-3.5 text-cyan-600 rounded bg-white">
+                                        <span class="text-[10px] font-bold text-slate-700">Asignada</span>
                                     </label>
-                                    <i id="iconCheckTareaJerarquia" class="fa-regular fa-circle text-slate-300 text-base"></i>
+                                    <i id="iconCheckTareaJerarquia" class="fa-regular fa-circle text-slate-300 text-sm"></i>
+                                </div>
+                            </div>
+
+                            <!-- Tarea 3: Identificación de Actividades -->
+                            <div id="cardTareaIdentificacion" onclick="seleccionarTarea('identificacion_actividades')" class="cursor-pointer p-3.5 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-slate-200 hover:border-cyan-400">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 bg-cyan-50 text-cyan-700 border border-cyan-200 rounded-lg flex items-center justify-center text-sm font-bold shrink-0">
+                                        <i class="fa-solid fa-magnifying-glass-chart"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="font-bold text-xs text-slate-900">Identificación de Actividades</h5>
+                                        <p class="text-[10px] text-slate-500">Exploración en 5 ejes clave</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-2" onclick="event.stopPropagation()">
+                                    <label class="flex items-center space-x-1 cursor-pointer bg-slate-50 hover:bg-slate-100 px-2 py-1 rounded-lg border border-slate-200 transition" title="Activa o desactiva la tarea en el portal del paciente">
+                                        <input type="checkbox" id="chkModIdentificacion" onchange="toggleModuloAsignado('identificacion_actividades')" class="w-3.5 h-3.5 text-cyan-600 rounded bg-white">
+                                        <span class="text-[10px] font-bold text-slate-700">Asignada</span>
+                                    </label>
+                                    <i id="iconCheckTareaIdentificacion" class="fa-regular fa-circle text-slate-300 text-sm"></i>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- CONTROL DE SEMANAS (SOLO VISIBLE PARA MONITOREO DIARIO) -->
+                <!-- CONTROL DE SEMANAS (SOLO VISIBLE EN MONITOREO DIARIO) -->
                 <div id="containerControlBloqueSemanal" class="hidden flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200 no-print">
                     <div class="flex items-center gap-3">
                         <i class="fa-regular fa-calendar-check text-cyan-700 text-xl"></i>
@@ -461,11 +481,19 @@
                                 <h3 class="font-bold text-lg text-slate-900 flex items-center gap-2">
                                     <i class="fa-solid fa-list-ol text-cyan-700"></i> Jerarquía de Actividades a Programar
                                 </h3>
-                                <p class="text-xs text-slate-500 mt-0.5">Muestra las actividades enlistadas de mayor a menor importancia ($1$ a $15$), con enumeración jerárquica ($1$ = la más baja).</p>
+                                <p class="text-xs text-slate-500 mt-0.5">Muestra las actividades enlistadas de mayor a menor importancia (1 a 15), con enumeración jerárquica (1 = la más baja).</p>
                             </div>
-                            <button id="btnLockJerarquia" onclick="toggleBloqueoJerarquia()" class="text-xs px-4 py-2 rounded-xl font-bold transition flex items-center gap-2 shadow-sm">
-                                <i class="fa-solid fa-lock"></i> Bloquear Eliminación
-                            </button>
+                            <div class="flex flex-wrap items-center gap-2 no-print">
+                                <button onclick="imprimirJerarquiaLimpia()" class="text-xs bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 px-3 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shadow-sm">
+                                    <i class="fa-solid fa-file-arrow-down text-amber-600"></i> Descargar en Limpio (PDF)
+                                </button>
+                                <button onclick="exportarPDF()" class="text-xs bg-cyan-700 hover:bg-cyan-800 text-white px-3 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shadow-sm">
+                                    <i class="fa-solid fa-file-pdf"></i> Descargar Diligenciado / Custodia (PDF)
+                                </button>
+                                <button id="btnLockJerarquia" onclick="toggleBloqueoJerarquia()" class="text-xs px-3.5 py-2 rounded-xl font-bold transition flex items-center gap-1.5 shadow-sm">
+                                    <i class="fa-solid fa-lock"></i> Bloquear Eliminación
+                                </button>
+                            </div>
                         </div>
 
                         <!-- LISTA DE JERARQUÍA PRINCIPAL -->
@@ -521,6 +549,61 @@
                     </div>
                 </div>
 
+                <!-- CONTENEDOR DESGLOSE TAREA 3: IDENTIFICACIÓN DE ACTIVIDADES -->
+                <div id="secDesgloseIdentificacion" class="hidden space-y-6">
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-200 pb-4">
+                            <div>
+                                <h3 class="font-bold text-lg text-slate-900 flex items-center gap-2">
+                                    <i class="fa-solid fa-magnifying-glass-chart text-cyan-700"></i> Identificación de Actividades a Programar
+                                </h3>
+                                <p class="text-xs text-slate-500 mt-0.5">Exploración clínica en 5 ejes clave para interrumpir el ciclo del sufrimiento y construir un banco de actividades.</p>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-2 no-print">
+                                <button onclick="imprimirIdentificacionLimpia()" class="text-xs bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 px-3 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shadow-sm">
+                                    <i class="fa-solid fa-file-arrow-down text-amber-600"></i> Descargar en Limpio (PDF)
+                                </button>
+                                <button onclick="exportarPDF()" class="text-xs bg-cyan-700 hover:bg-cyan-800 text-white px-3 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shadow-sm">
+                                    <i class="fa-solid fa-file-pdf"></i> Descargar Diligenciado / Custodia (PDF)
+                                </button>
+                                <button id="btnLockIdentificacion" onclick="toggleBloqueoIdentificacion()" class="text-xs px-3.5 py-2 rounded-xl font-bold transition flex items-center gap-1.5 shadow-sm">
+                                    <i class="fa-solid fa-lock"></i> Bloquear Eliminación
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- VISTA DE CATEGORÍAS PRINCIPALES DEL TERAPEUTA -->
+                        <div id="containerIdentificacionCategoriasTerapeuta" class="space-y-6">
+                        </div>
+
+                        <!-- SECCIÓN TERAPEUTA: AGREGADO DE MANERA ADICIONAL -->
+                        <div class="space-y-3 pt-4 border-t border-slate-200">
+                            <div class="flex justify-between items-center">
+                                <h4 class="text-xs font-bold uppercase tracking-wider text-amber-800 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-clock-rotate-left text-amber-600"></i> Agregado de manera adicional (Posterior al Bloqueo)
+                                </h4>
+                                <span id="cantIdentificacionAdicional" class="text-[11px] font-bold bg-amber-100 text-amber-900 border border-amber-300 px-2.5 py-0.5 rounded-full">0 adicionales</span>
+                            </div>
+
+                            <div class="overflow-x-auto border border-amber-200 rounded-xl bg-amber-50/30">
+                                <table class="w-full text-left text-xs border-collapse">
+                                    <thead class="bg-amber-100/70 text-amber-900 uppercase font-bold border-b border-amber-200">
+                                        <tr>
+                                            <th class="p-3 w-28 text-center">Estado</th>
+                                            <th class="p-3 w-48">Eje / Categoría</th>
+                                            <th class="p-3">Actividad Agregada</th>
+                                            <th class="p-3 w-44">Fecha y Hora</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tablaIdentificacionAdicionalBody" class="divide-y divide-amber-200 text-slate-800">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
                 <!-- NOTAS CLINICAS -->
                 <div class="space-y-2 pt-2 border-t border-slate-200">
                     <label class="block text-sm font-bold text-slate-800"><i class="fa-solid fa-user-pen text-cyan-700 mr-1"></i> Observaciones Clínicas y Acuerdos Terapéuticos</label>
@@ -537,14 +620,7 @@
                     <span class="text-xs uppercase font-bold tracking-wider text-cyan-800">Portal del Paciente</span>
                 </div>
                 <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900" id="pacienteBienvenidaNombre">¡Hola, Paciente! 👋</h1>
-                <p class="text-slate-600 text-sm mt-1">Ingresa a tus tareas asignadas para diligenciarlas o actualizarlas.</p>
-                
-                <div class="mt-4 flex flex-wrap items-center gap-3">
-                    <span class="text-xs text-slate-700 font-semibold"><i class="fa-regular fa-calendar-days mr-1 text-cyan-700"></i> Seleccionar Semana de Monitoreo:</span>
-                    <select id="selectSemanaPacienteDash" onchange="cambiarSemanaPaciente(this.value)" class="text-xs font-bold bg-slate-50 text-slate-800 border border-slate-300 rounded-lg px-3 py-1.5 focus:outline-none">
-                    </select>
-                    <span id="badgeEstadoBloqueoDash" class="text-xs px-2.5 py-1 rounded-full font-bold"></span>
-                </div>
+                <p class="text-slate-600 text-sm mt-1">Selecciona cualquiera de tus tareas terapéuticas asignadas para ingresar y completar tus registros.</p>
             </div>
 
             <!-- CARDS DE TAREAS ASIGNADAS -->
@@ -553,7 +629,7 @@
                     <i class="fa-solid fa-clipboard-check text-cyan-700"></i> Tareas Terapéuticas Asignadas
                 </h2>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <!-- TAREA 1: MONITOREO DIARIO -->
                     <div id="cardModMonitoreo" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:border-cyan-600 transition space-y-4 flex flex-col justify-between">
                         <div class="space-y-3">
@@ -564,12 +640,12 @@
                                 <span class="text-xs bg-emerald-100 text-emerald-800 border border-emerald-200 px-2.5 py-1 rounded-full font-bold">Asignado</span>
                             </div>
                             <div>
-                                <h3 class="font-bold text-slate-900 text-base">Formulario de Monitoreo Diario de Actividades</h3>
+                                <h3 class="font-bold text-slate-900 text-base">Monitoreo Diario de Actividades</h3>
                                 <p class="text-xs text-slate-500 mt-1">Registra tus actividades hora a hora (formato 12h) evaluando Disfrute (D) e Importancia (I).</p>
                             </div>
                         </div>
                         <button onclick="abrirModuloMonitoreo()" class="w-full bg-cyan-700 hover:bg-cyan-800 text-white font-semibold py-2.5 rounded-xl text-sm transition flex items-center justify-center gap-2 shadow-sm">
-                            <span>Ingresar y Diligenciar</span>
+                            <span>Ingresar a Monitoreo</span>
                             <i class="fa-solid fa-arrow-right"></i>
                         </button>
                     </div>
@@ -585,11 +661,31 @@
                             </div>
                             <div>
                                 <h3 class="font-bold text-slate-900 text-base">Jerarquía de Actividades a Programar</h3>
-                                <p class="text-xs text-slate-500 mt-1">Escribe tus actividades y asigna una importancia del 1 al 15. La lista se organizará automáticamente de mayor a menor.</p>
+                                <p class="text-xs text-slate-500 mt-1">Ingresa tus actividades con su grado de importancia (1 a 15). Se ordenarán dinámicamente.</p>
                             </div>
                         </div>
                         <button onclick="abrirModuloJerarquiaPaciente()" class="w-full bg-cyan-700 hover:bg-cyan-800 text-white font-semibold py-2.5 rounded-xl text-sm transition flex items-center justify-center gap-2 shadow-sm">
-                            <span>Ingresar y Configurar Jerarquía</span>
+                            <span>Ingresar a Jerarquía</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                    <!-- TAREA 3: IDENTIFICACIÓN DE ACTIVIDADES -->
+                    <div id="cardModIdentificacion" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:border-cyan-600 transition space-y-4 flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-start">
+                                <div class="w-12 h-12 bg-cyan-50 text-cyan-700 border border-cyan-200 rounded-xl flex items-center justify-center text-xl font-bold">
+                                    <i class="fa-solid fa-magnifying-glass-chart"></i>
+                                </div>
+                                <span class="text-xs bg-emerald-100 text-emerald-800 border border-emerald-200 px-2.5 py-1 rounded-full font-bold">Asignado</span>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-slate-900 text-base">Identificación de Actividades a Programar</h3>
+                                <p class="text-xs text-slate-500 mt-1">Explora 5 ejes estratégicos para crear tu lugar seguro con actividades variadas y concretas.</p>
+                            </div>
+                        </div>
+                        <button onclick="abrirModuloIdentificacionPaciente()" class="w-full bg-cyan-700 hover:bg-cyan-800 text-white font-semibold py-2.5 rounded-xl text-sm transition flex items-center justify-center gap-2 shadow-sm">
+                            <span>Ingresar a Identificación</span>
                             <i class="fa-solid fa-arrow-right"></i>
                         </button>
                     </div>
@@ -694,12 +790,23 @@
         <!-- VISTA 5: FORMULARIO PACIENTE JERARQUÍA DE ACTIVIDADES -->
         <section id="secPacienteFormJerarquia" class="hidden space-y-6">
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
-                <button onclick="volverDashboardPaciente()" class="text-xs text-cyan-700 font-bold hover:underline mb-1 inline-flex items-center gap-1 no-print">
-                    <i class="fa-solid fa-arrow-left"></i> Volver a mis Tareas
-                </button>
-                <div>
-                    <h1 class="text-2xl font-bold text-slate-900">Jerarquía de Actividades a Programar</h1>
-                    <p class="text-xs text-slate-500 mt-1">Escribe las actividades que desees incluir en tu plan terapéutico y asigna su grado de Importancia de 1 a 15. Tu jerarquía se organizará automáticamente de mayor a menor.</p>
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-200 pb-4">
+                    <div>
+                        <button onclick="volverDashboardPaciente()" class="text-xs text-cyan-700 font-bold hover:underline mb-1 inline-flex items-center gap-1 no-print">
+                            <i class="fa-solid fa-arrow-left"></i> Volver a mis Tareas
+                        </button>
+                        <h1 class="text-2xl font-bold text-slate-900">Jerarquía de Actividades a Programar</h1>
+                        <p class="text-xs text-slate-500 mt-1">Escribe las actividades que desees incluir en tu plan terapéutico y asigna su grado de Importancia de 1 a 15. Tu jerarquía se organizará automáticamente de mayor a menor.</p>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-2 no-print shrink-0">
+                        <button onclick="imprimirJerarquiaLimpia()" class="text-xs bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 px-3 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shadow-sm">
+                            <i class="fa-solid fa-file-arrow-down text-amber-600"></i> Descargar en Limpio (PDF)
+                        </button>
+                        <button onclick="exportarPDF()" class="text-xs bg-cyan-700 hover:bg-cyan-800 text-white px-3 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shadow-sm">
+                            <i class="fa-solid fa-file-pdf"></i> Descargar Diligenciado (PDF)
+                        </button>
+                    </div>
                 </div>
 
                 <!-- BANNER ESTADO DE BLOQUEO DE ELIMINACIÓN -->
@@ -709,7 +816,7 @@
                 </div>
 
                 <!-- FORMULARIO DE INGRESO DE NUEVA ACTIVIDAD -->
-                <form onsubmit="agregarActividadJerarquiaPaciente(event)" class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-col sm:flex-row items-end gap-3">
+                <form onsubmit="agregarActividadJerarquiaPaciente(event)" class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-col sm:flex-row items-end gap-3 no-print">
                     <div class="flex-1 w-full">
                         <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Nombre de la Actividad</label>
                         <input type="text" id="inputJerarquiaActividad" required placeholder="Ej. Caminar 15 minutos en el parque" class="w-full px-3 py-2 bg-white text-slate-900 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-cyan-600 focus:outline-none">
@@ -741,13 +848,68 @@
                                 <th class="p-3">Actividad</th>
                                 <th class="p-3 w-36 text-center">Importancia (1-15)</th>
                                 <th class="p-3 w-40">Fecha</th>
-                                <th class="p-3 w-24 text-center">Acción</th>
+                                <th class="p-3 w-24 text-center no-print">Acción</th>
                             </tr>
                         </thead>
                         <tbody id="tablaJerarquiaPacienteBody" class="divide-y divide-slate-200 text-slate-800">
                         </tbody>
                     </table>
                 </div>
+            </div>
+        </section>
+
+        <!-- VISTA 6: FORMULARIO PACIENTE IDENTIFICACIÓN DE ACTIVIDADES -->
+        <section id="secPacienteFormIdentificacion" class="hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-200 pb-4">
+                    <div>
+                        <button onclick="volverDashboardPaciente()" class="text-xs text-cyan-700 font-bold hover:underline mb-1 inline-flex items-center gap-1 no-print">
+                            <i class="fa-solid fa-arrow-left"></i> Volver a mis Tareas
+                        </button>
+                        <h1 class="text-2xl font-bold text-slate-900">Identificación de Actividades a Programar</h1>
+                        <p class="text-xs text-slate-500 mt-1">Explora las 5 áreas clave para generar un plan variado y concreto que servirá como tu lugar seguro siempre que necesites activarte.</p>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-2 no-print shrink-0">
+                        <button onclick="imprimirIdentificacionLimpia()" class="text-xs bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 px-3 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shadow-sm">
+                            <i class="fa-solid fa-file-arrow-down text-amber-600"></i> Descargar en Limpio (PDF)
+                        </button>
+                        <button onclick="exportarPDF()" class="text-xs bg-cyan-700 hover:bg-cyan-800 text-white px-3 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shadow-sm">
+                            <i class="fa-solid fa-file-pdf"></i> Descargar Diligenciado (PDF)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- BANNER BLOQUEO DE ELIMINACIÓN -->
+                <div id="bannerBloqueoIdentificacionPaciente" class="hidden p-3.5 bg-amber-50 border-l-4 border-amber-500 text-amber-900 rounded-r text-xs flex items-center gap-2">
+                    <i class="fa-solid fa-lock text-amber-600 text-base shrink-0"></i>
+                    <span><strong>Modo Protegido Activo:</strong> Tu terapeuta ha fijado tus registros actuales. No puedes eliminar actividades previamente registradas, pero <strong>puedes continuar agregando nuevas actividades en cualquiera de los 5 ejes</strong>.</span>
+                </div>
+
+                <!-- FORMULARIO INGRESO IDENTIFICACIÓN -->
+                <form onsubmit="agregarActividadIdentificacionPaciente(event)" class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-col md:flex-row items-end gap-3 no-print">
+                    <div class="w-full md:w-64 shrink-0">
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Eje / Categoría Terapéutica</label>
+                        <select id="selectIdentificacionCategoria" required class="w-full px-3 py-2 bg-white text-slate-900 border border-slate-300 rounded-xl text-xs font-bold focus:ring-2 focus:ring-cyan-600 focus:outline-none">
+                            <option value="cuidado_personal">1. Rutina de Cuidado Personal</option>
+                            <option value="disfrutaba_antes">2. Solía Disfrutar pero Dejé de Hacer</option>
+                            <option value="nuevas_actividades">3. Nuevas Actividades a Empezar</option>
+                            <option value="evitando_realizar">4. Actividades Evitadas / Pospuestas</option>
+                            <option value="metas_largo_plazo">5. Metas a Largo Plazo y Valores</option>
+                        </select>
+                    </div>
+                    <div class="flex-1 w-full">
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Descripción Concreta de la Actividad</label>
+                        <input type="text" id="inputIdentificacionActividad" required placeholder="Ej. Preparar un desayuno nutritivo con calma a las 8am" class="w-full px-3 py-2 bg-white text-slate-900 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-cyan-600 focus:outline-none">
+                    </div>
+                    <button type="submit" class="w-full md:w-auto bg-cyan-700 hover:bg-cyan-800 text-white font-semibold px-4 py-2 rounded-xl text-xs transition shadow-sm shrink-0 flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-plus"></i> Agregar
+                    </button>
+                </form>
+            </div>
+
+            <!-- CONTENEDOR DE LAS 5 CATEGORÍAS EN LA VISTA DEL PACIENTE -->
+            <div id="containerPacienteCategoriasIdentificacion" class="space-y-6">
             </div>
         </section>
 
@@ -837,6 +999,14 @@
         ];
 
         const DIAS_NOMBRE = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+
+        const CATEGORIAS_IDENTIFICACION = [
+            { id: 'cuidado_personal', nombre: '1. Rutina de Cuidado Personal', desc: 'Hábitos de sueño, alimentación, ejercicio, higiene diaria y horarios de trabajo descidados.' },
+            { id: 'disfrutaba_antes', nombre: '2. Actividades que Solías Disfrutar pero Has Dejado de Hacer', desc: 'Actividades gratificantes que constituían tu vida antes del dolor emocional o la depresión.' },
+            { id: 'nuevas_actividades', nombre: '3. Nuevas Actividades que Quieres Empezar a Hacer', desc: 'Nuevos comienzos, pasatiempos o hábitos que te gustaría iniciar en esta etapa.' },
+            { id: 'evitando_realizar', nombre: '4. Actividades Evitadas o Pospuestas por Malestar', desc: 'Cosas que evitas o postergas con la intención de evadir el malestar o dolor emocional.' },
+            { id: 'metas_largo_plazo', nombre: '5. Metas a Largo Plazo, Valores y Propósito', desc: 'Actividades conectadas con tus valores trascendentes, aspiraciones y lo que le da sentido a tu vida.' }
+        ];
 
         let pacienteActualId = null;
         let pacienteData = null;
@@ -1058,9 +1228,11 @@
                 fechaInicio: fechaStr,
                 updatedAt: new Date().toISOString(),
                 notasClinicas: "",
-                modulosAsignados: ['monitoreo', 'jerarquia_actividades'],
+                modulosAsignados: ['monitoreo', 'jerarquia_actividades', 'identificacion_actividades'],
                 jerarquiaBloqueada: false,
                 jerarquiaActividades: [],
+                identificacionBloqueada: false,
+                identificacionActividades: [],
                 semanas: { [fechaStr]: crearSemanaVacia() }
             };
 
@@ -1111,12 +1283,15 @@
             document.getElementById('detIdPaciente').innerText = p.id;
             document.getElementById('detNotasClinicas').value = p.notasClinicas || "";
 
-            const mods = p.modulosAsignados || ['monitoreo', 'jerarquia_actividades'];
+            const mods = p.modulosAsignados || ['monitoreo', 'jerarquia_actividades', 'identificacion_actividades'];
             if (document.getElementById('chkModMonitoreo')) {
                 document.getElementById('chkModMonitoreo').checked = mods.includes('monitoreo');
             }
             if (document.getElementById('chkModJerarquia')) {
                 document.getElementById('chkModJerarquia').checked = mods.includes('jerarquia_actividades');
+            }
+            if (document.getElementById('chkModIdentificacion')) {
+                document.getElementById('chkModIdentificacion').checked = mods.includes('identificacion_actividades');
             }
 
             const selectSem = document.getElementById('selectSemanaTerapeuta');
@@ -1151,6 +1326,8 @@
                 renderGraficoHistoricoTotal(p);
             } else if (tareaSeleccionada === 'jerarquia_actividades') {
                 renderJerarquiaTerapeuta(p);
+            } else if (tareaSeleccionada === 'identificacion_actividades') {
+                renderIdentificacionTerapeuta(p);
             }
         }
 
@@ -1184,53 +1361,46 @@
             const cardJer = document.getElementById('cardTareaJerarquia');
             const iconJer = document.getElementById('iconCheckTareaJerarquia');
 
+            const cardIde = document.getElementById('cardTareaIdentificacion');
+            const iconIde = document.getElementById('iconCheckTareaIdentificacion');
+
             const secMon = document.getElementById('secDesgloseTarea');
             const secJer = document.getElementById('secDesgloseJerarquia');
+            const secIde = document.getElementById('secDesgloseIdentificacion');
             const msgVacio = document.getElementById('mensajeSinTareaSeleccionada');
             const ctrlSemanas = document.getElementById('containerControlBloqueSemanal');
 
-            // Card Terapia
-            if (terapiaSeleccionada === 'activacion_conductual') {
-                cardAC.className = "cursor-pointer p-3.5 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-cyan-600 ring-2 ring-cyan-600/30";
-                iconAC.className = "fa-solid fa-circle-check text-cyan-600 text-lg";
-            } else {
-                cardAC.className = "cursor-pointer p-3.5 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-slate-200 hover:border-cyan-400";
-                iconAC.className = "fa-regular fa-circle text-slate-300 text-lg";
-            }
+            // Reset Cards
+            cardMon.className = "cursor-pointer p-3.5 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-slate-200 hover:border-cyan-400";
+            iconMon.className = "fa-regular fa-circle text-slate-300 text-sm";
+            cardJer.className = "cursor-pointer p-3.5 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-slate-200 hover:border-cyan-400";
+            iconJer.className = "fa-regular fa-circle text-slate-300 text-sm";
+            cardIde.className = "cursor-pointer p-3.5 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-slate-200 hover:border-cyan-400";
+            iconIde.className = "fa-regular fa-circle text-slate-300 text-sm";
 
-            // Cards Tareas y Visibilidad del Bloque Semanal
+            secMon.classList.add('hidden');
+            secJer.classList.add('hidden');
+            secIde.classList.add('hidden');
+            ctrlSemanas.classList.add('hidden');
+
             if (tareaSeleccionada === 'monitoreo') {
                 cardMon.className = "cursor-pointer p-3.5 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-cyan-600 ring-2 ring-cyan-600/30";
-                iconMon.className = "fa-solid fa-circle-check text-cyan-600 text-base";
-                
-                cardJer.className = "cursor-pointer p-3.5 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-slate-200 hover:border-cyan-400";
-                iconJer.className = "fa-regular fa-circle text-slate-300 text-base";
-
+                iconMon.className = "fa-solid fa-circle-check text-cyan-600 text-sm";
                 secMon.classList.remove('hidden');
-                secJer.classList.add('hidden');
                 msgVacio.classList.add('hidden');
-                ctrlSemanas.classList.remove('hidden'); // MOSTRAR BLOQUE SEMANAL SOLO EN MONITOREO
+                ctrlSemanas.classList.remove('hidden'); // SOLAMENTE VISIBLE EN MONITOREO
             } else if (tareaSeleccionada === 'jerarquia_actividades') {
                 cardJer.className = "cursor-pointer p-3.5 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-cyan-600 ring-2 ring-cyan-600/30";
-                iconJer.className = "fa-solid fa-circle-check text-cyan-600 text-base";
-
-                cardMon.className = "cursor-pointer p-3.5 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-slate-200 hover:border-cyan-400";
-                iconMon.className = "fa-regular fa-circle text-slate-300 text-base";
-
-                secMon.classList.add('hidden');
+                iconJer.className = "fa-solid fa-circle-check text-cyan-600 text-sm";
                 secJer.classList.remove('hidden');
                 msgVacio.classList.add('hidden');
-                ctrlSemanas.classList.add('hidden'); // OCULTAR BLOQUE SEMANAL EN JERARQUÍA
+            } else if (tareaSeleccionada === 'identificacion_actividades') {
+                cardIde.className = "cursor-pointer p-3.5 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-cyan-600 ring-2 ring-cyan-600/30";
+                iconIde.className = "fa-solid fa-circle-check text-cyan-600 text-sm";
+                secIde.classList.remove('hidden');
+                msgVacio.classList.add('hidden');
             } else {
-                cardMon.className = "cursor-pointer p-3.5 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-slate-200 hover:border-cyan-400";
-                iconMon.className = "fa-regular fa-circle text-slate-300 text-base";
-                cardJer.className = "cursor-pointer p-3.5 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-slate-200 hover:border-cyan-400";
-                iconJer.className = "fa-regular fa-circle text-slate-300 text-base";
-
-                secMon.classList.add('hidden');
-                secJer.classList.add('hidden');
                 msgVacio.classList.remove('hidden');
-                ctrlSemanas.classList.add('hidden');
             }
         }
 
@@ -1238,29 +1408,24 @@
         function renderJerarquiaTerapeuta(p) {
             const btnLock = document.getElementById('btnLockJerarquia');
             if (p.jerarquiaBloqueada) {
-                btnLock.className = "text-xs bg-rose-50 text-rose-700 border border-rose-300 hover:bg-rose-100 px-4 py-2 rounded-xl font-bold transition flex items-center gap-2 shadow-sm";
+                btnLock.className = "text-xs bg-rose-50 text-rose-700 border border-rose-300 hover:bg-rose-100 px-3.5 py-2 rounded-xl font-bold transition flex items-center gap-1.5 shadow-sm";
                 btnLock.innerHTML = `<i class="fa-solid fa-lock text-rose-600"></i> Bloqueado (Paciente solo puede agregar)`;
             } else {
-                btnLock.className = "text-xs bg-emerald-50 text-emerald-800 border border-emerald-300 hover:bg-emerald-100 px-4 py-2 rounded-xl font-bold transition flex items-center gap-2 shadow-sm";
+                btnLock.className = "text-xs bg-emerald-50 text-emerald-800 border border-emerald-300 hover:bg-emerald-100 px-3.5 py-2 rounded-xl font-bold transition flex items-center gap-1.5 shadow-sm";
                 btnLock.innerHTML = `<i class="fa-solid fa-lock-open text-emerald-600"></i> Desbloqueado (Edición Libre)`;
             }
 
             const items = p.jerarquiaActividades || [];
-            
-            // Separar lista principal y adicionales
             const principales = items.filter(x => !x.esAdicional);
             const adicionales = items.filter(x => x.esAdicional);
 
-            // Ordenar principales de menor a mayor para calcular número de jerarquía (1 es la más baja)
             const principalesAsc = [...principales].sort((a, b) => parseFloat(a.importancia) - parseFloat(b.importancia));
             principalesAsc.forEach((item, index) => {
                 item.rankJerarquia = index + 1;
             });
 
-            // Ordenar de mayor a menor para la vista del terapeuta
             const principalesDesc = [...principalesAsc].sort((a, b) => parseFloat(b.importancia) - parseFloat(a.importancia));
 
-            // Renderizar Lista Principal
             const tbodyP = document.getElementById('tablaJerarquiaTerapeutaBody');
             tbodyP.innerHTML = '';
             document.getElementById('cantActividadesPrincipal').innerText = `${principalesDesc.length} actividades`;
@@ -1287,7 +1452,6 @@
                 });
             }
 
-            // Renderizar Lista Adicional
             const tbodyA = document.getElementById('tablaJerarquiaAdicionalBody');
             tbodyA.innerHTML = '';
             document.getElementById('cantActividadesAdicional').innerText = `${adicionales.length} adicionales`;
@@ -1315,8 +1479,96 @@
             }
         }
 
+        // RENDERING TAREA IDENTIFICACIÓN EN TERAPEUTA
+        function renderIdentificacionTerapeuta(p) {
+            const btnLock = document.getElementById('btnLockIdentificacion');
+            if (p.identificacionBloqueada) {
+                btnLock.className = "text-xs bg-rose-50 text-rose-700 border border-rose-300 hover:bg-rose-100 px-3.5 py-2 rounded-xl font-bold transition flex items-center gap-1.5 shadow-sm";
+                btnLock.innerHTML = `<i class="fa-solid fa-lock text-rose-600"></i> Bloqueado (Paciente solo puede agregar)`;
+            } else {
+                btnLock.className = "text-xs bg-emerald-50 text-emerald-800 border border-emerald-300 hover:bg-emerald-100 px-3.5 py-2 rounded-xl font-bold transition flex items-center gap-1.5 shadow-sm";
+                btnLock.innerHTML = `<i class="fa-solid fa-lock-open text-emerald-600"></i> Desbloqueado (Edición Libre)`;
+            }
+
+            const items = p.identificacionActividades || [];
+            const principales = items.filter(x => !x.esAdicional);
+            const adicionales = items.filter(x => x.esAdicional);
+
+            const containerCat = document.getElementById('containerIdentificacionCategoriasTerapeuta');
+            containerCat.innerHTML = '';
+
+            CATEGORIAS_IDENTIFICACION.forEach(cat => {
+                const itemsCat = principales.filter(x => x.categoria === cat.id);
+                
+                const block = document.createElement('div');
+                block.className = "border border-slate-200 rounded-xl overflow-hidden bg-slate-50/50";
+                
+                let filas = '';
+                if (itemsCat.length === 0) {
+                    filas = `<tr><td colspan="2" class="p-3 text-center text-slate-400 text-xs">Sin actividades registradas en esta categoría.</td></tr>`;
+                } else {
+                    itemsCat.forEach(item => {
+                        filas += `
+                            <tr class="hover:bg-white transition">
+                                <td class="p-3 font-semibold text-slate-900 text-xs">${escapeHtml(item.actividad)}</td>
+                                <td class="p-3 w-44 text-xs text-slate-500"><i class="fa-regular fa-clock mr-1"></i>${item.fecha || '--'}</td>
+                            </tr>
+                        `;
+                    });
+                }
+
+                block.innerHTML = `
+                    <div class="p-3.5 bg-slate-100 border-b border-slate-200 flex justify-between items-center">
+                        <div>
+                            <h4 class="font-bold text-xs text-slate-900 uppercase">${cat.nombre}</h4>
+                            <p class="text-[10px] text-slate-500 mt-0.5">${cat.desc}</p>
+                        </div>
+                        <span class="text-[11px] font-bold bg-white text-slate-700 border border-slate-300 px-2.5 py-0.5 rounded-full shrink-0">${itemsCat.length} registradas</span>
+                    </div>
+                    <table class="w-full text-left border-collapse">
+                        <tbody class="divide-y divide-slate-200">
+                            ${filas}
+                        </tbody>
+                    </table>
+                `;
+                containerCat.appendChild(block);
+            });
+
+            // Adicionales
+            const tbodyA = document.getElementById('tablaIdentificacionAdicionalBody');
+            tbodyA.innerHTML = '';
+            document.getElementById('cantIdentificacionAdicional').innerText = `${adicionales.length} adicionales`;
+
+            if (adicionales.length === 0) {
+                tbodyA.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-slate-400">No hay actividades agregadas de manera adicional.</td></tr>`;
+            } else {
+                adicionales.forEach(item => {
+                    const catObj = CATEGORIAS_IDENTIFICACION.find(c => c.id === item.categoria) || {};
+                    const tr = document.createElement('tr');
+                    tr.className = "hover:bg-amber-100/40 transition";
+                    tr.innerHTML = `
+                        <td class="p-3 text-center">
+                            <span class="text-[10px] uppercase font-bold text-amber-900 bg-amber-200 border border-amber-400 px-2 py-0.5 rounded-full">
+                                <i class="fa-solid fa-plus mr-1"></i> Posterior
+                            </span>
+                        </td>
+                        <td class="p-3 font-bold text-amber-950 text-xs">${catObj.nombre || item.categoria}</td>
+                        <td class="p-3 font-semibold text-slate-900 text-xs">${escapeHtml(item.actividad)}</td>
+                        <td class="p-3 text-xs text-amber-900 font-semibold"><i class="fa-regular fa-calendar-plus mr-1"></i>${item.fecha || '--'}</td>
+                    `;
+                    tbodyA.appendChild(tr);
+                });
+            }
+        }
+
         function toggleBloqueoJerarquia() {
             pacienteData.jerarquiaBloqueada = !pacienteData.jerarquiaBloqueada;
+            sincronizarGarantizado();
+            renderizarFichaClinica();
+        }
+
+        function toggleBloqueoIdentificacion() {
+            pacienteData.identificacionBloqueada = !pacienteData.identificacionBloqueada;
             sincronizarGarantizado();
             renderizarFichaClinica();
         }
@@ -1406,7 +1658,7 @@
         }
 
         async function toggleModuloAsignado(modKey) {
-            if (!pacienteData.modulosAsignados) pacienteData.modulosAsignados = ['monitoreo', 'jerarquia_actividades'];
+            if (!pacienteData.modulosAsignados) pacienteData.modulosAsignados = ['monitoreo', 'jerarquia_actividades', 'identificacion_actividades'];
             const idx = pacienteData.modulosAsignados.indexOf(modKey);
             if (idx === -1) pacienteData.modulosAsignados.push(modKey);
             else pacienteData.modulosAsignados.splice(idx, 1);
@@ -1667,6 +1919,8 @@
                             actualizarEstadoFormularioPaciente();
                         } else if (!modoPacienteGuardando && !document.getElementById('secPacienteFormJerarquia').classList.contains('hidden')) {
                             renderJerarquiaPaciente();
+                        } else if (!modoPacienteGuardando && !document.getElementById('secPacienteFormIdentificacion').classList.contains('hidden')) {
+                            renderIdentificacionPaciente();
                         } else if (!modoPacienteGuardando) {
                             mostrarDashboardPaciente();
                         }
@@ -1695,9 +1949,10 @@
 
             poblarSelectoresSemanaPaciente();
 
-            const mods = pacienteData.modulosAsignados || ['monitoreo', 'jerarquia_actividades'];
+            const mods = pacienteData.modulosAsignados || ['monitoreo', 'jerarquia_actividades', 'identificacion_actividades'];
             document.getElementById('cardModMonitoreo').style.display = mods.includes('monitoreo') ? 'flex' : 'none';
             document.getElementById('cardModJerarquia').style.display = mods.includes('jerarquia_actividades') ? 'flex' : 'none';
+            document.getElementById('cardModIdentificacion').style.display = mods.includes('identificacion_actividades') ? 'flex' : 'none';
         }
 
         function poblarSelectoresSemanaPaciente() {
@@ -1711,29 +1966,14 @@
                 semanaSeleccionadaKey = semKeys[semKeys.length - 1];
             }
 
-            const sel1 = document.getElementById('selectSemanaPacienteDash');
             const sel2 = document.getElementById('selectSemanaPacienteForm');
-            if (sel1) sel1.innerHTML = '';
             if (sel2) sel2.innerHTML = '';
 
             semKeys.forEach((sk, idx) => {
                 const bloqueada = pacienteData.semanas[sk]?.bloqueada;
                 const optText = `Semana ${idx + 1} (${formatBloqueSemanal(sk)})${bloqueada ? ' 🔒 (Bloqueada)' : ' 🔓 (Abierta)'}`;
-                if (sel1) sel1.innerHTML += `<option value="${sk}" ${sk === semanaSeleccionadaKey ? 'selected' : ''}>${optText}</option>`;
                 if (sel2) sel2.innerHTML += `<option value="${sk}" ${sk === semanaSeleccionadaKey ? 'selected' : ''}>${optText}</option>`;
             });
-
-            const esBloqueada = pacienteData.semanas[semanaSeleccionadaKey]?.bloqueada;
-            const badge = document.getElementById('badgeEstadoBloqueoDash');
-            if (badge) {
-                if (esBloqueada) {
-                    badge.className = "text-xs px-2.5 py-1 rounded-full font-bold bg-amber-100 text-amber-800 border border-amber-300";
-                    badge.innerText = "🔒 Monitoreo Cerrado";
-                } else {
-                    badge.className = "text-xs px-2.5 py-1 rounded-full font-bold bg-emerald-100 text-emerald-800 border border-emerald-300";
-                    badge.innerText = "🔓 Monitoreo Abierto";
-                }
-            }
         }
 
         function cambiarSemanaPaciente(semKey) {
@@ -1757,13 +1997,19 @@
             renderJerarquiaPaciente();
         }
 
+        function abrirModuloIdentificacionPaciente() {
+            ocultarTodasLasSecciones();
+            document.getElementById('secPacienteFormIdentificacion').classList.remove('hidden');
+            renderIdentificacionPaciente();
+        }
+
         function volverDashboardPaciente() {
             if (pacienteData && pacienteActualId) {
                 mostrarDashboardPaciente();
             }
         }
 
-        // LÓGICA DE PACIENTE PARA JERARQUÍA DE ACTIVIDADES (AUTO-ORGANIZACIÓN)
+        // LÓGICA DE PACIENTE PARA JERARQUÍA DE ACTIVIDADES
         function renderJerarquiaPaciente() {
             const banner = document.getElementById('bannerBloqueoJerarquiaPaciente');
             if (pacienteData.jerarquiaBloqueada) banner.classList.remove('hidden');
@@ -1780,13 +2026,11 @@
                 return;
             }
 
-            // Asignar dinámicamente el nivel de jerarquía (Nivel #1 = la de menor importancia)
             const itemsAsc = [...items].sort((a, b) => parseFloat(a.importancia) - parseFloat(b.importancia));
             itemsAsc.forEach((item, idx) => {
                 item.rankJerarquia = idx + 1;
             });
 
-            // Ordenar de mayor a menor importancia para mostrar al paciente
             const itemsOrganizados = [...itemsAsc].sort((a, b) => parseFloat(b.importancia) - parseFloat(a.importancia));
 
             itemsOrganizados.forEach((item) => {
@@ -1813,7 +2057,7 @@
                         <span class="bg-emerald-50 border border-emerald-300 px-2.5 py-1 rounded-lg">${item.importancia} / 15</span>
                     </td>
                     <td class="p-3 text-xs text-slate-500">${item.fecha || '--'}</td>
-                    <td class="p-3 text-center">${deleteBtn}</td>
+                    <td class="p-3 text-center no-print">${deleteBtn}</td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -1858,6 +2102,105 @@
             pacienteData.jerarquiaActividades = (pacienteData.jerarquiaActividades || []).filter(item => item.id !== id);
             sincronizarGarantizado();
             renderJerarquiaPaciente();
+        }
+
+        // LÓGICA DE PACIENTE PARA IDENTIFICACIÓN DE ACTIVIDADES
+        function renderIdentificacionPaciente() {
+            const banner = document.getElementById('bannerBloqueoIdentificacionPaciente');
+            if (pacienteData.identificacionBloqueada) banner.classList.remove('hidden');
+            else banner.classList.add('hidden');
+
+            const container = document.getElementById('containerPacienteCategoriasIdentificacion');
+            container.innerHTML = '';
+
+            const items = pacienteData.identificacionActividades || [];
+
+            CATEGORIAS_IDENTIFICACION.forEach(cat => {
+                const itemsCat = items.filter(x => x.categoria === cat.id);
+                
+                const card = document.createElement('div');
+                card.className = "bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3";
+                
+                let htmlItems = '';
+                if (itemsCat.length === 0) {
+                    htmlItems = `<div class="p-4 text-center text-slate-400 text-xs bg-slate-50 rounded-xl border border-dashed border-slate-200">No has registrado actividades en este eje aún.</div>`;
+                } else {
+                    htmlItems = `<div class="divide-y divide-slate-200 border border-slate-200 rounded-xl overflow-hidden">`;
+                    itemsCat.forEach(item => {
+                        const deleteBtn = pacienteData.identificacionBloqueada ? 
+                            `<span class="text-[10px] text-slate-400 font-bold"><i class="fa-solid fa-lock"></i> Fijo</span>` :
+                            `<button onclick="eliminarActividadIdentificacionPaciente('${item.id}')" class="text-xs bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 px-2 py-1 rounded-lg transition font-medium">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>`;
+
+                        htmlItems += `
+                            <div class="p-3 bg-white hover:bg-slate-50 transition flex justify-between items-center gap-3">
+                                <div class="space-y-0.5">
+                                    <span class="font-bold text-slate-900 text-xs block">${escapeHtml(item.actividad)}</span>
+                                    <div class="flex items-center gap-2 text-[10px] text-slate-500">
+                                        <span><i class="fa-regular fa-clock mr-1"></i>${item.fecha || '--'}</span>
+                                        ${item.esAdicional ? '<span class="bg-amber-100 text-amber-800 border border-amber-300 px-1.5 rounded font-bold">Adicional</span>' : ''}
+                                    </div>
+                                </div>
+                                <div class="no-print">${deleteBtn}</div>
+                            </div>
+                        `;
+                    });
+                    htmlItems += `</div>`;
+                }
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-start border-b border-slate-100 pb-2.5">
+                        <div>
+                            <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                                <i class="fa-solid fa-circle-dot text-cyan-700 text-xs"></i> ${cat.nombre}
+                            </h3>
+                            <p class="text-xs text-slate-500 mt-0.5">${cat.desc}</p>
+                        </div>
+                        <span class="text-xs bg-cyan-50 text-cyan-800 border border-cyan-200 px-2.5 py-0.5 rounded-full font-bold shrink-0">${itemsCat.length}</span>
+                    </div>
+                    ${htmlItems}
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function agregarActividadIdentificacionPaciente(e) {
+            e.preventDefault();
+            const catSel = document.getElementById('selectIdentificacionCategoria').value;
+            const inputAct = document.getElementById('inputIdentificacionActividad');
+            const actTexto = inputAct.value.trim();
+
+            if (!actTexto) {
+                alert("Por favor escribe una descripción válida de la actividad.");
+                return;
+            }
+
+            if (!pacienteData.identificacionActividades) pacienteData.identificacionActividades = [];
+
+            const now = new Date();
+            const fechaFormateada = `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+
+            const nuevaActividad = {
+                id: 'i_' + Math.random().toString(36).substr(2, 9),
+                categoria: catSel,
+                actividad: actTexto,
+                fecha: fechaFormateada,
+                esAdicional: pacienteData.identificacionBloqueada || false
+            };
+
+            pacienteData.identificacionActividades.push(nuevaActividad);
+            inputAct.value = '';
+
+            sincronizarGarantizado();
+            renderIdentificacionPaciente();
+        }
+
+        function eliminarActividadIdentificacionPaciente(id) {
+            if (pacienteData.identificacionBloqueada) return;
+            pacienteData.identificacionActividades = (pacienteData.identificacionActividades || []).filter(item => item.id !== id);
+            sincronizarGarantizado();
+            renderIdentificacionPaciente();
         }
 
         // LÓGICA DE PACIENTE PARA MONITOREO DIARIO
@@ -2029,6 +2372,63 @@
             });
         }
 
+        function imprimirJerarquiaLimpia() {
+            const tbodyP = document.getElementById('tablaJerarquiaPacienteBody');
+            const tbodyT = document.getElementById('tablaJerarquiaTerapeutaBody');
+            const prevP = tbodyP ? tbodyP.innerHTML : '';
+            const prevT = tbodyT ? tbodyT.innerHTML : '';
+
+            let renglonesLimpios = '';
+            for (let i = 1; i <= 15; i++) {
+                renglonesLimpios += `
+                    <tr>
+                        <td class="p-3 text-center font-bold text-slate-400">#${i}</td>
+                        <td class="p-3 text-slate-300">____________________________________________________</td>
+                        <td class="p-3 text-center text-slate-300">____ / 15</td>
+                        <td class="p-3 text-slate-300">____/____/________</td>
+                    </tr>
+                `;
+            }
+
+            if (tbodyP) tbodyP.innerHTML = renglonesLimpios;
+            if (tbodyT) tbodyT.innerHTML = renglonesLimpios;
+
+            window.print();
+
+            if (tbodyP) tbodyP.innerHTML = prevP;
+            if (tbodyT) tbodyT.innerHTML = prevT;
+        }
+
+        function imprimirIdentificacionLimpia() {
+            const containerP = document.getElementById('containerPacienteCategoriasIdentificacion');
+            const containerT = document.getElementById('containerIdentificacionCategoriasTerapeuta');
+            const prevP = containerP ? containerP.innerHTML : '';
+            const prevT = containerT ? containerT.innerHTML : '';
+
+            let htmlLimpio = '';
+            CATEGORIAS_IDENTIFICACION.forEach(cat => {
+                htmlLimpio += `
+                    <div class="bg-white p-4 rounded-xl border border-slate-300 mb-4">
+                        <h4 class="font-bold text-xs uppercase text-slate-900 mb-1">${cat.nombre}</h4>
+                        <p class="text-[10px] text-slate-500 mb-3">${cat.desc}</p>
+                        <div class="space-y-2 text-xs text-slate-300">
+                            <div>1. ____________________________________________________________________________________</div>
+                            <div>2. ____________________________________________________________________________________</div>
+                            <div>3. ____________________________________________________________________________________</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            if (containerP) containerP.innerHTML = htmlLimpio;
+            if (containerT) containerT.innerHTML = htmlLimpio;
+
+            window.print();
+
+            if (containerP) containerP.innerHTML = prevP;
+            if (containerT) containerT.innerHTML = prevT;
+        }
+
         function ocultarTodasLasSecciones() {
             document.getElementById('secLoginTerapeuta').classList.add('hidden');
             document.getElementById('secPanelTerapeuta').classList.add('hidden');
@@ -2036,6 +2436,7 @@
             document.getElementById('secPacienteDashboard').classList.add('hidden');
             document.getElementById('secPacienteFormMonitoreo').classList.add('hidden');
             document.getElementById('secPacienteFormJerarquia').classList.add('hidden');
+            document.getElementById('secPacienteFormIdentificacion').classList.add('hidden');
         }
 
         function crearSemanaVacia() {
@@ -2057,9 +2458,11 @@
                 fechaInicio: '2026-10-26',
                 updatedAt: new Date().toISOString(),
                 notasClinicas: 'Paciente en monitoreo activo.',
-                modulosAsignados: ['monitoreo', 'jerarquia_actividades'],
+                modulosAsignados: ['monitoreo', 'jerarquia_actividades', 'identificacion_actividades'],
                 jerarquiaBloqueada: false,
                 jerarquiaActividades: [],
+                identificacionBloqueada: false,
+                identificacionActividades: [],
                 semanas: { '2026-10-26': crearSemanaVacia() }
             }];
         }
