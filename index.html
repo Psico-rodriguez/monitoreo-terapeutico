@@ -159,9 +159,18 @@
                     </h1>
                     <p class="text-slate-500 text-sm mt-0.5">Selecciona un paciente para abrir su ficha clínica individual, gestionar tareas y evaluar su evolución.</p>
                 </div>
-                <button onclick="abrirModalNuevoPaciente()" class="bg-cyan-700 hover:bg-cyan-800 text-white px-4 py-2.5 rounded-xl font-medium shadow transition flex items-center gap-2 text-sm">
-                    <i class="fa-solid fa-user-plus"></i> Registrar Nuevo Paciente
-                </button>
+                <div class="flex flex-wrap items-center gap-2">
+                    <button onclick="exportarBackupJSON()" title="Descargar copia de seguridad completa en archivo JSON" class="bg-slate-800 hover:bg-slate-900 text-white px-3.5 py-2.5 rounded-xl text-xs font-semibold shadow transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-download text-cyan-400"></i> Descargar Backup
+                    </button>
+                    <button onclick="document.getElementById('inputImportBackup').click()" title="Restaurar base de datos desde un archivo JSON descargado anteriormente" class="bg-amber-600 hover:bg-amber-700 text-white px-3.5 py-2.5 rounded-xl text-xs font-semibold shadow transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-upload text-amber-200"></i> Restaurar Backup
+                    </button>
+                    <input type="file" id="inputImportBackup" accept=".json" class="hidden" onchange="importarBackupJSON(event)">
+                    <button onclick="abrirModalNuevoPaciente()" class="bg-cyan-700 hover:bg-cyan-800 text-white px-4 py-2.5 rounded-xl font-medium shadow transition flex items-center gap-2 text-sm">
+                        <i class="fa-solid fa-user-plus"></i> Registrar Nuevo Paciente
+                    </button>
+                </div>
             </div>
 
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
@@ -248,7 +257,7 @@
                                     </div>
                                     <div>
                                         <h4 class="font-bold text-xs text-slate-900">Terapia de Activación Conductual</h4>
-                                        <span class="text-[10px] text-cyan-700 font-semibold">3 Tareas disponibles</span>
+                                        <span class="text-[10px] text-cyan-700 font-semibold">4 Tareas disponibles</span>
                                     </div>
                                 </div>
                                 <i id="iconCheckAC" class="fa-solid fa-circle-check text-cyan-600 text-lg"></i>
@@ -259,20 +268,20 @@
                     <!-- PASO 2: TAREAS SELECCIONABLES -->
                     <div id="containerTareasDisponibles" class="space-y-2 pt-2 border-t border-slate-200">
                         <span class="text-xs font-bold text-slate-500 uppercase tracking-wider block">2. Seleccionar Tarea a Observar y Gestionar Asignación:</span>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                             <!-- Tarea 1: Monitoreo Diario -->
-                            <div id="cardTareaMonitoreo" onclick="seleccionarTarea('monitoreo')" class="cursor-pointer p-3.5 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-slate-200 hover:border-cyan-400">
-                                <div class="flex items-center space-x-3">
+                            <div id="cardTareaMonitoreo" onclick="seleccionarTarea('monitoreo')" class="cursor-pointer p-3 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-slate-200 hover:border-cyan-400">
+                                <div class="flex items-center space-x-2.5">
                                     <div class="w-8 h-8 bg-cyan-50 text-cyan-700 border border-cyan-200 rounded-lg flex items-center justify-center text-sm font-bold shrink-0">
                                         <i class="fa-regular fa-calendar-check"></i>
                                     </div>
                                     <div>
-                                        <h5 class="font-bold text-xs text-slate-900">Monitoreo Diario de Actividades</h5>
-                                        <p class="text-[10px] text-slate-500">Disfrute (D), Importancia (I) y Ánimo</p>
+                                        <h5 class="font-bold text-xs text-slate-900">Monitoreo Diario</h5>
+                                        <p class="text-[10px] text-slate-500">D, I y Ánimo</p>
                                     </div>
                                 </div>
-                                <div class="flex items-center space-x-2" onclick="event.stopPropagation()">
-                                    <label class="flex items-center space-x-1 cursor-pointer bg-slate-50 hover:bg-slate-100 px-2 py-1 rounded-lg border border-slate-200 transition" title="Activa o desactiva la tarea en el portal del paciente">
+                                <div class="flex items-center space-x-1.5" onclick="event.stopPropagation()">
+                                    <label class="flex items-center space-x-1 cursor-pointer bg-slate-50 hover:bg-slate-100 px-1.5 py-1 rounded border border-slate-200 transition" title="Activa o desactiva la tarea en el portal del paciente">
                                         <input type="checkbox" id="chkModMonitoreo" onchange="toggleModuloAsignado('monitoreo')" class="w-3.5 h-3.5 text-cyan-600 rounded bg-white">
                                         <span class="text-[10px] font-bold text-slate-700">Asignada</span>
                                     </label>
@@ -280,19 +289,39 @@
                                 </div>
                             </div>
 
-                            <!-- Tarea 2: Jerarquía de Actividades -->
-                            <div id="cardTareaJerarquia" onclick="seleccionarTarea('jerarquia_actividades')" class="cursor-pointer p-3.5 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-slate-200 hover:border-cyan-400">
-                                <div class="flex items-center space-x-3">
+                            <!-- Tarea 2: Identificación de Actividades -->
+                            <div id="cardTareaIdentificacion" onclick="seleccionarTarea('identificacion_actividades')" class="cursor-pointer p-3 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-slate-200 hover:border-cyan-400">
+                                <div class="flex items-center space-x-2.5">
+                                    <div class="w-8 h-8 bg-cyan-50 text-cyan-700 border border-cyan-200 rounded-lg flex items-center justify-center text-sm font-bold shrink-0">
+                                        <i class="fa-solid fa-magnifying-glass-chart"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="font-bold text-xs text-slate-900">Identificación</h5>
+                                        <p class="text-[10px] text-slate-500">Exploración en 5 ejes</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-1.5" onclick="event.stopPropagation()">
+                                    <label class="flex items-center space-x-1 cursor-pointer bg-slate-50 hover:bg-slate-100 px-1.5 py-1 rounded border border-slate-200 transition" title="Activa o desactiva la tarea en el portal del paciente">
+                                        <input type="checkbox" id="chkModIdentificacion" onchange="toggleModuloAsignado('identificacion_actividades')" class="w-3.5 h-3.5 text-cyan-600 rounded bg-white">
+                                        <span class="text-[10px] font-bold text-slate-700">Asignada</span>
+                                    </label>
+                                    <i id="iconCheckTareaIdentificacion" class="fa-regular fa-circle text-slate-300 text-sm"></i>
+                                </div>
+                            </div>
+
+                            <!-- Tarea 3: Jerarquía de Actividades -->
+                            <div id="cardTareaJerarquia" onclick="seleccionarTarea('jerarquia_actividades')" class="cursor-pointer p-3 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-slate-200 hover:border-cyan-400">
+                                <div class="flex items-center space-x-2.5">
                                     <div class="w-8 h-8 bg-cyan-50 text-cyan-700 border border-cyan-200 rounded-lg flex items-center justify-center text-sm font-bold shrink-0">
                                         <i class="fa-solid fa-list-ol"></i>
                                     </div>
                                     <div>
-                                        <h5 class="font-bold text-xs text-slate-900">Jerarquía de Actividades</h5>
-                                        <p class="text-[10px] text-slate-500">Lista ordenada por Importancia (1 a 15)</p>
+                                        <h5 class="font-bold text-xs text-slate-900">Jerarquía</h5>
+                                        <p class="text-[10px] text-slate-500">Lista por Importancia (1-15)</p>
                                     </div>
                                 </div>
-                                <div class="flex items-center space-x-2" onclick="event.stopPropagation()">
-                                    <label class="flex items-center space-x-1 cursor-pointer bg-slate-50 hover:bg-slate-100 px-2 py-1 rounded-lg border border-slate-200 transition" title="Activa o desactiva la tarea en el portal del paciente">
+                                <div class="flex items-center space-x-1.5" onclick="event.stopPropagation()">
+                                    <label class="flex items-center space-x-1 cursor-pointer bg-slate-50 hover:bg-slate-100 px-1.5 py-1 rounded border border-slate-200 transition" title="Activa o desactiva la tarea en el portal del paciente">
                                         <input type="checkbox" id="chkModJerarquia" onchange="toggleModuloAsignado('jerarquia_actividades')" class="w-3.5 h-3.5 text-cyan-600 rounded bg-white">
                                         <span class="text-[10px] font-bold text-slate-700">Asignada</span>
                                     </label>
@@ -300,28 +329,27 @@
                                 </div>
                             </div>
 
-                            <!-- Tarea 3: Identificación de Actividades -->
-                            <div id="cardTareaIdentificacion" onclick="seleccionarTarea('identificacion_actividades')" class="cursor-pointer p-3.5 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-slate-200 hover:border-cyan-400">
-                                <div class="flex items-center space-x-3">
+                            <!-- Tarea 4: Programación de Actividades -->
+                            <div id="cardTareaProgramacion" onclick="seleccionarTarea('programacion_actividades')" class="cursor-pointer p-3 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-slate-200 hover:border-cyan-400">
+                                <div class="flex items-center space-x-2.5">
                                     <div class="w-8 h-8 bg-cyan-50 text-cyan-700 border border-cyan-200 rounded-lg flex items-center justify-center text-sm font-bold shrink-0">
-                                        <i class="fa-solid fa-magnifying-glass-chart"></i>
+                                        <i class="fa-solid fa-calendar-days"></i>
                                     </div>
                                     <div>
-                                        <h5 class="font-bold text-xs text-slate-900">Identificación de Actividades</h5>
-                                        <p class="text-[10px] text-slate-500">Exploración en 5 ejes clave</p>
+                                        <h5 class="font-bold text-xs text-slate-900">Programación</h5>
+                                        <p class="text-[10px] text-slate-500">Exclusiva del Terapeuta</p>
                                     </div>
                                 </div>
-                                <div class="flex items-center space-x-2" onclick="event.stopPropagation()">
-                                    <label class="flex items-center space-x-1 cursor-pointer bg-slate-50 hover:bg-slate-100 px-2 py-1 rounded-lg border border-slate-200 transition" title="Activa o desactiva la tarea en el portal del paciente">
-                                        <input type="checkbox" id="chkModIdentificacion" onchange="toggleModuloAsignado('identificacion_actividades')" class="w-3.5 h-3.5 text-cyan-600 rounded bg-white">
+                                <div class="flex items-center space-x-1.5" onclick="event.stopPropagation()">
+                                    <label class="flex items-center space-x-1 cursor-pointer bg-slate-50 hover:bg-slate-100 px-1.5 py-1 rounded border border-slate-200 transition" title="Activa o desactiva la tarea en el portal del paciente">
+                                        <input type="checkbox" id="chkModProgramacion" onchange="toggleModuloAsignado('programacion_actividades')" class="w-3.5 h-3.5 text-cyan-600 rounded bg-white">
                                         <span class="text-[10px] font-bold text-slate-700">Asignada</span>
                                     </label>
-                                    <i id="iconCheckTareaIdentificacion" class="fa-regular fa-circle text-slate-300 text-sm"></i>
+                                    <i id="iconCheckTareaProgramacion" class="fa-regular fa-circle text-slate-300 text-sm"></i>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
                 <!-- CONTROL DE SEMANAS (SOLO VISIBLE EN MONITOREO DIARIO) -->
                 <div id="containerControlBloqueSemanal" class="hidden flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200 no-print">
@@ -557,7 +585,7 @@
                                 <h3 class="font-bold text-lg text-slate-900 flex items-center gap-2">
                                     <i class="fa-solid fa-magnifying-glass-chart text-cyan-700"></i> Identificación de Actividades a Programar
                                 </h3>
-                                <p class="text-xs text-slate-500 mt-0.5">Exploración clínica en 5 ejes clave para interrumpir el ciclo del sufrimiento y construir un banco de actividades.</p>
+                                <p class="text-xs text-slate-500 mt-0.5">Exploración clínica en 5 ejes clave con preguntas orientadoras para interrumpir el ciclo del sufrimiento.</p>
                             </div>
                             <div class="flex flex-wrap items-center gap-2 no-print">
                                 <button onclick="imprimirIdentificacionLimpia()" class="text-xs bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 px-3 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shadow-sm">
@@ -604,6 +632,141 @@
                     </div>
                 </div>
 
+                <!-- CONTENEDOR DESGLOSE TAREA 4: PROGRAMACIÓN DE ACTIVIDADES (NUEVA) -->
+                <div id="secDesgloseProgramacion" class="hidden space-y-6">
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-200 pb-4">
+                            <div>
+                                <h3 class="font-bold text-lg text-slate-900 flex items-center gap-2">
+                                    <i class="fa-solid fa-calendar-days text-cyan-700"></i> Programación de Actividades
+                                </h3>
+                                <p class="text-xs text-slate-500 mt-0.5">Gestión clínica exclusiva del terapeuta. Vincula la Jerarquía de Actividades (y Actividades Extra) con su plan operativo detallado.</p>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-2 no-print">
+                                <button onclick="imprimirProgramacionLimpia()" class="text-xs bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 px-3 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shadow-sm">
+                                    <i class="fa-solid fa-file-arrow-down text-amber-600"></i> Descargar en Limpio (PDF)
+                                </button>
+                                <button onclick="exportarPDF()" class="text-xs bg-cyan-700 hover:bg-cyan-800 text-white px-3 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shadow-sm">
+                                    <i class="fa-solid fa-file-pdf"></i> Descargar Diligenciado / Custodia (PDF)
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- FORMULARIO DE PROGRAMACIÓN PARA EL TERAPEUTA -->
+                        <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-4 no-print">
+                            <h4 class="font-bold text-slate-900 text-xs uppercase tracking-wider flex items-center gap-2">
+                                <i class="fa-solid fa-pen-to-square text-cyan-700"></i> <span id="formProgTitulo">Programar Nueva Actividad</span>
+                            </h4>
+
+                            <form id="formProgramacionTerapeuta" onsubmit="guardarProgramacionActividad(event)" class="space-y-4">
+                                <input type="hidden" id="progEditIndex" value="-1">
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <!-- Selección de Actividad de la Jerarquía -->
+                                    <div class="md:col-span-2">
+                                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
+                                            Actividad Base de la Jerarquía (N° Jerarquía o Actividad Extra)
+                                        </label>
+                                        <select id="progSelectJerarquia" required class="w-full px-3.5 py-2.5 bg-white text-slate-900 border border-slate-300 rounded-xl text-xs font-bold focus:ring-2 focus:ring-cyan-600 focus:outline-none">
+                                        </select>
+                                    </div>
+
+                                    <!-- ¿A qué me quiero acercar esta semana? -->
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">¿A qué me quiero acercar esta semana? (Área de activación)</label>
+                                        <input type="text" id="progAreaActivacion" required placeholder="Ej. Cuidado personal, salud, relaciones familiares" class="w-full px-3 py-2 bg-white text-slate-900 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-cyan-600 focus:outline-none">
+                                    </div>
+
+                                    <!-- ¿Por qué es importante para mí esta actividad? -->
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">¿Por qué es importante para mí esta actividad?</label>
+                                        <input type="text" id="progImportanciaPorQue" required placeholder="Ej. Me permite recuperar mi autonomía e higiene diaria" class="w-full px-3 py-2 bg-white text-slate-900 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-cyan-600 focus:outline-none">
+                                    </div>
+
+                                    <!-- ¿Qué es lo que tengo que hacer (Acción Concreta)? -->
+                                    <div class="md:col-span-2">
+                                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">¿Qué es lo que tengo que hacer? (Acción Concreta)</label>
+                                        <input type="text" id="progAccionConcreta" required placeholder="Ej. Caminar 15 minutos continuos por el parque del barrio" class="w-full px-3 py-2 bg-white text-slate-900 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-cyan-600 focus:outline-none">
+                                    </div>
+
+                                    <!-- ¿Cuándo? -->
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">¿Cuándo? (Día / Fecha)</label>
+                                        <input type="text" id="progCuando" required placeholder="Ej. Sábado 31 de Octubre" class="w-full px-3 py-2 bg-white text-slate-900 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-cyan-600 focus:outline-none">
+                                    </div>
+
+                                    <!-- ¿A qué hora? -->
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">¿A qué hora?</label>
+                                        <input type="text" id="progHora" required placeholder="Ej. 10:00 AM" class="w-full px-3 py-2 bg-white text-slate-900 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-cyan-600 focus:outline-none">
+                                    </div>
+
+                                    <!-- ¿Cuánto tiempo le voy a dedicar? -->
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">¿Cuánto tiempo le voy a dedicar?</label>
+                                        <input type="text" id="progDuracion" required placeholder="Ej. 30 minutos" class="w-full px-3 py-2 bg-white text-slate-900 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-cyan-600 focus:outline-none">
+                                    </div>
+
+                                    <!-- ¿Dónde? -->
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">¿Dónde?</label>
+                                        <input type="text" id="progDonde" required placeholder="Ej. En la sala de la casa / Parque cercano" class="w-full px-3 py-2 bg-white text-slate-900 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-cyan-600 focus:outline-none">
+                                    </div>
+
+                                    <!-- ¿Qué necesito? -->
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">¿Qué necesito?</label>
+                                        <input type="text" id="progQueNecesito" required placeholder="Ej. Zapatillas cómodas, botella de agua" class="w-full px-3 py-2 bg-white text-slate-900 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-cyan-600 focus:outline-none">
+                                    </div>
+
+                                    <!-- ¿Qué tan capaz me siento de llevarla a cabo? (0 a 100%) -->
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">¿Qué tan capaz me siento de llevarla a cabo? (0 al 100%)</label>
+                                        <div class="flex items-center space-x-3">
+                                            <input type="range" id="progCapacidad" min="0" max="100" step="5" value="80" class="flex-1 accent-cyan-700 cursor-pointer" oninput="document.getElementById('displayCapacidadVal').innerText = this.value + '%'">
+                                            <span id="displayCapacidadVal" class="font-extrabold text-cyan-800 text-xs w-12 text-right">80%</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- ¿Qué obstáculo puede surgir? -->
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">¿Qué obstáculo puede surgir?</label>
+                                        <input type="text" id="progObstaculo" required placeholder="Ej. Lluvia, cansancio o pereza matutina" class="w-full px-3 py-2 bg-white text-slate-900 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-cyan-600 focus:outline-none">
+                                    </div>
+
+                                    <!-- ¿Cómo libro este obstáculo? -->
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">¿Cómo libro este obstáculo?</label>
+                                        <input type="text" id="progComoLibrar" required placeholder="Ej. Preparar la ropa la noche anterior y llevar abrigo" class="w-full px-3 py-2 bg-white text-slate-900 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-cyan-600 focus:outline-none">
+                                    </div>
+                                </div>
+
+                                <div class="flex justify-end gap-2 pt-2">
+                                    <button type="button" id="btnCancelarEditProg" onclick="cancelarEdicionProgramacion()" class="hidden text-xs bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-4 py-2 rounded-xl transition">
+                                        Cancelar Edición
+                                    </button>
+                                    <button type="submit" class="text-xs bg-cyan-700 hover:bg-cyan-800 text-white font-semibold px-5 py-2.5 rounded-xl transition shadow-sm flex items-center gap-1.5">
+                                        <i class="fa-solid fa-floppy-disk"></i> <span id="btnGuardarProgText">Guardar Programación</span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- TABLA DE ACTIVIDADES PROGRAMADAS PARA EL TERAPEUTA -->
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center">
+                                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-700">
+                                    <i class="fa-solid fa-list-check text-cyan-700 mr-1"></i> Lista de Actividades Programadas
+                                </h4>
+                                <span id="cantActividadesProgramadas" class="text-[11px] font-bold bg-cyan-100 text-cyan-800 border border-cyan-200 px-2.5 py-0.5 rounded-full">0 programadas</span>
+                            </div>
+
+                            <div id="containerProgramadasTerapeuta" class="space-y-4">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- NOTAS CLINICAS -->
                 <div class="space-y-2 pt-2 border-t border-slate-200">
                     <label class="block text-sm font-bold text-slate-800"><i class="fa-solid fa-user-pen text-cyan-700 mr-1"></i> Observaciones Clínicas y Acuerdos Terapéuticos</label>
@@ -620,7 +783,7 @@
                     <span class="text-xs uppercase font-bold tracking-wider text-cyan-800">Portal del Paciente</span>
                 </div>
                 <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900" id="pacienteBienvenidaNombre">¡Hola, Paciente! 👋</h1>
-                <p class="text-slate-600 text-sm mt-1">Selecciona cualquiera de tus tareas terapéuticas asignadas para ingresar y completar tus registros.</p>
+                <p class="text-slate-600 text-sm mt-1">Selecciona cualquiera de tus tareas terapéuticas asignadas para ingresar y consultar o completar tus registros.</p>
             </div>
 
             <!-- CARDS DE TAREAS ASIGNADAS -->
@@ -629,7 +792,7 @@
                     <i class="fa-solid fa-clipboard-check text-cyan-700"></i> Tareas Terapéuticas Asignadas
                 </h2>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     <!-- TAREA 1: MONITOREO DIARIO -->
                     <div id="cardModMonitoreo" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:border-cyan-600 transition space-y-4 flex flex-col justify-between">
                         <div class="space-y-3">
@@ -650,27 +813,7 @@
                         </button>
                     </div>
 
-                    <!-- TAREA 2: JERARQUÍA DE ACTIVIDADES -->
-                    <div id="cardModJerarquia" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:border-cyan-600 transition space-y-4 flex flex-col justify-between">
-                        <div class="space-y-3">
-                            <div class="flex justify-between items-start">
-                                <div class="w-12 h-12 bg-cyan-50 text-cyan-700 border border-cyan-200 rounded-xl flex items-center justify-center text-xl font-bold">
-                                    <i class="fa-solid fa-list-ol"></i>
-                                </div>
-                                <span class="text-xs bg-emerald-100 text-emerald-800 border border-emerald-200 px-2.5 py-1 rounded-full font-bold">Asignado</span>
-                            </div>
-                            <div>
-                                <h3 class="font-bold text-slate-900 text-base">Jerarquía de Actividades a Programar</h3>
-                                <p class="text-xs text-slate-500 mt-1">Ingresa tus actividades con su grado de importancia (1 a 15). Se ordenarán dinámicamente.</p>
-                            </div>
-                        </div>
-                        <button onclick="abrirModuloJerarquiaPaciente()" class="w-full bg-cyan-700 hover:bg-cyan-800 text-white font-semibold py-2.5 rounded-xl text-sm transition flex items-center justify-center gap-2 shadow-sm">
-                            <span>Ingresar a Jerarquía</span>
-                            <i class="fa-solid fa-arrow-right"></i>
-                        </button>
-                    </div>
-
-                    <!-- TAREA 3: IDENTIFICACIÓN DE ACTIVIDADES -->
+                    <!-- TAREA 2: IDENTIFICACIÓN DE ACTIVIDADES -->
                     <div id="cardModIdentificacion" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:border-cyan-600 transition space-y-4 flex flex-col justify-between">
                         <div class="space-y-3">
                             <div class="flex justify-between items-start">
@@ -680,12 +823,52 @@
                                 <span class="text-xs bg-emerald-100 text-emerald-800 border border-emerald-200 px-2.5 py-1 rounded-full font-bold">Asignado</span>
                             </div>
                             <div>
-                                <h3 class="font-bold text-slate-900 text-base">Identificación de Actividades a Programar</h3>
-                                <p class="text-xs text-slate-500 mt-1">Explora 5 ejes estratégicos para crear tu lugar seguro con actividades variadas y concretas.</p>
+                                <h3 class="font-bold text-slate-900 text-base">Identificación de Actividades</h3>
+                                <p class="text-xs text-slate-500 mt-1">Explora 5 ejes estratégicos con preguntas guía para crear tu banco de actividades.</p>
                             </div>
                         </div>
                         <button onclick="abrirModuloIdentificacionPaciente()" class="w-full bg-cyan-700 hover:bg-cyan-800 text-white font-semibold py-2.5 rounded-xl text-sm transition flex items-center justify-center gap-2 shadow-sm">
                             <span>Ingresar a Identificación</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                    <!-- TAREA 3: JERARQUÍA DE ACTIVIDADES -->
+                    <div id="cardModJerarquia" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:border-cyan-600 transition space-y-4 flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-start">
+                                <div class="w-12 h-12 bg-cyan-50 text-cyan-700 border border-cyan-200 rounded-xl flex items-center justify-center text-xl font-bold">
+                                    <i class="fa-solid fa-list-ol"></i>
+                                </div>
+                                <span class="text-xs bg-emerald-100 text-emerald-800 border border-emerald-200 px-2.5 py-1 rounded-full font-bold">Asignado</span>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-slate-900 text-base">Jerarquía de Actividades</h3>
+                                <p class="text-xs text-slate-500 mt-1">Ingresa tus actividades con su grado de importancia (1 a 15). Se ordenarán dinámicamente.</p>
+                            </div>
+                        </div>
+                        <button onclick="abrirModuloJerarquiaPaciente()" class="w-full bg-cyan-700 hover:bg-cyan-800 text-white font-semibold py-2.5 rounded-xl text-sm transition flex items-center justify-center gap-2 shadow-sm">
+                            <span>Ingresar a Jerarquía</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                    <!-- TAREA 4: PROGRAMACIÓN DE ACTIVIDADES -->
+                    <div id="cardModProgramacion" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:border-cyan-600 transition space-y-4 flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-start">
+                                <div class="w-12 h-12 bg-cyan-50 text-cyan-700 border border-cyan-200 rounded-xl flex items-center justify-center text-xl font-bold">
+                                    <i class="fa-solid fa-calendar-days"></i>
+                                </div>
+                                <span class="text-[10px] bg-slate-100 text-slate-800 border border-slate-300 px-2 py-0.5 rounded-full font-bold">Asignado por Terapeuta</span>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-slate-900 text-base">Programación de Actividades</h3>
+                                <p class="text-xs text-slate-500 mt-1">Consulta la programación operativa detallada configurada por tu terapeuta.</p>
+                            </div>
+                        </div>
+                        <button onclick="abrirModuloProgramacionPaciente()" class="w-full bg-cyan-700 hover:bg-cyan-800 text-white font-semibold py-2.5 rounded-xl text-sm transition flex items-center justify-center gap-2 shadow-sm">
+                            <span>Ver Programación</span>
                             <i class="fa-solid fa-arrow-right"></i>
                         </button>
                     </div>
@@ -867,7 +1050,7 @@
                             <i class="fa-solid fa-arrow-left"></i> Volver a mis Tareas
                         </button>
                         <h1 class="text-2xl font-bold text-slate-900">Identificación de Actividades a Programar</h1>
-                        <p class="text-xs text-slate-500 mt-1">Explora las 5 áreas clave para generar un plan variado y concreto que servirá como tu lugar seguro siempre que necesites activarte.</p>
+                        <p class="text-xs text-slate-500 mt-1">Explora las 5 áreas clave con preguntas orientadoras para generar un plan variado y concreto que servirá como tu lugar seguro.</p>
                     </div>
 
                     <div class="flex flex-wrap items-center gap-2 no-print shrink-0">
@@ -888,7 +1071,7 @@
 
                 <!-- FORMULARIO INGRESO IDENTIFICACIÓN -->
                 <form onsubmit="agregarActividadIdentificacionPaciente(event)" class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-col md:flex-row items-end gap-3 no-print">
-                    <div class="w-full md:w-64 shrink-0">
+                    <div class="w-full md:w-72 shrink-0">
                         <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Eje / Categoría Terapéutica</label>
                         <select id="selectIdentificacionCategoria" required class="w-full px-3 py-2 bg-white text-slate-900 border border-slate-300 rounded-xl text-xs font-bold focus:ring-2 focus:ring-cyan-600 focus:outline-none">
                             <option value="cuidado_personal">1. Rutina de Cuidado Personal</option>
@@ -908,8 +1091,42 @@
                 </form>
             </div>
 
-            <!-- CONTENEDOR DE LAS 5 CATEGORÍAS EN LA VISTA DEL PACIENTE -->
+            <!-- CONTENEDOR DE LAS 5 CATEGORÍAS EN LA VISTA DEL PACIENTE CON PREGUNTAS GUÍA -->
             <div id="containerPacienteCategoriasIdentificacion" class="space-y-6">
+            </div>
+        </section>
+
+        <!-- VISTA 7: PACIENTE PROGRAMACIÓN DE ACTIVIDADES (SOLO LECTURA) (NUEVA) -->
+        <section id="secPacienteFormProgramacion" class="hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-200 pb-4">
+                    <div>
+                        <button onclick="volverDashboardPaciente()" class="text-xs text-cyan-700 font-bold hover:underline mb-1 inline-flex items-center gap-1 no-print">
+                            <i class="fa-solid fa-arrow-left"></i> Volver a mis Tareas
+                        </button>
+                        <h1 class="text-2xl font-bold text-slate-900">Programación de Actividades Terapéuticas</h1>
+                        <p class="text-xs text-slate-500 mt-1">Plan operativo de acción configurado en conjunto con tu terapeuta. Revisa cada detalle para llevar a cabo tus actividades exitosamente.</p>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-2 no-print shrink-0">
+                        <button onclick="imprimirProgramacionLimpia()" class="text-xs bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 px-3 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shadow-sm">
+                            <i class="fa-solid fa-file-arrow-down text-amber-600"></i> Descargar en Limpio (PDF)
+                        </button>
+                        <button onclick="exportarPDF()" class="text-xs bg-cyan-700 hover:bg-cyan-800 text-white px-3 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shadow-sm">
+                            <i class="fa-solid fa-file-pdf"></i> Descargar Diligenciado (PDF)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- BANNER INFORMATIVO SOLO LECTURA -->
+                <div class="p-3.5 bg-cyan-50 border-l-4 border-cyan-600 text-cyan-950 rounded-r text-xs flex items-center gap-2">
+                    <i class="fa-solid fa-user-doctor text-cyan-700 text-base shrink-0"></i>
+                    <span><strong>Modo Consulta Terapéutica:</strong> Las actividades programadas en esta lista son asignadas e ingresadas en tu consulta con el terapeuta.</span>
+                </div>
+
+                <!-- CONTENEDOR DE TARJETAS PROGRAMADAS PARA PACIENTE -->
+                <div id="containerProgramadasPaciente" class="space-y-4">
+                </div>
             </div>
         </section>
 
@@ -1001,11 +1218,56 @@
         const DIAS_NOMBRE = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 
         const CATEGORIAS_IDENTIFICACION = [
-            { id: 'cuidado_personal', nombre: '1. Rutina de Cuidado Personal', desc: 'Hábitos de sueño, alimentación, ejercicio, higiene diaria y horarios de trabajo descidados.' },
-            { id: 'disfrutaba_antes', nombre: '2. Actividades que Solías Disfrutar pero Has Dejado de Hacer', desc: 'Actividades gratificantes que constituían tu vida antes del dolor emocional o la depresión.' },
-            { id: 'nuevas_actividades', nombre: '3. Nuevas Actividades que Quieres Empezar a Hacer', desc: 'Nuevos comienzos, pasatiempos o hábitos que te gustaría iniciar en esta etapa.' },
-            { id: 'evitando_realizar', nombre: '4. Actividades Evitadas o Pospuestas por Malestar', desc: 'Cosas que evitas o postergas con la intención de evadir el malestar o dolor emocional.' },
-            { id: 'metas_largo_plazo', nombre: '5. Metas a Largo Plazo, Valores y Propósito', desc: 'Actividades conectadas con tus valores trascendentes, aspiraciones y lo que le da sentido a tu vida.' }
+            { 
+                id: 'cuidado_personal', 
+                nombre: '1. Rutina de Cuidado Personal', 
+                desc: 'Hábitos de sueño, alimentación, ejercicio, higiene diaria y horarios de trabajo descidados.',
+                preguntas: [
+                    "¿Cuáles de estas rutinas se han interrumpido o han cambiado desde que experimentas este dolor emocional?",
+                    "(Ej. Rutinas de sueño, hábitos alimenticios, ejercicio, higiene diaria, horarios de trabajo).",
+                    "¿Qué actividades podrías empezar a realizar para retomar estos hábitos?"
+                ]
+            },
+            { 
+                id: 'disfrutaba_antes', 
+                nombre: '2. Actividades que Solías Disfrutar pero Has Dejado de Hacer', 
+                desc: 'Actividades gratificantes que constituían tu vida antes del dolor emocional o la depresión.',
+                preguntas: [
+                    "¿Qué actividades disfrutabas hacer antes de experimentar este dolor emocional?",
+                    "¿Me podrías ayudar a entender las actividades que constituían tu vida antes de deprimirte o caer preso de la depresión?",
+                    "¿Existen actividades que hayas dejado de hacer desde que te luxaste este tobillo emocional?"
+                ]
+            },
+            { 
+                id: 'nuevas_actividades', 
+                nombre: '3. Nuevas Actividades que Quieres Empezar a Hacer', 
+                desc: 'Nuevos comienzos, pasatiempos o hábitos que te gustaría iniciar en esta etapa.',
+                preguntas: [
+                    "Ahora que estás ante la posibilidad de un nuevo comienzo, ¿Qué tipo de cosas te gustaría empezar a hacer de nuevo?",
+                    "¿Qué estarías haciendo con tu vida si no temieras apoyar ese tobillo?"
+                ]
+            },
+            { 
+                id: 'evitando_realizar', 
+                nombre: '4. Actividades Evitadas o Pospuestas por Malestar', 
+                desc: 'Cosas que evitas o postergas con la intención de evadir el malestar o dolor emocional.',
+                preguntas: [
+                    "¿Te has notado evitando hacer cosas? Cuando te rindes, ¿de qué forma lo haces?",
+                    "¿Con qué frecuencia te notas evitando o posponiendo actividades?",
+                    "¿Hay cosas que te gustaría estar haciendo, pero se sienten demasiado difíciles o demasiado abrumadoras?",
+                    "¿Cómo compensas cuando te duele el tobillo?"
+                ]
+            },
+            { 
+                id: 'metas_largo_plazo', 
+                nombre: '5. Metas a Largo Plazo, Valores y Propósito', 
+                desc: 'Actividades conectadas con tus valores trascendentes, aspiraciones y lo que le da sentido a tu vida.',
+                preguntas: [
+                    "¿Qué metas a largo plazo son importantes para ti? ¿Qué es importante hacer en tu vida?",
+                    "¿Qué tipo de actividades le dan sentido a tu vida? ¿Qué te hacía sentir que tenías un propósito en ella?",
+                    "¿Qué es lo que más te importa? ¿Qué está en juego en tu vida en este momento?"
+                ]
+            }
         ];
 
         let pacienteActualId = null;
@@ -1228,11 +1490,12 @@
                 fechaInicio: fechaStr,
                 updatedAt: new Date().toISOString(),
                 notasClinicas: "",
-                modulosAsignados: ['monitoreo', 'jerarquia_actividades', 'identificacion_actividades'],
+                modulosAsignados: ['monitoreo', 'identificacion_actividades', 'jerarquia_actividades', 'programacion_actividades'],
                 jerarquiaBloqueada: false,
                 jerarquiaActividades: [],
                 identificacionBloqueada: false,
                 identificacionActividades: [],
+                programacionActividades: [],
                 semanas: { [fechaStr]: crearSemanaVacia() }
             };
 
@@ -1283,16 +1546,11 @@
             document.getElementById('detIdPaciente').innerText = p.id;
             document.getElementById('detNotasClinicas').value = p.notasClinicas || "";
 
-            const mods = p.modulosAsignados || ['monitoreo', 'jerarquia_actividades', 'identificacion_actividades'];
-            if (document.getElementById('chkModMonitoreo')) {
-                document.getElementById('chkModMonitoreo').checked = mods.includes('monitoreo');
-            }
-            if (document.getElementById('chkModJerarquia')) {
-                document.getElementById('chkModJerarquia').checked = mods.includes('jerarquia_actividades');
-            }
-            if (document.getElementById('chkModIdentificacion')) {
-                document.getElementById('chkModIdentificacion').checked = mods.includes('identificacion_actividades');
-            }
+            const mods = p.modulosAsignados || ['monitoreo', 'identificacion_actividades', 'jerarquia_actividades', 'programacion_actividades'];
+            if (document.getElementById('chkModMonitoreo')) document.getElementById('chkModMonitoreo').checked = mods.includes('monitoreo');
+            if (document.getElementById('chkModJerarquia')) document.getElementById('chkModJerarquia').checked = mods.includes('jerarquia_actividades');
+            if (document.getElementById('chkModIdentificacion')) document.getElementById('chkModIdentificacion').checked = mods.includes('identificacion_actividades');
+            if (document.getElementById('chkModProgramacion')) document.getElementById('chkModProgramacion').checked = mods.includes('programacion_actividades');
 
             const selectSem = document.getElementById('selectSemanaTerapeuta');
             selectSem.innerHTML = '';
@@ -1328,6 +1586,8 @@
                 renderJerarquiaTerapeuta(p);
             } else if (tareaSeleccionada === 'identificacion_actividades') {
                 renderIdentificacionTerapeuta(p);
+            } else if (tareaSeleccionada === 'programacion_actividades') {
+                renderProgramacionTerapeuta(p);
             }
         }
 
@@ -1352,9 +1612,6 @@
         }
 
         function actualizarSeleccionUI() {
-            const cardAC = document.getElementById('cardTerapiaAC');
-            const iconAC = document.getElementById('iconCheckAC');
-            
             const cardMon = document.getElementById('cardTareaMonitoreo');
             const iconMon = document.getElementById('iconCheckTareaMonitoreo');
 
@@ -1364,40 +1621,52 @@
             const cardIde = document.getElementById('cardTareaIdentificacion');
             const iconIde = document.getElementById('iconCheckTareaIdentificacion');
 
+            const cardPrg = document.getElementById('cardTareaProgramacion');
+            const iconPrg = document.getElementById('iconCheckTareaProgramacion');
+
             const secMon = document.getElementById('secDesgloseTarea');
             const secJer = document.getElementById('secDesgloseJerarquia');
             const secIde = document.getElementById('secDesgloseIdentificacion');
+            const secPrg = document.getElementById('secDesgloseProgramacion');
             const msgVacio = document.getElementById('mensajeSinTareaSeleccionada');
             const ctrlSemanas = document.getElementById('containerControlBloqueSemanal');
 
             // Reset Cards
-            cardMon.className = "cursor-pointer p-3.5 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-slate-200 hover:border-cyan-400";
+            cardMon.className = "cursor-pointer p-3 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-slate-200 hover:border-cyan-400";
             iconMon.className = "fa-regular fa-circle text-slate-300 text-sm";
-            cardJer.className = "cursor-pointer p-3.5 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-slate-200 hover:border-cyan-400";
+            cardJer.className = "cursor-pointer p-3 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-slate-200 hover:border-cyan-400";
             iconJer.className = "fa-regular fa-circle text-slate-300 text-sm";
-            cardIde.className = "cursor-pointer p-3.5 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-slate-200 hover:border-cyan-400";
+            cardIde.className = "cursor-pointer p-3 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-slate-200 hover:border-cyan-400";
             iconIde.className = "fa-regular fa-circle text-slate-300 text-sm";
+            cardPrg.className = "cursor-pointer p-3 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-slate-200 hover:border-cyan-400";
+            iconPrg.className = "fa-regular fa-circle text-slate-300 text-sm";
 
             secMon.classList.add('hidden');
             secJer.classList.add('hidden');
             secIde.classList.add('hidden');
+            secPrg.classList.add('hidden');
             ctrlSemanas.classList.add('hidden');
 
             if (tareaSeleccionada === 'monitoreo') {
-                cardMon.className = "cursor-pointer p-3.5 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-cyan-600 ring-2 ring-cyan-600/30";
+                cardMon.className = "cursor-pointer p-3 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-cyan-600 ring-2 ring-cyan-600/30";
                 iconMon.className = "fa-solid fa-circle-check text-cyan-600 text-sm";
                 secMon.classList.remove('hidden');
                 msgVacio.classList.add('hidden');
                 ctrlSemanas.classList.remove('hidden'); // SOLAMENTE VISIBLE EN MONITOREO
             } else if (tareaSeleccionada === 'jerarquia_actividades') {
-                cardJer.className = "cursor-pointer p-3.5 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-cyan-600 ring-2 ring-cyan-600/30";
+                cardJer.className = "cursor-pointer p-3 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-cyan-600 ring-2 ring-cyan-600/30";
                 iconJer.className = "fa-solid fa-circle-check text-cyan-600 text-sm";
                 secJer.classList.remove('hidden');
                 msgVacio.classList.add('hidden');
             } else if (tareaSeleccionada === 'identificacion_actividades') {
-                cardIde.className = "cursor-pointer p-3.5 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-cyan-600 ring-2 ring-cyan-600/30";
+                cardIde.className = "cursor-pointer p-3 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-cyan-600 ring-2 ring-cyan-600/30";
                 iconIde.className = "fa-solid fa-circle-check text-cyan-600 text-sm";
                 secIde.classList.remove('hidden');
+                msgVacio.classList.add('hidden');
+            } else if (tareaSeleccionada === 'programacion_actividades') {
+                cardPrg.className = "cursor-pointer p-3 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-cyan-600 ring-2 ring-cyan-600/30";
+                iconPrg.className = "fa-solid fa-circle-check text-cyan-600 text-sm";
+                secPrg.classList.remove('hidden');
                 msgVacio.classList.add('hidden');
             } else {
                 msgVacio.classList.remove('hidden');
@@ -1465,7 +1734,7 @@
                     tr.innerHTML = `
                         <td class="p-3 text-center">
                             <span class="text-[10px] uppercase font-bold text-amber-900 bg-amber-200 border border-amber-400 px-2 py-0.5 rounded-full">
-                                <i class="fa-solid fa-plus mr-1"></i> Posterior
+                                <i class="fa-solid fa-plus mr-1"></i> Actividad Extra
                             </span>
                         </td>
                         <td class="p-3 font-bold text-slate-900 text-sm">${escapeHtml(item.actividad)}</td>
@@ -1503,6 +1772,20 @@
                 const block = document.createElement('div');
                 block.className = "border border-slate-200 rounded-xl overflow-hidden bg-slate-50/50";
                 
+                let preguntasHtml = '';
+                if (cat.preguntas && cat.preguntas.length > 0) {
+                    preguntasHtml = `
+                        <div class="p-3 bg-cyan-50/70 border-b border-cyan-200/80 text-xs text-cyan-950 space-y-1">
+                            <span class="font-bold uppercase text-[10px] text-cyan-800 tracking-wider flex items-center gap-1">
+                                <i class="fa-solid fa-circle-question text-cyan-700"></i> Preguntas Guía Terapéuticas:
+                            </span>
+                            <ul class="list-disc list-inside space-y-0.5 text-slate-700 text-[11px] font-medium">
+                                ${cat.preguntas.map(q => `<li>${q}</li>`).join('')}
+                            </ul>
+                        </div>
+                    `;
+                }
+
                 let filas = '';
                 if (itemsCat.length === 0) {
                     filas = `<tr><td colspan="2" class="p-3 text-center text-slate-400 text-xs">Sin actividades registradas en esta categoría.</td></tr>`;
@@ -1525,6 +1808,7 @@
                         </div>
                         <span class="text-[11px] font-bold bg-white text-slate-700 border border-slate-300 px-2.5 py-0.5 rounded-full shrink-0">${itemsCat.length} registradas</span>
                     </div>
+                    ${preguntasHtml}
                     <table class="w-full text-left border-collapse">
                         <tbody class="divide-y divide-slate-200">
                             ${filas}
@@ -1559,6 +1843,200 @@
                     tbodyA.appendChild(tr);
                 });
             }
+        }
+
+        // RENDERING TAREA PROGRAMACIÓN DE ACTIVIDADES EN TERAPEUTA (NUEVA)
+        function renderProgramacionTerapeuta(p) {
+            // Poblar Selector de Jerarquía
+            const selectJer = document.getElementById('progSelectJerarquia');
+            selectJer.innerHTML = '';
+
+            const jerarquiaItems = p.jerarquiaActividades || [];
+            if (jerarquiaItems.length === 0) {
+                selectJer.innerHTML = `<option value="">-- No hay actividades en la Jerarquía aún (Ingresa primero a la tarea Jerarquía) --</option>`;
+            } else {
+                selectJer.innerHTML = `<option value="">-- Selecciona una actividad de la Jerarquía --</option>`;
+
+                // Calcular rangos jerárquicos para las principales
+                const principales = jerarquiaItems.filter(x => !x.esAdicional);
+                const principalesAsc = [...principales].sort((a, b) => parseFloat(a.importancia) - parseFloat(b.importancia));
+                principalesAsc.forEach((item, idx) => {
+                    item.rankJerarquia = idx + 1;
+                });
+
+                jerarquiaItems.forEach(item => {
+                    const opt = document.createElement('option');
+                    opt.value = item.id;
+                    if (item.esAdicional) {
+                        opt.innerText = `[ACTIVIDAD EXTRA] ${item.actividad} (Imp: ${item.importancia}/15)`;
+                    } else {
+                        opt.innerText = `[JERARQUÍA #${item.rankJerarquia || '?'}] ${item.actividad} (Imp: ${item.importancia}/15)`;
+                    }
+                    selectJer.appendChild(opt);
+                });
+            }
+
+            // Renderizar Lista de Actividades Programadas
+            const container = document.getElementById('containerProgramadasTerapeuta');
+            container.innerHTML = '';
+
+            const programadas = p.programacionActividades || [];
+            document.getElementById('cantActividadesProgramadas').innerText = `${programadas.length} programadas`;
+
+            if (programadas.length === 0) {
+                container.innerHTML = `<div class="p-6 text-center text-slate-400 bg-slate-50 border border-dashed border-slate-300 rounded-2xl text-xs">Aún no se han programado actividades para este paciente. Completa el formulario de arriba para agregar una.</div>`;
+                return;
+            }
+
+            programadas.forEach((prg, idx) => {
+                const jerItem = (p.jerarquiaActividades || []).find(x => x.id === prg.actividadJerarquiaId) || {};
+                const esExtra = jerItem.esAdicional || false;
+
+                const card = document.createElement('div');
+                card.className = "bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4 hover:border-cyan-500 transition";
+
+                let badgeJer = '';
+                if (esExtra) {
+                    badgeJer = `<span class="bg-amber-100 text-amber-900 border border-amber-300 text-[11px] font-black px-2.5 py-1 rounded-lg flex items-center gap-1"><i class="fa-solid fa-star text-amber-600"></i> ACTIVIDAD EXTRA</span>`;
+                } else if (jerItem.rankJerarquia) {
+                    badgeJer = `<span class="bg-cyan-100 text-cyan-900 border border-cyan-300 text-[11px] font-black px-2.5 py-1 rounded-lg">JERARQUÍA #${jerItem.rankJerarquia}</span>`;
+                } else {
+                    badgeJer = `<span class="bg-slate-100 text-slate-700 border border-slate-300 text-[11px] font-bold px-2 py-0.5 rounded-lg">Jerarquía Base</span>`;
+                }
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-start border-b border-slate-200 pb-3 gap-3">
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                ${badgeJer}
+                                <span class="text-xs font-bold text-slate-500"><i class="fa-solid fa-bullseye text-cyan-700 mr-1"></i>Área: ${escapeHtml(prg.areaActivacion)}</span>
+                            </div>
+                            <h4 class="font-extrabold text-slate-900 text-base">${escapeHtml(jerItem.actividad || 'Actividad Terapéutica')}</h4>
+                            <p class="text-xs text-cyan-800 font-semibold mt-0.5"><strong>¿Por qué es importante?:</strong> ${escapeHtml(prg.importanciaPorQue)}</p>
+                        </div>
+                        <div class="flex items-center space-x-2 no-print shrink-0">
+                            <button onclick="editarProgramacionActividad(${idx})" class="text-xs bg-cyan-50 hover:bg-cyan-100 text-cyan-800 border border-cyan-200 px-3 py-1.5 rounded-lg font-bold transition flex items-center gap-1">
+                                <i class="fa-solid fa-pen"></i> Editar
+                            </button>
+                            <button onclick="eliminarProgramacionActividad(${idx})" class="text-xs bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 px-3 py-1.5 rounded-lg font-bold transition flex items-center gap-1">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                            <span class="font-bold text-slate-700 uppercase block text-[10px] mb-0.5">Acción Concreta:</span>
+                            <span class="text-slate-900 font-semibold">${escapeHtml(prg.accionConcreta)}</span>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                            <span class="font-bold text-slate-700 uppercase block text-[10px] mb-0.5">Cuándo, Hora y Duración:</span>
+                            <span class="text-slate-900 font-semibold">${escapeHtml(prg.cuandoDia)} a las ${escapeHtml(prg.hora)} (${escapeHtml(prg.duracion)})</span>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                            <span class="font-bold text-slate-700 uppercase block text-[10px] mb-0.5">Dónde y Necesidades:</span>
+                            <span class="text-slate-900 font-semibold">${escapeHtml(prg.donde)} | Req: ${escapeHtml(prg.queNecesito)}</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs pt-1">
+                        <div class="bg-emerald-50/60 p-3 rounded-xl border border-emerald-200">
+                            <span class="font-bold text-emerald-900 uppercase block text-[10px] mb-0.5">Confianza / Capacidad:</span>
+                            <span class="text-emerald-950 font-extrabold text-sm">${prg.capacidadPorcentaje || 0}% de capacidad percibida</span>
+                        </div>
+                        <div class="bg-amber-50/60 p-3 rounded-xl border border-amber-200">
+                            <span class="font-bold text-amber-900 uppercase block text-[10px] mb-0.5">Posible Obstáculo:</span>
+                            <span class="text-amber-950 font-medium">${escapeHtml(prg.obstaculo)}</span>
+                        </div>
+                        <div class="bg-cyan-50/60 p-3 rounded-xl border border-cyan-200">
+                            <span class="font-bold text-cyan-900 uppercase block text-[10px] mb-0.5">Estrategia para Afrontar Obstáculo:</span>
+                            <span class="text-cyan-950 font-medium">${escapeHtml(prg.comoLibrar)}</span>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function guardarProgramacionActividad(e) {
+            e.preventDefault();
+            const editIdx = parseInt(document.getElementById('progEditIndex').value);
+            const jerId = document.getElementById('progSelectJerarquia').value;
+
+            if (!jerId) {
+                alert("Por favor selecciona una actividad base de la jerarquía.");
+                return;
+            }
+
+            const nuevaPrg = {
+                id: 'prg_' + Math.random().toString(36).substr(2, 9),
+                actividadJerarquiaId: jerId,
+                areaActivacion: document.getElementById('progAreaActivacion').value.trim(),
+                importanciaPorQue: document.getElementById('progImportanciaPorQue').value.trim(),
+                accionConcreta: document.getElementById('progAccionConcreta').value.trim(),
+                cuandoDia: document.getElementById('progCuando').value.trim(),
+                hora: document.getElementById('progHora').value.trim(),
+                duracion: document.getElementById('progDuracion').value.trim(),
+                donde: document.getElementById('progDonde').value.trim(),
+                queNecesito: document.getElementById('progQueNecesito').value.trim(),
+                capacidadPorcentaje: parseInt(document.getElementById('progCapacidad').value),
+                obstaculo: document.getElementById('progObstaculo').value.trim(),
+                comoLibrar: document.getElementById('progComoLibrar').value.trim()
+            };
+
+            if (!pacienteData.programacionActividades) pacienteData.programacionActividades = [];
+
+            if (editIdx >= 0 && editIdx < pacienteData.programacionActividades.length) {
+                pacienteData.programacionActividades[editIdx] = nuevaPrg;
+            } else {
+                pacienteData.programacionActividades.push(nuevaPrg);
+            }
+
+            cancelarEdicionProgramacion();
+            sincronizarGarantizado();
+            renderProgramacionTerapeuta(pacienteData);
+        }
+
+        function editarProgramacionActividad(idx) {
+            const prg = (pacienteData.programacionActividades || [])[idx];
+            if (!prg) return;
+
+            document.getElementById('progEditIndex').value = idx;
+            document.getElementById('progSelectJerarquia').value = prg.actividadJerarquiaId || '';
+            document.getElementById('progAreaActivacion').value = prg.areaActivacion || '';
+            document.getElementById('progImportanciaPorQue').value = prg.importanciaPorQue || '';
+            document.getElementById('progAccionConcreta').value = prg.accionConcreta || '';
+            document.getElementById('progCuando').value = prg.cuandoDia || '';
+            document.getElementById('progHora').value = prg.hora || '';
+            document.getElementById('progDuracion').value = prg.duracion || '';
+            document.getElementById('progDonde').value = prg.donde || '';
+            document.getElementById('progQueNecesito').value = prg.queNecesito || '';
+            document.getElementById('progCapacidad').value = prg.capacidadPorcentaje || 80;
+            document.getElementById('displayCapacidadVal').innerText = (prg.capacidadPorcentaje || 80) + '%';
+            document.getElementById('progObstaculo').value = prg.obstaculo || '';
+            document.getElementById('progComoLibrar').value = prg.comoLibrar || '';
+
+            document.getElementById('formProgTitulo').innerText = "Editar Actividad Programada";
+            document.getElementById('btnGuardarProgText').innerText = "Actualizar Programación";
+            document.getElementById('btnCancelarEditProg').classList.remove('hidden');
+
+            window.scrollTo({ top: document.getElementById('secDesgloseProgramacion').offsetTop - 20, behavior: 'smooth' });
+        }
+
+        function cancelarEdicionProgramacion() {
+            document.getElementById('progEditIndex').value = "-1";
+            document.getElementById('formProgramacionTerapeuta').reset();
+            document.getElementById('displayCapacidadVal').innerText = "80%";
+            document.getElementById('formProgTitulo').innerText = "Programar Nueva Actividad";
+            document.getElementById('btnGuardarProgText').innerText = "Guardar Programación";
+            document.getElementById('btnCancelarEditProg').classList.add('hidden');
+        }
+
+        function eliminarProgramacionActividad(idx) {
+            if (!confirm("¿Estás seguro de eliminar esta actividad programada?")) return;
+            (pacienteData.programacionActividades || []).splice(idx, 1);
+            sincronizarGarantizado();
+            renderProgramacionTerapeuta(pacienteData);
         }
 
         function toggleBloqueoJerarquia() {
@@ -1658,7 +2136,7 @@
         }
 
         async function toggleModuloAsignado(modKey) {
-            if (!pacienteData.modulosAsignados) pacienteData.modulosAsignados = ['monitoreo', 'jerarquia_actividades', 'identificacion_actividades'];
+            if (!pacienteData.modulosAsignados) pacienteData.modulosAsignados = ['monitoreo', 'identificacion_actividades', 'jerarquia_actividades', 'programacion_actividades'];
             const idx = pacienteData.modulosAsignados.indexOf(modKey);
             if (idx === -1) pacienteData.modulosAsignados.push(modKey);
             else pacienteData.modulosAsignados.splice(idx, 1);
@@ -1921,6 +2399,8 @@
                             renderJerarquiaPaciente();
                         } else if (!modoPacienteGuardando && !document.getElementById('secPacienteFormIdentificacion').classList.contains('hidden')) {
                             renderIdentificacionPaciente();
+                        } else if (!modoPacienteGuardando && !document.getElementById('secPacienteFormProgramacion').classList.contains('hidden')) {
+                            renderProgramacionPaciente();
                         } else if (!modoPacienteGuardando) {
                             mostrarDashboardPaciente();
                         }
@@ -1949,10 +2429,11 @@
 
             poblarSelectoresSemanaPaciente();
 
-            const mods = pacienteData.modulosAsignados || ['monitoreo', 'jerarquia_actividades', 'identificacion_actividades'];
+            const mods = pacienteData.modulosAsignados || ['monitoreo', 'identificacion_actividades', 'jerarquia_actividades', 'programacion_actividades'];
             document.getElementById('cardModMonitoreo').style.display = mods.includes('monitoreo') ? 'flex' : 'none';
             document.getElementById('cardModJerarquia').style.display = mods.includes('jerarquia_actividades') ? 'flex' : 'none';
             document.getElementById('cardModIdentificacion').style.display = mods.includes('identificacion_actividades') ? 'flex' : 'none';
+            document.getElementById('cardModProgramacion').style.display = mods.includes('programacion_actividades') ? 'flex' : 'none';
         }
 
         function poblarSelectoresSemanaPaciente() {
@@ -2003,6 +2484,12 @@
             renderIdentificacionPaciente();
         }
 
+        function abrirModuloProgramacionPaciente() {
+            ocultarTodasLasSecciones();
+            document.getElementById('secPacienteFormProgramacion').classList.remove('hidden');
+            renderProgramacionPaciente();
+        }
+
         function volverDashboardPaciente() {
             if (pacienteData && pacienteActualId) {
                 mostrarDashboardPaciente();
@@ -2051,7 +2538,7 @@
                     </td>
                     <td class="p-3 font-bold text-slate-900 text-xs">
                         ${escapeHtml(item.actividad)}
-                        ${item.esAdicional ? '<span class="ml-2 text-[9px] bg-amber-100 text-amber-800 border border-amber-300 px-1.5 py-0.5 rounded font-bold">Adicional</span>' : ''}
+                        ${item.esAdicional ? '<span class="ml-2 text-[9px] bg-amber-100 text-amber-800 border border-amber-300 px-1.5 py-0.5 rounded font-bold">Actividad Extra</span>' : ''}
                     </td>
                     <td class="p-3 text-center font-extrabold text-xs text-emerald-800">
                         <span class="bg-emerald-50 border border-emerald-300 px-2.5 py-1 rounded-lg">${item.importancia} / 15</span>
@@ -2119,8 +2606,22 @@
                 const itemsCat = items.filter(x => x.categoria === cat.id);
                 
                 const card = document.createElement('div');
-                card.className = "bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3";
-                
+                card.className = "bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4";
+
+                let preguntasHtml = '';
+                if (cat.preguntas && cat.preguntas.length > 0) {
+                    preguntasHtml = `
+                        <div class="p-3.5 bg-cyan-50/70 border border-cyan-200 rounded-xl text-xs text-cyan-950 space-y-1">
+                            <span class="font-bold uppercase text-[10px] text-cyan-800 tracking-wider flex items-center gap-1.5">
+                                <i class="fa-solid fa-lightbulb text-amber-500"></i> Preguntas para Guiarte:
+                            </span>
+                            <ul class="list-disc list-inside space-y-1 text-slate-700 text-xs font-medium">
+                                ${cat.preguntas.map(q => `<li>${q}</li>`).join('')}
+                            </ul>
+                        </div>
+                    `;
+                }
+
                 let htmlItems = '';
                 if (itemsCat.length === 0) {
                     htmlItems = `<div class="p-4 text-center text-slate-400 text-xs bg-slate-50 rounded-xl border border-dashed border-slate-200">No has registrado actividades en este eje aún.</div>`;
@@ -2139,7 +2640,7 @@
                                     <span class="font-bold text-slate-900 text-xs block">${escapeHtml(item.actividad)}</span>
                                     <div class="flex items-center gap-2 text-[10px] text-slate-500">
                                         <span><i class="fa-regular fa-clock mr-1"></i>${item.fecha || '--'}</span>
-                                        ${item.esAdicional ? '<span class="bg-amber-100 text-amber-800 border border-amber-300 px-1.5 rounded font-bold">Adicional</span>' : ''}
+                                        ${item.esAdicional ? '<span class="bg-amber-100 text-amber-800 border border-amber-300 px-1.5 rounded font-bold">Actividad Extra</span>' : ''}
                                     </div>
                                 </div>
                                 <div class="no-print">${deleteBtn}</div>
@@ -2159,6 +2660,7 @@
                         </div>
                         <span class="text-xs bg-cyan-50 text-cyan-800 border border-cyan-200 px-2.5 py-0.5 rounded-full font-bold shrink-0">${itemsCat.length}</span>
                     </div>
+                    ${preguntasHtml}
                     ${htmlItems}
                 `;
                 container.appendChild(card);
@@ -2201,6 +2703,79 @@
             pacienteData.identificacionActividades = (pacienteData.identificacionActividades || []).filter(item => item.id !== id);
             sincronizarGarantizado();
             renderIdentificacionPaciente();
+        }
+
+        // LÓGICA DE PACIENTE PARA PROGRAMACIÓN DE ACTIVIDADES (SOLO LECTURA) (NUEVA)
+        function renderProgramacionPaciente() {
+            const container = document.getElementById('containerProgramadasPaciente');
+            container.innerHTML = '';
+
+            const programadas = pacienteData.programacionActividades || [];
+
+            if (programadas.length === 0) {
+                container.innerHTML = `<div class="p-8 text-center text-slate-400 bg-slate-50 border border-dashed border-slate-300 rounded-2xl text-xs">Aún no tienes actividades programadas por tu terapeuta. Tan pronto las configuren en consulta aparecerán listadas aquí.</div>`;
+                return;
+            }
+
+            programadas.forEach((prg) => {
+                const jerItem = (pacienteData.jerarquiaActividades || []).find(x => x.id === prg.actividadJerarquiaId) || {};
+                const esExtra = jerItem.esAdicional || false;
+
+                const card = document.createElement('div');
+                card.className = "bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4";
+
+                let badgeJer = '';
+                if (esExtra) {
+                    badgeJer = `<span class="bg-amber-100 text-amber-900 border border-amber-300 text-[11px] font-black px-2.5 py-1 rounded-lg flex items-center gap-1"><i class="fa-solid fa-star text-amber-600"></i> ACTIVIDAD EXTRA</span>`;
+                } else if (jerItem.rankJerarquia) {
+                    badgeJer = `<span class="bg-cyan-100 text-cyan-900 border border-cyan-300 text-[11px] font-black px-2.5 py-1 rounded-lg">JERARQUÍA #${jerItem.rankJerarquia}</span>`;
+                } else {
+                    badgeJer = `<span class="bg-slate-100 text-slate-700 border border-slate-300 text-[11px] font-bold px-2 py-0.5 rounded-lg">Jerarquía Base</span>`;
+                }
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-start border-b border-slate-200 pb-3 gap-3">
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                ${badgeJer}
+                                <span class="text-xs font-bold text-slate-500"><i class="fa-solid fa-bullseye text-cyan-700 mr-1"></i>Área: ${escapeHtml(prg.areaActivacion)}</span>
+                            </div>
+                            <h4 class="font-extrabold text-slate-900 text-lg">${escapeHtml(jerItem.actividad || 'Actividad Terapéutica')}</h4>
+                            <p class="text-xs text-cyan-800 font-semibold mt-0.5"><strong>¿Por qué es importante para mí?:</strong> ${escapeHtml(prg.importanciaPorQue)}</p>
+                        </div>
+                        <span class="text-xs bg-emerald-100 text-emerald-800 border border-emerald-300 px-3 py-1 rounded-full font-bold shrink-0">
+                            Capacidad: ${prg.capacidadPorcentaje || 0}%
+                        </span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                            <span class="font-bold text-slate-700 uppercase block text-[10px] mb-0.5">Acción Concreta a realizar:</span>
+                            <span class="text-slate-900 font-semibold">${escapeHtml(prg.accionConcreta)}</span>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                            <span class="font-bold text-slate-700 uppercase block text-[10px] mb-0.5">Cuándo, Hora y Tiempo:</span>
+                            <span class="text-slate-900 font-semibold">${escapeHtml(prg.cuandoDia)} a las ${escapeHtml(prg.hora)} (${escapeHtml(prg.duracion)})</span>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                            <span class="font-bold text-slate-700 uppercase block text-[10px] mb-0.5">Lugar y Recursos Necesarios:</span>
+                            <span class="text-slate-900 font-semibold">${escapeHtml(prg.donde)} | Req: ${escapeHtml(prg.queNecesito)}</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs pt-1">
+                        <div class="bg-amber-50/60 p-3 rounded-xl border border-amber-200">
+                            <span class="font-bold text-amber-900 uppercase block text-[10px] mb-0.5"><i class="fa-solid fa-triangle-exclamation text-amber-600 mr-1"></i>Posible Obstáculo:</span>
+                            <span class="text-amber-950 font-medium">${escapeHtml(prg.obstaculo)}</span>
+                        </div>
+                        <div class="bg-cyan-50/60 p-3 rounded-xl border border-cyan-200">
+                            <span class="font-bold text-cyan-900 uppercase block text-[10px] mb-0.5"><i class="fa-solid fa-shield-halved text-cyan-600 mr-1"></i>Estrategia para Librarlo:</span>
+                            <span class="text-cyan-950 font-medium">${escapeHtml(prg.comoLibrar)}</span>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
         }
 
         // LÓGICA DE PACIENTE PARA MONITOREO DIARIO
@@ -2410,7 +2985,7 @@
                 htmlLimpio += `
                     <div class="bg-white p-4 rounded-xl border border-slate-300 mb-4">
                         <h4 class="font-bold text-xs uppercase text-slate-900 mb-1">${cat.nombre}</h4>
-                        <p class="text-[10px] text-slate-500 mb-3">${cat.desc}</p>
+                        <p class="text-[10px] text-slate-500 mb-2">${cat.desc}</p>
                         <div class="space-y-2 text-xs text-slate-300">
                             <div>1. ____________________________________________________________________________________</div>
                             <div>2. ____________________________________________________________________________________</div>
@@ -2429,6 +3004,57 @@
             if (containerT) containerT.innerHTML = prevT;
         }
 
+        function imprimirProgramacionLimpia() {
+            const containerP = document.getElementById('containerProgramadasPaciente');
+            const containerT = document.getElementById('containerProgramadasTerapeuta');
+            const prevP = containerP ? containerP.innerHTML : '';
+            const prevT = containerT ? containerT.innerHTML : '';
+
+            let htmlLimpio = `
+                <div class="space-y-4">
+                    <h3 class="font-bold text-sm uppercase text-slate-900 border-b border-slate-300 pb-2">Plantilla de Programación de Actividades (Formato Oficial)</h3>
+                    <table class="w-full text-left text-xs border border-slate-300 border-collapse">
+                        <thead class="bg-slate-100 text-slate-800 font-bold border-b border-slate-300">
+                            <tr>
+                                <th class="p-2 border border-slate-300">N° Actividad (Jerarquía)</th>
+                                <th class="p-2 border border-slate-300">¿A qué me quiero acercar esta semana?</th>
+                                <th class="p-2 border border-slate-300">¿Por qué es importante para mí?</th>
+                                <th class="p-2 border border-slate-300">¿Qué es lo que tengo que hacer? (Acción Concreta)</th>
+                                <th class="p-2 border border-slate-300">¿Cuándo, hora y tiempo?</th>
+                                <th class="p-2 border border-slate-300">¿Dónde y qué necesito?</th>
+                                <th class="p-2 border border-slate-300">¿Capacidad? (0-100)</th>
+                                <th class="p-2 border border-slate-300">Obstáculo y solución</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            for (let i = 1; i <= 5; i++) {
+                htmlLimpio += `
+                    <tr>
+                        <td class="p-3 border border-slate-300 text-center font-bold text-slate-400">#_____</td>
+                        <td class="p-3 border border-slate-300 text-slate-300">__________________</td>
+                        <td class="p-3 border border-slate-300 text-slate-300">__________________</td>
+                        <td class="p-3 border border-slate-300 text-slate-300">__________________</td>
+                        <td class="p-3 border border-slate-300 text-slate-300">__________________</td>
+                        <td class="p-3 border border-slate-300 text-slate-300">__________________</td>
+                        <td class="p-3 border border-slate-300 text-slate-300 font-bold text-center">____%</td>
+                        <td class="p-3 border border-slate-300 text-slate-300">__________________</td>
+                    </tr>
+                `;
+            }
+
+            htmlLimpio += `</tbody></table></div>`;
+
+            if (containerP) containerP.innerHTML = htmlLimpio;
+            if (containerT) containerT.innerHTML = htmlLimpio;
+
+            window.print();
+
+            if (containerP) containerP.innerHTML = prevP;
+            if (containerT) containerT.innerHTML = prevT;
+        }
+
         function ocultarTodasLasSecciones() {
             document.getElementById('secLoginTerapeuta').classList.add('hidden');
             document.getElementById('secPanelTerapeuta').classList.add('hidden');
@@ -2437,6 +3063,7 @@
             document.getElementById('secPacienteFormMonitoreo').classList.add('hidden');
             document.getElementById('secPacienteFormJerarquia').classList.add('hidden');
             document.getElementById('secPacienteFormIdentificacion').classList.add('hidden');
+            document.getElementById('secPacienteFormProgramacion').classList.add('hidden');
         }
 
         function crearSemanaVacia() {
@@ -2458,13 +3085,119 @@
                 fechaInicio: '2026-10-26',
                 updatedAt: new Date().toISOString(),
                 notasClinicas: 'Paciente en monitoreo activo.',
-                modulosAsignados: ['monitoreo', 'jerarquia_actividades', 'identificacion_actividades'],
+                modulosAsignados: ['monitoreo', 'identificacion_actividades', 'jerarquia_actividades', 'programacion_actividades'],
                 jerarquiaBloqueada: false,
                 jerarquiaActividades: [],
                 identificacionBloqueada: false,
                 identificacionActividades: [],
+                programacionActividades: [],
                 semanas: { '2026-10-26': crearSemanaVacia() }
             }];
+        }
+
+        // LÓGICA DE RESPALDO Y RESTAURACIÓN DE DATOS (BACKUP JSON)
+        async function exportarBackupJSON() {
+            let datosAExportar = [];
+            if (firebaseActivo) {
+                try {
+                    const snapshot = await db.collection('pacientes').get();
+                    snapshot.forEach(doc => datosAExportar.push({ id: doc.id, ...doc.data() }));
+                } catch (e) {
+                    console.error("Error obteniendo datos de Firebase para Backup:", e);
+                    datosAExportar = pacientesCache;
+                }
+            } else {
+                datosAExportar = JSON.parse(localStorage.getItem('demo_pacientes') || '[]');
+            }
+
+            if (datosAExportar.length === 0) {
+                alert("No hay ningún paciente ni dato registrado actualmente para respaldar.");
+                return;
+            }
+
+            const backupObj = {
+                version: "2.0",
+                fechaExportacion: new Date().toISOString(),
+                terapeuta: "Oscar Steven Rodriguez Bustos",
+                totalPacientes: datosAExportar.length,
+                pacientes: datosAExportar
+            };
+
+            const jsonStr = JSON.stringify(backupObj, null, 2);
+            const blob = new Blob([jsonStr], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            
+            const now = new Date();
+            const fechaNom = `${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}_${String(now.getHours()).padStart(2,'0')}${String(now.getMinutes()).padStart(2,'0')}`;
+            const fileName = `Backup_Plataforma_Terapeutica_${fechaNom}.json`;
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            alert(`¡Copia de seguridad descargada exitosamente!\n\nArchivo: ${fileName}\nContiene ${datosAExportar.length} paciente(s) con todo su historial.`);
+        }
+
+        function importarBackupJSON(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = async function(event) {
+                try {
+                    const parsed = JSON.parse(event.target.result);
+                    let listaPacientes = [];
+
+                    if (Array.isArray(parsed)) {
+                        listaPacientes = parsed;
+                    } else if (parsed && Array.isArray(parsed.pacientes)) {
+                        listaPacientes = parsed.pacientes;
+                    } else {
+                        alert("El archivo subido no tiene una estructura de backup válida.");
+                        return;
+                    }
+
+                    if (listaPacientes.length === 0) {
+                        alert("El archivo de backup está vacío o no contiene pacientes válidos.");
+                        return;
+                    }
+
+                    const confirmacion = confirm(`⚠️ ¿Estás seguro de restaurar ${listaPacientes.length} paciente(s)?\n\nEsta acción sobrescribirá o actualizará los registros existentes en la base de datos con los datos de la copia de seguridad.`);
+                    if (!confirmacion) return;
+
+                    actualizarStatusSync("Restaurando...", "bg-amber-500");
+
+                    if (firebaseActivo) {
+                        for (const p of listaPacientes) {
+                            if (p.id) {
+                                await db.collection('pacientes').doc(p.id).set(p, { merge: true });
+                            }
+                        }
+                    }
+
+                    // Guardar también en almacenamiento local
+                    localStorage.setItem('demo_pacientes', JSON.stringify(listaPacientes));
+                    listaPacientes.forEach(p => {
+                        if (p.id) localStorage.setItem('backup_' + p.id, JSON.stringify(p));
+                    });
+
+                    alert(`¡Restauración completada con éxito!\nSe restauraron ${listaPacientes.length} paciente(s) en el sistema.`);
+                    
+                    // Recargar el directorio de pacientes
+                    cargarDashboardTerapeuta({ email: auth && auth.currentUser ? auth.currentUser.email : 'psicologoorodriguez@gmail.com' });
+
+                } catch (err) {
+                    console.error("Error al procesar el archivo JSON:", err);
+                    alert("Error al leer el archivo de copia de seguridad. Asegúrate de que sea un archivo JSON válido exportado previamente desde esta plataforma.");
+                } finally {
+                    e.target.value = ''; // Limpiar input file
+                }
+            };
+            reader.readAsText(file);
         }
 
         function escapeHtml(str) {
