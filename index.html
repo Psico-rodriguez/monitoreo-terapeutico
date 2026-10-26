@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plataforma Terapéutica - Monitoreo Diario</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+    <style>
+        @media print {
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+            body { background: white; color: black; font-size: 10pt; }
+        }
+        .print-only { display: none; }
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen">
+
+    <!-- BARRA SUPERIOR CON ESTADO EN TIEMPO REAL -->
+    <nav class="bg-indigo-700 text-white shadow-md no-print sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="volverDashboardPaciente()">
+                <i class="fa-solid fa-brain text-2xl text-indigo-200"></i>
+                <span class="font-bold text-lg tracking-wide">Plataforma Terapéutica</span>
+            </div>
+            <div id="navRight" class="flex items-center space-x-3">
+                <span id="syncBadge" class="hidden text-xs bg-indigo-800 text-indigo-100 px-3 py-1.5 rounded-full flex items-center gap-2 border border-indigo-500">
+                    <span id="syncDot" class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span id="syncText">En línea</span>
+                </span>
+                
+                <button id="btnTerapeutaLogin" onclick="mostrarLoginTerapeuta()" class="text-xs bg-indigo-600 hover:bg-indigo-500 px-3 py-1.5 rounded-lg transition border border-indigo-400 flex items-center gap-1.5">
+                    <i class="fa-solid fa-user-lock"></i> Acceso Terapeuta
+                </button>
+                
+                <div id="terapeutaHeaderInfo" class="hidden flex items-center space-x-3">
+                    <span class="text-xs text-indigo-100 hidden sm:inline" id="userEmailDisplay">terapeuta@ejemplo.com</span>
+                    <button onclick="cerrarSesionTerapeuta()" class="text-xs bg-rose-600 hover:bg-rose-700 text-white px-2.5 py-1 rounded transition">
+                        <i class="fa-solid fa-right-from-bracket mr-1"></i> Salir
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto p-4 md:p-6">
+
+        <!-- ALERTA CONFIGURACIÓN FIREBASE -->
+        <div id="firebaseAlert" class="mb-6 p-4 bg-amber-50 border-l-4 border-amber-500 text-amber-900 rounded-r shadow-sm text-sm">
+            <div class="flex items-start">
+                <i class="fa-solid fa-triangle-exclamation text-amber-600 text-xl mr-3 mt-0.5"></i>
+                <div>
+                    <h4 class="font-bold">Modo de Demostración Local (Firebase sin configurar)</h4>
+                    <p class="mt-0.5 text-xs">Para conectar a Firebase en Modo Producción, reemplaza el objeto <code>firebaseConfig</code> en este archivo HTML.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- VISTA 1: LOGIN TERAPEUTA -->
+        <section id="secLoginTerapeuta" class="hidden max-w-md mx-auto my-12 bg-white p-8 rounded-2xl shadow-xl border border-slate-200">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">
+                    <i class="fa-solid fa-user-shield"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-slate-800">Acceso Profesional</h2>
+                <p class="text-slate-500 text-sm">Ingresa con tu correo y contraseña</p>
+            </div>
+            <form id="formLogin" onsubmit="loginTerapeuta(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Correo Electrónico</label>
+                    <input type="email" id="loginEmail" required placeholder="terapeuta@clinica.com" class="w-full px-4 py-2.5 border rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Contraseña</label>
+                    <input type="password" id="loginPassword" required placeholder="••••••••" class="w-full px-4 py-2.5 border rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm">
+                </div>
+                <div id="loginError" class="hidden text-xs text-rose-600 bg-rose-50 p-2.5 rounded-lg border border-rose-200"></div>
+                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-xl transition shadow-md text-sm">
+                    Iniciar Sesión
+                </button>
+            </form>
+        </section>
+
+        <!-- VISTA 2: PANEL DEL TERAPEUTA -->
+        <section id="secPanelTerapeuta" class="hidden space-y-6">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-800"><i class="fa-solid fa-users text-indigo-600 mr-2"></i>Panel del Terapeuta</h1>
+                    <p class="text-slate-500 text-sm">Supervisión clínica en tiempo real y asignación de tareas por paciente.</p>
+                </div>
+                <button onclick="abrirModalNuevoPaciente()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-xl font-medium shadow-sm transition flex items-center gap-2 text-sm">
+                    <i class="fa-solid fa-user-plus"></i> Registrar Nuevo Paciente
+                </button>
+            </div>
+
+            <!-- TABLA DE PACIENTES -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
+                    <h3 class="font-bold text-slate-700 text-sm">Pacientes Activos</h3>
+                    <span id="cantPacientes" class="text-xs bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full font-bold">0 pacientes</span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100/70 text-slate-600 text-xs uppercase tracking-wider">
+                                <th class="p-4">Paciente</th>
+                                <th class="p-4">Bloque Semanal</th>
+                                <th class="p-4">Tareas Asignadas</th>
+                                <th class="p-4">Enlace del Paciente (Reenviar)</th>
+                                <th class="p-4 text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaPacientesBody" class="divide-y divide-slate-100 text-sm">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- FICHA DE SUPERVISIÓN EN TIEMPO REAL -->
+            <div id="detallePacienteCard" class="hidden bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-6">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b pb-4 gap-4">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs uppercase font-bold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-md">Ficha Clínica en Vivo</span>
+                            <span class="text-xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold animate-pulse"><i class="fa-solid fa-signal mr-1"></i>Tiempo Real</span>
+                        </div>
+                        <h2 id="detNombrePaciente" class="text-2xl font-bold text-slate-800 mt-1">Nombre Paciente</h2>
+                        <p id="detRangoSemana" class="text-slate-500 text-sm"><i class="fa-regular fa-calendar mr-1"></i> Bloque Semanal</p>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="exportarPDF()" class="bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 px-3.5 py-2 rounded-xl text-sm font-medium transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-file-pdf text-rose-500"></i> Descargar / Imprimir PDF
+                        </button>
+                        <button onclick="liberarEspacioPaciente()" class="bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 px-3.5 py-2 rounded-xl text-sm font-medium transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-trash-can"></i> Liberar Espacio (Borrar)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- CONFIGURACIÓN DE TAREAS VISIBLES -->
+                <div class="bg-indigo-50/50 border border-indigo-100 p-5 rounded-2xl space-y-3">
+                    <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-sliders text-indigo-600"></i> Asignación de Tareas y Módulos Visibles
+                    </h3>
+                    <p class="text-xs text-slate-500">Marca las tareas que deseas habilitar en la pantalla principal del paciente:</p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
+                        <label class="flex items-center p-3 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-indigo-300 transition">
+                            <input type="checkbox" id="chkModMonitoreo" onchange="toggleModuloAsignado('monitoreo')" class="w-4 h-4 text-indigo-600 rounded">
+                            <span class="ml-3 text-xs font-bold text-slate-700">1. Monitoreo Diario de Actividades</span>
+                        </label>
+                        <label class="flex items-center p-3 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-indigo-300 transition">
+                            <input type="checkbox" id="chkModPensamientos" onchange="toggleModuloAsignado('pensamientos')" class="w-4 h-4 text-indigo-600 rounded">
+                            <span class="ml-3 text-xs font-bold text-slate-700">2. Registro de Pensamientos (RPA)</span>
+                        </label>
+                        <label class="flex items-center p-3 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-indigo-300 transition">
+                            <input type="checkbox" id="chkModExposicion" onchange="toggleModuloAsignado('exposicion')" class="w-4 h-4 text-indigo-600 rounded">
+                            <span class="ml-3 text-xs font-bold text-slate-700">3. Jerarquía de Exposición (SUDs)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- MÉTRICAS CLÍNICAS -->
+                <div class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <span class="text-xs text-slate-500 font-semibold uppercase">Promedio Disfrute (D)</span>
+                            <div class="text-3xl font-extrabold text-indigo-600 mt-1" id="statAvgD">0.0 / 10</div>
+                            <p class="text-xs text-slate-400 mt-1">Placer / Gozo (0 a 10)</p>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <span class="text-xs text-slate-500 font-semibold uppercase">Promedio Importancia (I)</span>
+                            <div class="text-3xl font-extrabold text-emerald-600 mt-1" id="statAvgI">0.0 / 10</div>
+                            <p class="text-xs text-slate-400 mt-1">Valor / Sensación de logro (0 a 10)</p>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <span class="text-xs text-slate-500 font-semibold uppercase">Ánimo General Promedio</span>
+                            <div class="text-3xl font-extrabold text-amber-500 mt-1" id="statAvgAnimo">0.0 / 10</div>
+                            <p class="text-xs text-slate-400 mt-1">Evaluación global del día</p>
+                        </div>
+                    </div>
+
+                    <!-- GRÁFICO DE TENDENCIA -->
+                    <div class="bg-white p-4 rounded-xl border border-slate-200">
+                        <h4 class="font-bold text-slate-700 text-sm mb-3"><i class="fa-solid fa-chart-line text-indigo-500 mr-1"></i> Evolución Semanal de Disfrute, Importancia y Ánimo</h4>
+                        <div class="h-64">
+                            <canvas id="chartEvolucion"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- MATRIZ CLÍNICA 12 HORAS -->
+                    <div class="overflow-x-auto border rounded-xl">
+                        <table class="w-full text-xs text-center border-collapse" id="tablaSupervision">
+                            <thead class="bg-slate-100 text-slate-700 font-bold">
+                                <tr id="headerFechasSupervision">
+                                    <th class="p-2 border min-w-[100px]">HORA (12h)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bodySupervision" class="divide-y divide-slate-200">
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- NOTAS CLÍNICAS -->
+                    <div class="space-y-2">
+                        <label class="block text-sm font-bold text-slate-700"><i class="fa-solid fa-user-pen text-indigo-600 mr-1"></i> Observaciones Clínicas (Privado)</label>
+                        <textarea id="detNotasClinicas" rows="3" placeholder="Anota tus observaciones clínicas aquí..." class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-500 text-sm" onchange="guardarNotasClinicas()"></textarea>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VISTA 3: PORTAL DEL PACIENTE -->
+        <section id="secPacienteDashboard" class="hidden space-y-6">
+            <div class="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white p-6 sm:p-8 rounded-2xl shadow-md">
+                <span class="text-xs uppercase font-bold tracking-wider bg-white/20 px-3 py-1 rounded-full text-indigo-100">Portal de Tareas Terapéuticas</span>
+                <h1 class="text-2xl sm:text-3xl font-extrabold mt-2" id="pacienteBienvenidaNombre">¡Hola, Paciente! 👋</h1>
+                <p class="text-indigo-100 text-sm mt-1">A continuación encontrarás tus registros y tareas asignadas para esta semana.</p>
+                <div class="mt-4 flex items-center text-xs bg-white/10 w-fit px-3 py-1.5 rounded-lg border border-white/20">
+                    <i class="fa-regular fa-calendar mr-2"></i>
+                    <span id="pacienteRangoSemanaHeader">Semana activa</span>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <h2 class="font-bold text-slate-800 text-lg flex items-center gap-2">
+                    <i class="fa-solid fa-clipboard-check text-indigo-600"></i> Mis Tareas Asignadas
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div id="cardModMonitoreo" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition space-y-4">
+                        <div class="flex justify-between items-start">
+                            <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center text-xl font-bold">
+                                <i class="fa-regular fa-calendar-check"></i>
+                            </div>
+                            <span class="text-xs bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-full font-bold">Asignado</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-800 text-base">1. Monitoreo Diario de Actividades</h3>
+                            <p class="text-xs text-slate-500 mt-1">Registra tus actividades hora a hora (formato 12h) evaluando el Disfrute (D) e Importancia (I).</p>
+                        </div>
+                        <button onclick="abrirModuloMonitoreo()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-xl text-sm transition flex items-center justify-center gap-2">
+                            <span>Ingresar y Diligenciar</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                    <div id="cardModPensamientos" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition space-y-4">
+                        <div class="flex justify-between items-start">
+                            <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center text-xl font-bold">
+                                <i class="fa-solid fa-brain"></i>
+                            </div>
+                            <span class="text-xs bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-full font-bold">Asignado</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-800 text-base">2. Registro de Pensamientos (RPA)</h3>
+                            <p class="text-xs text-slate-500 mt-1">Anota situaciones, emociones y respuestas alternativas trabajadas en consulta.</p>
+                        </div>
+                        <button onclick="alert('Esta tarea está asignada. Sigue las indicaciones dadas por tu terapeuta en la sesión.')" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2.5 rounded-xl text-sm transition">
+                            <span>Ver Indicaciones</span>
+                        </button>
+                    </div>
+
+                    <div id="cardModExposicion" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition space-y-4">
+                        <div class="flex justify-between items-start">
+                            <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-xl font-bold">
+                                <i class="fa-solid fa-stairs"></i>
+                            </div>
+                            <span class="text-xs bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-full font-bold">Asignado</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-800 text-base">3. Jerarquía de Exposición (SUDs)</h3>
+                            <p class="text-xs text-slate-500 mt-1">Registra la escala de ansiedad (0-100) antes y después de cada ejercicio conductual.</p>
+                        </div>
+                        <button onclick="alert('Esta tarea está asignada. Sigue las indicaciones dadas por tu terapeuta en la sesión.')" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2.5 rounded-xl text-sm transition">
+                            <span>Ver Indicaciones</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VISTA 4: FORMULARIO PACIENTE -->
+        <section id="secPacienteFormMonitoreo" class="hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <button onclick="volverDashboardPaciente()" class="text-xs text-indigo-600 font-bold hover:underline mb-2 inline-flex items-center gap-1">
+                            <i class="fa-solid fa-arrow-left"></i> Volver a mis Tareas
+                        </button>
+                        <h1 class="text-2xl font-bold text-slate-800">Formulario de Monitoreo Diario</h1>
+                    </div>
+                    <div class="flex items-center space-x-2 bg-slate-100 p-1.5 rounded-xl border border-slate-200">
+                        <span id="labelBloqueSemanal" class="text-xs font-bold text-slate-700 px-3 py-1">Semana Activa</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2 text-xs">
+                    <div class="bg-indigo-50/70 border border-indigo-100 p-3 rounded-xl flex items-start gap-3">
+                        <div class="bg-indigo-600 text-white font-black rounded-lg w-7 h-7 flex items-center justify-center text-sm shrink-0">D</div>
+                        <div>
+                            <span class="font-bold text-indigo-900">D = Disfrute (0 a 10)</span>
+                            <p class="text-indigo-700 mt-0.5">Grado de placer, gusto o satisfacción experimentado al realizar la actividad.</p>
+                        </div>
+                    </div>
+                    <div class="bg-emerald-50/70 border border-emerald-100 p-3 rounded-xl flex items-start gap-3">
+                        <div class="bg-emerald-600 text-white font-black rounded-lg w-7 h-7 flex items-center justify-center text-sm shrink-0">I</div>
+                        <div>
+                            <span class="font-bold text-emerald-900">I = Importante (0 a 10)</span>
+                            <p class="text-emerald-700 mt-0.5">Grado de valor, logro, utilidad o importancia percibida en la actividad.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex overflow-x-auto space-x-2 pb-2 no-scrollbar" id="diasTabsContainer">
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="p-4 bg-slate-50 border-b flex justify-between items-center">
+                    <h3 class="font-bold text-slate-700 text-sm flex items-center gap-2">
+                        <i class="fa-regular fa-clock text-indigo-600"></i>
+                        <span id="diaActualNombre">Día de la semana</span>
+                    </h3>
+                    <span class="text-xs text-slate-400 font-medium" id="statusGuardadoText">Autoguardado activado</span>
+                </div>
+
+                <div class="divide-y divide-slate-100" id="listaHorasPaciente">
+                </div>
+
+                <div class="p-6 bg-slate-50 border-t border-slate-200 space-y-3">
+                    <div class="flex justify-between items-center">
+                        <label class="text-sm font-bold text-slate-700 flex items-center gap-2">
+                            <i class="fa-solid fa-face-smile text-amber-500 text-base"></i> Ánimo General del Día
+                        </label>
+                        <span id="animoValueDisplay" class="font-extrabold text-indigo-600 text-base">5 / 10</span>
+                    </div>
+                    <input type="range" id="inputAnimoDia" min="0" max="10" step="1" value="5" class="w-full accent-indigo-600 cursor-pointer" oninput="actualizarAnimoDia(this.value)">
+                    <div class="flex justify-between text-xs text-slate-400 font-semibold px-1">
+                        <span>0 (Muy Bajo)</span>
+                        <span>5 (Neutral)</span>
+                        <span>10 (Excelente)</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MODAL NUEVO PACIENTE -->
+    <div id="modalNuevoPaciente" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 space-y-4">
+            <h3 class="text-lg font-bold text-slate-800">Registrar Nuevo Paciente</h3>
+            <form onsubmit="crearPaciente(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Nombre Completo del Paciente</label>
+                    <input type="text" id="nuevoNombrePaciente" required placeholder="Ej. Ana María Gómez" class="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Fecha de Inicio de Monitoreo</label>
+                    <input type="date" id="nuevaFechaInicio" required class="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm">
+                </div>
+                <div class="flex justify-end space-x-3 pt-2">
+                    <button type="button" onclick="cerrarModalNuevoPaciente()" class="px-4 py-2 text-slate-600 text-sm font-medium hover:bg-slate-100 rounded-xl">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 bg-indigo-600 text-white text-sm font-semibold rounded-xl hover:bg-indigo-700">Crear y Generar Enlace</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- SCRIPT PRINCIPAL -->
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyApMHM-PlfHaqnfgOkRnVu79NVe3C3hcXI",
+            authDomain: "monitoreo-terapeutico.firebaseapp.com",
+            projectId: "monitoreo-terapeutico",
+            storageBucket: "monitoreo-terapeutico.firebasestorage.app",
+            messagingSenderId: "994701999822",
+            appId: "1:994701999822:web:3ceca30ee452eb19979a9f"
+        };
+
+        let db = null;
+        let auth = null;
+        let firebaseActivo = false;
+        let unsubscribeRealtime = null;
+
+        try {
+            if (firebaseConfig.apiKey !== "TU_API_KEY") {
+                firebase.initializeApp(firebaseConfig);
+                db = firebase.firestore();
+                auth = firebase.auth();
+                firebaseActivo = true;
+                document.getElementById('firebaseAlert').classList.add('hidden');
+            }
+        } catch (e) {
+            console.warn("Firebase no inicializado.", e);
+        }
+
+        const HORAS_12H = [
+            '12am - 5am', '5am - 6am', '6am - 7am', '7am - 8am', '8am - 9am', '9am - 10am',
+            '10am - 11am', '11am - 12pm', '12pm - 1pm', '1pm - 2pm', '2pm - 3pm', '3pm - 4pm',
+            '4pm - 5pm', '5pm - 6pm', '6pm - 7pm', '7pm - 8pm', '8pm - 9pm', '9pm - 10pm',
+            '10pm - 11pm', '11pm - 12am'
+        ];
+
+        const DIAS_NOMBRE = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+
+        let pacienteActualId = null;
+        let pacienteData = null;
+        let diaSeleccionadoIndex = 0;
+        let saveTimeout = null;
+        let chartInstance = null;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const pId = params.get('p');
+            const mode = params.get('mode');
+
+            if (pId) {
+                pacienteActualId = pId;
+                iniciarModoPaciente(pId);
+            } else if (mode === 'therapist') {
+                mostrarLoginTerapeuta();
+            } else {
+                if (firebaseActivo) {
+                    auth.onAuthStateChanged(user => {
+                        if (user) cargarDashboardTerapeuta(user);
+                        else mostrarLoginTerapeuta();
+                    });
+                } else {
+                    mostrarLoginTerapeuta();
+                }
+            }
+
+            document.getElementById('nuevaFechaInicio').valueAsDate = new Date();
+        });
+
+        function mostrarLoginTerapeuta() {
+            ocultarTodasLasSecciones();
+            document.getElementById('secLoginTerapeuta').classList.remove('hidden');
+        }
+
+        async function loginTerapeuta(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value.trim();
+            const pass = document.getElementById('loginPassword').value;
+            const errDiv = document.getElementById('loginError');
+            errDiv.classList.add('hidden');
+
+            if (firebaseActivo) {
+                try {
+                    const res = await auth.signInWithEmailAndPassword(email, pass);
+                    cargarDashboardTerapeuta(res.user);
+                } catch (err) {
+                    errDiv.innerText = "Error: " + err.message;
+                    errDiv.classList.remove('hidden');
+                }
+            } else {
+                if (pass === '1234' || email) {
+                    cargarDashboardTerapeuta({ email: email || 'terapeuta@demo.com' });
+                } else {
+                    errDiv.innerText = "Modo Demo: Ingresa cualquier correo y contraseña 1234";
+                    errDiv.classList.remove('hidden');
+                }
+            }
+        }
+
+        function cerrarSesionTerapeuta() {
+            if (firebaseActivo) auth.signOut();
+            window.location.href = window.location.pathname + '?mode=therapist';
+        }
+
+        async function cargarDashboardTerapeuta(user) {
+            ocultarTodasLasSecciones();
+            document.getElementById('secPanelTerapeuta').classList.remove('hidden');
+            document.getElementById('btnTerapeutaLogin').classList.add('hidden');
+            document.getElementById('terapeutaHeaderInfo').classList.remove('hidden');
+            document.getElementById('userEmailDisplay').innerText = user.email;
+
+            let pacientes = [];
+            if (firebaseActivo) {
+                const snapshot = await db.collection('pacientes').get();
+                snapshot.forEach(doc => pacientes.push({ id: doc.id, ...doc.data() }));
+            } else {
+                const localData = localStorage.getItem('demo_pacientes');
+                pacientes = localData ? JSON.parse(localData) : getPacientesEjemplo();
+            }
+
+            renderTablaPacientes(pacientes);
+        }
+
+        function renderTablaPacientes(pacientes) {
+            const tbody = document.getElementById('tablaPacientesBody');
+            document.getElementById('cantPacientes').innerText = `${pacientes.length} paciente(s)`;
+            tbody.innerHTML = '';
+
+            if (pacientes.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-400">No hay pacientes registrados.</td></tr>`;
+                return;
+            }
+
+            pacientes.forEach(p => {
+                const baseUrl = window.location.origin + window.location.pathname;
+                const enlacePaciente = `${baseUrl}?p=${p.id}`;
+                const rangoFecha = formatBloqueSemanal(p.fechaInicio || new Date());
+                const mods = p.modulosAsignados || ['monitoreo'];
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition";
+                tr.innerHTML = `
+                    <td class="p-4 font-bold text-slate-800">${escapeHtml(p.nombre)}</td>
+                    <td class="p-4 text-xs text-slate-600"><i class="fa-regular fa-calendar mr-1 text-indigo-500"></i> ${rangoFecha}</td>
+                    <td class="p-4 text-xs">
+                        <span class="bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-full font-bold">${mods.length} tarea(s)</span>
+                    </td>
+                    <td class="p-4">
+                        <div class="flex items-center space-x-2">
+                            <input type="text" readonly value="${enlacePaciente}" class="text-xs bg-slate-100 border p-1.5 rounded w-44 text-slate-500 truncate">
+                            <button onclick="copiarEnlace('${enlacePaciente}')" class="text-xs bg-indigo-50 text-indigo-600 border border-indigo-200 hover:bg-indigo-100 px-2.5 py-1 rounded font-medium flex items-center gap-1">
+                                <i class="fa-regular fa-copy"></i> Copiar
+                            </button>
+                        </div>
+                    </td>
+                    <td class="p-4 text-center">
+                        <button onclick="verDetalleClinico('${p.id}')" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-3.5 py-1.5 rounded-lg font-semibold shadow-sm">
+                            <i class="fa-solid fa-eye mr-1"></i> Ver Ficha
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function copiarEnlace(url) {
+            navigator.clipboard.writeText(url);
+            alert("¡Enlace único copiado al portapapeles!
+Puedes enviárselo por WhatsApp a tu paciente.");
+        }
+
+        function abrirModalNuevoPaciente() { document.getElementById('modalNuevoPaciente').classList.remove('hidden'); }
+        function cerrarModalNuevoPaciente() { document.getElementById('modalNuevoPaciente').classList.add('hidden'); }
+
+        async function crearPaciente(e) {
+            e.preventDefault();
+            const nombre = document.getElementById('nuevoNombrePaciente').value.trim();
+            const fechaStr = document.getElementById('nuevaFechaInicio').value;
+            const pId = 'p_' + Math.random().toString(36).substr(2, 9);
+
+            const nuevoPaciente = {
+                id: pId,
+                nombre: nombre,
+                fechaInicio: fechaStr,
+                updatedAt: new Date().toISOString(),
+                notasClinicas: "",
+                modulosAsignados: ['monitoreo'],
+                semanas: { [fechaStr]: crearSemanaVacia() }
+            };
+
+            if (firebaseActivo) {
+                await db.collection('pacientes').doc(pId).set(nuevoPaciente);
+            } else {
+                let local = JSON.parse(localStorage.getItem('demo_pacientes') || '[]');
+                local.push(nuevoPaciente);
+                localStorage.setItem('demo_pacientes', JSON.stringify(local));
+            }
+
+            cerrarModalNuevoPaciente();
+            cargarDashboardTerapeuta({ email: auth ? auth.currentUser.email : 'terapeuta@demo.com' });
+        }
+
+        function iniciarModoPaciente(pId) {
+            actualizarStatusSync("En línea", "bg-emerald-400");
+            document.getElementById('syncBadge').classList.remove('hidden');
+
+            if (firebaseActivo) {
+                if (unsubscribeRealtime) unsubscribeRealtime();
+                unsubscribeRealtime = db.collection('pacientes').doc(pId).onSnapshot(doc => {
+                    if (doc.exists) {
+                        pacienteData = doc.data();
+                        localStorage.setItem('backup_' + pId, JSON.stringify(pacienteData));
+                        mostrarDashboardPaciente();
+                    } else {
+                        alert("El enlace no existe o ha sido eliminado.");
+                    }
+                }, err => {
+                    console.error("Error en tiempo real:", err);
+                    cargarRespaldoLocalPaciente(pId);
+                });
+            } else {
+                cargarRespaldoLocalPaciente(pId);
+            }
+        }
+
+        function cargarRespaldoLocalPaciente(pId) {
+            let local = JSON.parse(localStorage.getItem('demo_pacientes') || '[]');
+            pacienteData = local.find(p => p.id === pId) || JSON.parse(localStorage.getItem('backup_' + pId) || 'null') || getPacientesEjemplo()[0];
+            mostrarDashboardPaciente();
+        }
+
+        function mostrarDashboardPaciente() {
+            ocultarTodasLasSecciones();
+            document.getElementById('secPacienteDashboard').classList.remove('hidden');
+            document.getElementById('pacienteBienvenidaNombre').innerText = `¡Hola, ${pacienteData.nombre}! 👋`;
+            document.getElementById('pacienteRangoSemanaHeader').innerText = "Semana: " + formatBloqueSemanal(pacienteData.fechaInicio);
+
+            const mods = pacienteData.modulosAsignados || ['monitoreo'];
+            document.getElementById('cardModMonitoreo').style.display = mods.includes('monitoreo') ? 'block' : 'none';
+            document.getElementById('cardModPensamientos').style.display = mods.includes('pensamientos') ? 'block' : 'none';
+            document.getElementById('cardModExposicion').style.display = mods.includes('exposicion') ? 'block' : 'none';
+        }
+
+        function abrirModuloMonitoreo() {
+            ocultarTodasLasSecciones();
+            document.getElementById('secPacienteFormMonitoreo').classList.remove('hidden');
+            renderDiasTabs();
+            cargarDiaPaciente(0);
+        }
+
+        function volverDashboardPaciente() {
+            if (pacienteData && pacienteActualId) {
+                mostrarDashboardPaciente();
+            }
+        }
+
+        function renderDiasTabs() {
+            const container = document.getElementById('diasTabsContainer');
+            container.innerHTML = '';
+            const fechaInicio = new Date(pacienteData.fechaInicio || new Date());
+
+            DIAS_NOMBRE.forEach((dia, idx) => {
+                const fechaDia = new Date(fechaInicio);
+                fechaDia.setDate(fechaDia.getDate() + idx);
+                const dateStr = fechaDia.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
+
+                const btn = document.createElement('button');
+                btn.className = `flex-1 min-w-[95px] py-2.5 px-3 rounded-xl border text-center transition ${idx === diaSeleccionadoIndex ? 'bg-indigo-600 text-white font-bold border-indigo-600 shadow-sm' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`;
+                btn.onclick = () => cargarDiaPaciente(idx);
+                btn.innerHTML = `
+                    <div class="text-[11px] uppercase tracking-wider">${dia}</div>
+                    <div class="text-xs font-semibold mt-0.5">${dateStr}</div>
+                `;
+                container.appendChild(btn);
+            });
+
+            document.getElementById('labelBloqueSemanal').innerText = formatBloqueSemanal(pacienteData.fechaInicio);
+        }
+
+        function cargarDiaPaciente(diaIdx) {
+            diaSeleccionadoIndex = diaIdx;
+            renderDiasTabs();
+
+            const fechaInicio = new Date(pacienteData.fechaInicio || new Date());
+            const fechaDia = new Date(fechaInicio);
+            fechaDia.setDate(fechaDia.getDate() + diaIdx);
+            document.getElementById('diaActualNombre').innerText = `${DIAS_NOMBRE[diaIdx]} ${fechaDia.getDate()} de ${fechaDia.toLocaleDateString('es-ES', {month:'long'})}`;
+
+            const semanaKey = pacienteData.fechaInicio;
+            const semanaData = pacienteData.semanas[semanaKey] || crearSemanaVacia();
+            const diaData = semanaData.dias[diaIdx] || { horas: {}, animo: 5 };
+
+            const listContainer = document.getElementById('listaHorasPaciente');
+            listContainer.innerHTML = '';
+
+            HORAS_12H.forEach(h => {
+                const item = diaData.horas[h] || { act: '', d: '', i: '' };
+                const row = document.createElement('div');
+                row.className = "p-3 sm:p-4 hover:bg-slate-50/80 transition flex flex-col sm:flex-row items-start sm:items-center gap-3";
+                row.innerHTML = `
+                    <div class="w-24 font-extrabold text-slate-700 text-xs bg-slate-100 px-2 py-1.5 rounded-lg text-center shrink-0">
+                        ${h}
+                    </div>
+                    <div class="flex-1 w-full">
+                        <input type="text" value="${escapeHtml(item.act)}" placeholder="¿Qué actividad realizaste?" 
+                            class="w-full px-3 py-1.5 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                            onchange="guardarEntradaHora('${h}', 'act', this.value)">
+                    </div>
+                    <div class="flex items-center space-x-3 w-full sm:w-auto shrink-0">
+                        <div class="flex items-center space-x-1">
+                            <span class="text-xs font-bold text-indigo-700 bg-indigo-50 px-2 py-1 rounded border border-indigo-200">D</span>
+                            <input type="number" min="0" max="10" value="${item.d}" placeholder="0-10" 
+                                class="w-12 text-center py-1 border border-slate-200 rounded-lg text-sm font-bold text-indigo-600 focus:ring-2 focus:ring-indigo-500"
+                                onchange="guardarEntradaHora('${h}', 'd', this.value)">
+                        </div>
+                        <div class="flex items-center space-x-1">
+                            <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-1 rounded border border-emerald-200">I</span>
+                            <input type="number" min="0" max="10" value="${item.i}" placeholder="0-10" 
+                                class="w-12 text-center py-1 border border-slate-200 rounded-lg text-sm font-bold text-emerald-600 focus:ring-2 focus:ring-emerald-500"
+                                onchange="guardarEntradaHora('${h}', 'i', this.value)">
+                        </div>
+                    </div>
+                `;
+                listContainer.appendChild(row);
+            });
+
+            document.getElementById('inputAnimoDia').value = diaData.animo || 5;
+            document.getElementById('animoValueDisplay').innerText = `${diaData.animo || 5} / 10`;
+        }
+
+        function guardarEntradaHora(hora, campo, valor) {
+            const semanaKey = pacienteData.fechaInicio;
+            if (!pacienteData.semanas[semanaKey]) pacienteData.semanas[semanaKey] = crearSemanaVacia();
+            if (!pacienteData.semanas[semanaKey].dias[diaSeleccionadoIndex].horas[hora]) {
+                pacienteData.semanas[semanaKey].dias[diaSeleccionadoIndex].horas[hora] = { act: '', d: '', i: '' };
+            }
+
+            pacienteData.semanas[semanaKey].dias[diaSeleccionadoIndex].horas[hora][campo] = valor;
+            pacienteData.updatedAt = new Date().toISOString();
+
+            sincronizarGarantizado();
+        }
+
+        function actualizarAnimoDia(valor) {
+            document.getElementById('animoValueDisplay').innerText = `${valor} / 10`;
+            const semanaKey = pacienteData.fechaInicio;
+            pacienteData.semanas[semanaKey].dias[diaSeleccionadoIndex].animo = parseInt(valor);
+            pacienteData.updatedAt = new Date().toISOString();
+
+            sincronizarGarantizado();
+        }
+
+        function sincronizarGarantizado() {
+            localStorage.setItem('backup_' + pacienteActualId, JSON.stringify(pacienteData));
+            let local = JSON.parse(localStorage.getItem('demo_pacientes') || '[]');
+            const idx = local.findIndex(p => p.id === pacienteActualId);
+            if (idx !== -1) local[idx] = pacienteData;
+            else local.push(pacienteData);
+            localStorage.setItem('demo_pacientes', JSON.stringify(local));
+
+            actualizarStatusSync("Guardando...", "bg-amber-400");
+
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(async () => {
+                if (firebaseActivo) {
+                    try {
+                        await db.collection('pacientes').doc(pacienteActualId).set(pacienteData, { merge: true });
+                        actualizarStatusSync("Sincronizado", "bg-emerald-400");
+                    } catch (err) {
+                        console.error("Error al sincronizar con Firebase:", err);
+                        actualizarStatusSync("Guardado Local", "bg-amber-400");
+                    }
+                } else {
+                    actualizarStatusSync("Guardado Local", "bg-emerald-400");
+                }
+            }, 1500);
+        }
+
+        function actualizarStatusSync(texto, colorBg) {
+            const txtEl = document.getElementById('syncText');
+            const dotEl = document.getElementById('syncDot');
+            const statusLabel = document.getElementById('statusGuardadoText');
+
+            if (txtEl) txtEl.innerText = texto;
+            if (dotEl) dotEl.className = `w-2.5 h-2.5 rounded-full ${colorBg} animate-pulse`;
+            if (statusLabel) statusLabel.innerText = texto;
+        }
+
+        async function verDetalleClinico(pId) {
+            pacienteActualId = pId;
+
+            if (firebaseActivo) {
+                if (unsubscribeRealtime) unsubscribeRealtime();
+                unsubscribeRealtime = db.collection('pacientes').doc(pId).onSnapshot(doc => {
+                    if (doc.exists) {
+                        pacienteData = doc.data();
+                        renderizarFichaClinica();
+                    }
+                });
+            } else {
+                let local = JSON.parse(localStorage.getItem('demo_pacientes') || '[]');
+                pacienteData = local.find(item => item.id === pId) || getPacientesEjemplo()[0];
+                renderizarFichaClinica();
+            }
+        }
+
+        function renderizarFichaClinica() {
+            const p = pacienteData;
+            document.getElementById('detallePacienteCard').classList.remove('hidden');
+            document.getElementById('detNombrePaciente').innerText = p.nombre;
+            document.getElementById('detRangoSemana').innerText = "Semana: " + formatBloqueSemanal(p.fechaInicio);
+            document.getElementById('detNotasClinicas').value = p.notasClinicas || "";
+
+            const mods = p.modulosAsignados || ['monitoreo'];
+            document.getElementById('chkModMonitoreo').checked = mods.includes('monitoreo');
+            document.getElementById('chkModPensamientos').checked = mods.includes('pensamientos');
+            document.getElementById('chkModExposicion').checked = mods.includes('exposicion');
+
+            renderSupervisionTabla(p);
+            renderGraficoEvolucion(p);
+
+            document.getElementById('detallePacienteCard').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        async function toggleModuloAsignado(modKey) {
+            if (!pacienteData.modulosAsignados) pacienteData.modulosAsignados = ['monitoreo'];
+            const idx = pacienteData.modulosAsignados.indexOf(modKey);
+            if (idx === -1) pacienteData.modulosAsignados.push(modKey);
+            else pacienteData.modulosAsignados.splice(idx, 1);
+
+            sincronizarGarantizado();
+        }
+
+        function renderSupervisionTabla(p) {
+            const semanaKey = p.fechaInicio;
+            const semanaData = p.semanas[semanaKey] || crearSemanaVacia();
+
+            const headerRow = document.getElementById('headerFechasSupervision');
+            headerRow.innerHTML = `<th class="p-2 border bg-slate-200 min-w-[100px]">HORA (12h)</th>`;
+            const fechaInicio = new Date(p.fechaInicio || new Date());
+
+            DIAS_NOMBRE.forEach((dia, idx) => {
+                const f = new Date(fechaInicio);
+                f.setDate(f.getDate() + idx);
+                headerRow.innerHTML += `<th class="p-2 border">${dia}<br><span class="text-[10px] font-normal">${f.getDate()}/${f.getMonth()+1}</span></th>`;
+            });
+
+            const tbody = document.getElementById('bodySupervision');
+            tbody.innerHTML = '';
+
+            let totalD = 0, countD = 0;
+            let totalI = 0, countI = 0;
+
+            HORAS_12H.forEach(h => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td class="p-1.5 font-bold border bg-slate-50 text-[11px]">${h}</td>`;
+
+                for (let i = 0; i < 7; i++) {
+                    const hData = semanaData.dias[i]?.horas[h] || { act: '', d: '', i: '' };
+                    if (hData.d !== '') { totalD += parseFloat(hData.d); countD++; }
+                    if (hData.i !== '') { totalI += parseFloat(hData.i); countI++; }
+
+                    tr.innerHTML += `
+                        <td class="p-1.5 border text-left align-top hover:bg-slate-50">
+                            <div class="font-medium text-slate-800 text-[11px]">${escapeHtml(hData.act || '-')}</div>
+                            ${(hData.d || hData.i) ? `
+                                <div class="mt-1 flex space-x-1 text-[10px]">
+                                    <span class="bg-indigo-100 text-indigo-700 px-1 rounded font-bold">D:${hData.d || 0}</span>
+                                    <span class="bg-emerald-100 text-emerald-700 px-1 rounded font-bold">I:${hData.i || 0}</span>
+                                </div>
+                            ` : ''}
+                        </td>
+                    `;
+                }
+                tbody.appendChild(tr);
+            });
+
+            const avgD = countD > 0 ? (totalD / countD).toFixed(1) : "0.0";
+            const avgI = countI > 0 ? (totalI / countI).toFixed(1) : "0.0";
+            document.getElementById('statAvgD').innerText = `${avgD} / 10`;
+            document.getElementById('statAvgI').innerText = `${avgI} / 10`;
+
+            let totalAnimo = 0;
+            for (let i = 0; i < 7; i++) totalAnimo += (semanaData.dias[i]?.animo || 5);
+            document.getElementById('statAvgAnimo').innerText = `${(totalAnimo / 7).toFixed(1)} / 10`;
+        }
+
+        function renderGraficoEvolucion(p) {
+            const ctx = document.getElementById('chartEvolucion').getContext('2d');
+            const semanaKey = p.fechaInicio;
+            const semanaData = p.semanas[semanaKey] || crearSemanaVacia();
+
+            const dataD = [], dataI = [], dataAnimo = [];
+
+            for (let i = 0; i < 7; i++) {
+                const dia = semanaData.dias[i] || { horas: {}, animo: 5 };
+                let sumD = 0, cD = 0, sumI = 0, cI = 0;
+                Object.values(dia.horas || {}).forEach(h => {
+                    if (h.d !== '') { sumD += parseFloat(h.d); cD++; }
+                    if (h.i !== '') { sumI += parseFloat(h.i); cI++; }
+                });
+                dataD.push(cD > 0 ? (sumD / cD).toFixed(1) : null);
+                dataI.push(cI > 0 ? (sumI / cI).toFixed(1) : null);
+                dataAnimo.push(dia.animo || 5);
+            }
+
+            if (chartInstance) chartInstance.destroy();
+
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: DIAS_NOMBRE,
+                    datasets: [
+                        { label: 'Disfrute Promedio (D)', data: dataD, borderColor: '#4f46e5', backgroundColor: '#4f46e520', tension: 0.3, fill: true },
+                        { label: 'Importancia Promedio (I)', data: dataI, borderColor: '#059669', backgroundColor: '#05966920', tension: 0.3, fill: true },
+                        { label: 'Ánimo General del Día', data: dataAnimo, borderColor: '#f59e0b', borderDash: [5, 5], tension: 0.2, fill: false }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { y: { min: 0, max: 10 } }
+                }
+            });
+        }
+
+        async function guardarNotasClinicas() {
+            const notas = document.getElementById('detNotasClinicas').value;
+            pacienteData.notasClinicas = notas;
+            sincronizarGarantizado();
+        }
+
+        async function liberarEspacioPaciente() {
+            if (!confirm(`¿Estás seguro de borrar a ${pacienteData.nombre}?`)) return;
+
+            if (unsubscribeRealtime) unsubscribeRealtime();
+
+            if (firebaseActivo) {
+                await db.collection('pacientes').doc(pacienteActualId).delete();
+            } else {
+                let local = JSON.parse(localStorage.getItem('demo_pacientes') || '[]');
+                local = local.filter(p => p.id !== pacienteActualId);
+                localStorage.setItem('demo_pacientes', JSON.stringify(local));
+            }
+
+            document.getElementById('detallePacienteCard').classList.add('hidden');
+            cargarDashboardTerapeuta({ email: auth ? auth.currentUser.email : 'terapeuta@demo.com' });
+        }
+
+        function exportarPDF() { window.print(); }
+
+        function ocultarTodasLasSecciones() {
+            document.getElementById('secLoginTerapeuta').classList.add('hidden');
+            document.getElementById('secPanelTerapeuta').classList.add('hidden');
+            document.getElementById('secPacienteDashboard').classList.add('hidden');
+            document.getElementById('secPacienteFormMonitoreo').classList.add('hidden');
+        }
+
+        function crearSemanaVacia() {
+            const dias = [];
+            for (let i = 0; i < 7; i++) {
+                const horas = {};
+                HORAS_12H.forEach(h => horas[h] = { act: '', d: '', i: '' });
+                dias.push({ horas, animo: 5 });
+            }
+            return { dias };
+        }
+
+        function formatBloqueSemanal(fechaStr) {
+            const d1 = new Date(fechaStr || new Date());
+            const d2 = new Date(d1);
+            d2.setDate(d2.getDate() + 6);
+            return `${d1.getDate()} ${d1.toLocaleDateString('es-ES',{month:'short'})} - ${d2.getDate()} ${d2.toLocaleDateString('es-ES',{month:'short', year:'numeric'})}`;
+        }
+
+        function getPacientesEjemplo() {
+            return [{
+                id: 'p_ejemplo1',
+                nombre: 'Carlos Mendoza (Ejemplo)',
+                fechaInicio: '2026-10-26',
+                updatedAt: new Date().toISOString(),
+                notasClinicas: 'Paciente en monitoreo activo.',
+                modulosAsignados: ['monitoreo'],
+                semanas: { '2026-10-26': crearSemanaVacia() }
+            }];
+        }
+
+        function escapeHtml(str) {
+            return (str || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+        }
+    </script>
+</body>
+</html>
