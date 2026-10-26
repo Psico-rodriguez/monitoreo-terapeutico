@@ -67,7 +67,7 @@
 <body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col justify-between">
 
     <div>
-    <!-- BARRA SUPERIOR E IMPRESIÓN CON MEMBRETE OFICIAL (FONDO NAVY PROFUNDO) -->
+    <!-- BARRA SUPERIOR E IMPRESIÓN CON MEMBRETE OFICIAL -->
     <nav class="bg-[#090e1a] text-white shadow-md no-print sticky top-0 z-50 border-b border-slate-800">
         <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-3 cursor-pointer" onclick="volverDashboardPaciente()">
@@ -99,7 +99,7 @@
         </div>
     </nav>
 
-    <!-- MEMBRETE SOLO PARA IMPRESIÓN / PDF -->
+    <!-- MEMBRETE SOLO PARA IMPRESIÓN -->
     <div class="print-only p-4 border-b-2 border-slate-800 mb-4 bg-white">
         <div class="flex justify-between items-center">
             <div>
@@ -228,7 +228,7 @@
                     </div>
                 </div>
 
-                <!-- BLOQUE DE CONTROL DE EDICIÓN, CREACIÓN Y ELIMINACIÓN DE SEMANAS -->
+                <!-- CONTROL DE SEMANAS -->
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200 no-print">
                     <div class="flex items-center gap-3">
                         <i class="fa-regular fa-calendar-check text-cyan-700 text-xl"></i>
@@ -252,7 +252,7 @@
                     </div>
                 </div>
 
-                <!-- SELECCIÓN JERÁRQUICA: PASO 1 (TERAPIA) -> PASO 2 (TAREA) -->
+                <!-- SELECCIÓN JERÁRQUICA: PASO 1 (TERAPIA) -> PASO 2 (TAREAS) -->
                 <div class="bg-slate-50 border border-slate-200 p-5 rounded-2xl space-y-4 no-print">
                     <div>
                         <h3 class="font-bold text-slate-900 text-base flex items-center gap-2">
@@ -261,11 +261,10 @@
                         <p class="text-xs text-slate-600 mt-0.5">Selecciona primero la terapia y luego la tarea específica que deseas inspeccionar clínicamente.</p>
                     </div>
 
-                    <!-- PASO 1: NAVEGACIÓN DE TERAPIAS -->
+                    <!-- PASO 1: TERAPIA -->
                     <div class="space-y-2">
                         <span class="text-xs font-bold text-slate-500 uppercase tracking-wider block">1. Seleccionar Terapia:</span>
                         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                            <!-- Card Terapia de Activación Conductual -->
                             <div id="cardTerapiaAC" onclick="seleccionarTerapia('activacion_conductual')" class="cursor-pointer p-3.5 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-cyan-600 ring-2 ring-cyan-600/30">
                                 <div class="flex items-center space-x-3">
                                     <div class="w-9 h-9 bg-cyan-100 text-cyan-800 rounded-lg flex items-center justify-center font-bold text-lg">
@@ -273,7 +272,7 @@
                                     </div>
                                     <div>
                                         <h4 class="font-bold text-xs text-slate-900">Terapia de Activación Conductual</h4>
-                                        <span class="text-[10px] text-cyan-700 font-semibold">1 Tarea disponible</span>
+                                        <span class="text-[10px] text-cyan-700 font-semibold">2 Tareas disponibles</span>
                                     </div>
                                 </div>
                                 <i id="iconCheckAC" class="fa-solid fa-circle-check text-cyan-600 text-lg"></i>
@@ -281,12 +280,12 @@
                         </div>
                     </div>
 
-                    <!-- PASO 2: TAREAS DE LA TERAPIA SELECCIONADA -->
+                    <!-- PASO 2: TAREAS SELECCIONABLES -->
                     <div id="containerTareasDisponibles" class="space-y-2 pt-2 border-t border-slate-200">
                         <span class="text-xs font-bold text-slate-500 uppercase tracking-wider block">2. Seleccionar Tarea a Observar y Gestionar Asignación:</span>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            <!-- Card Tarea Monitoreo -->
-                            <div id="cardTareaMonitoreo" onclick="seleccionarTarea('monitoreo')" class="cursor-pointer p-3.5 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-cyan-600 ring-2 ring-cyan-600/30">
+                            <!-- Tarea 1: Monitoreo Diario -->
+                            <div id="cardTareaMonitoreo" onclick="seleccionarTarea('monitoreo')" class="cursor-pointer p-3.5 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-slate-200 hover:border-cyan-400">
                                 <div class="flex items-center space-x-3">
                                     <div class="w-8 h-8 bg-cyan-50 text-cyan-700 border border-cyan-200 rounded-lg flex items-center justify-center text-sm font-bold">
                                         <i class="fa-regular fa-calendar-check"></i>
@@ -301,7 +300,27 @@
                                         <input type="checkbox" id="chkModMonitoreo" onchange="toggleModuloAsignado('monitoreo')" class="w-4 h-4 text-cyan-600 rounded bg-white">
                                         <span class="text-[11px] font-bold text-slate-700">Asignada</span>
                                     </label>
-                                    <i id="iconCheckTareaMonitoreo" class="fa-solid fa-circle-check text-cyan-600 text-base"></i>
+                                    <i id="iconCheckTareaMonitoreo" class="fa-regular fa-circle text-slate-300 text-base"></i>
+                                </div>
+                            </div>
+
+                            <!-- Tarea 2: Jerarquía de Actividades -->
+                            <div id="cardTareaJerarquia" onclick="seleccionarTarea('jerarquia_actividades')" class="cursor-pointer p-3.5 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-slate-200 hover:border-cyan-400">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 bg-cyan-50 text-cyan-700 border border-cyan-200 rounded-lg flex items-center justify-center text-sm font-bold">
+                                        <i class="fa-solid fa-list-ol"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="font-bold text-xs text-slate-900">Jerarquía de Actividades a Programar</h5>
+                                        <p class="text-[10px] text-slate-500">Lista ordenada por Importancia (1 a 15)</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-3" onclick="event.stopPropagation()">
+                                    <label class="flex items-center space-x-1.5 cursor-pointer bg-slate-50 hover:bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200 transition" title="Activa o desactiva la tarea en el portal del paciente">
+                                        <input type="checkbox" id="chkModJerarquia" onchange="toggleModuloAsignado('jerarquia_actividades')" class="w-4 h-4 text-cyan-600 rounded bg-white">
+                                        <span class="text-[11px] font-bold text-slate-700">Asignada</span>
+                                    </label>
+                                    <i id="iconCheckTareaJerarquia" class="fa-regular fa-circle text-slate-300 text-base"></i>
                                 </div>
                             </div>
                         </div>
@@ -315,8 +334,8 @@
                     <p class="text-xs text-slate-500 mt-1 max-w-md mx-auto">Haz clic sobre una de las tareas asignadas en la sección superior para desplegar las vistas de evolución, matrices y gráficos correspondientes.</p>
                 </div>
 
-                <!-- CONTENEDOR DEL DESGLOSE CLÍNICO (SÓLO CUANDO LA TAREA ESTÁ SELECCIONADA) -->
-                <div id="secDesgloseTarea" class="space-y-6">
+                <!-- CONTENEDOR DESGLOSE TAREA 1: MONITOREO DIARIO -->
+                <div id="secDesgloseTarea" class="hidden space-y-6">
 
                     <!-- SELECTOR DE VISTAS DE EVOLUCIÓN PARA EL TERAPEUTA -->
                     <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-3 no-print">
@@ -434,6 +453,74 @@
 
                 </div>
 
+                <!-- CONTENEDOR DESGLOSE TAREA 2: JERARQUÍA DE ACTIVIDADES -->
+                <div id="secDesgloseJerarquia" class="hidden space-y-6">
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-200 pb-4">
+                            <div>
+                                <h3 class="font-bold text-lg text-slate-900 flex items-center gap-2">
+                                    <i class="fa-solid fa-list-ol text-cyan-700"></i> Jerarquía de Actividades a Programar
+                                </h3>
+                                <p class="text-xs text-slate-500 mt-0.5">Muestra las actividades enlistadas de mayor a menor importancia ($1$ a $15$), con enumeración jerárquica ($1$ = la más baja).</p>
+                            </div>
+                            <button id="btnLockJerarquia" onclick="toggleBloqueoJerarquia()" class="text-xs px-4 py-2 rounded-xl font-bold transition flex items-center gap-2 shadow-sm">
+                                <i class="fa-solid fa-lock"></i> Bloquear Eliminación
+                            </button>
+                        </div>
+
+                        <!-- LISTA DE JERARQUÍA PRINCIPAL -->
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center">
+                                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-700">
+                                    <i class="fa-solid fa-arrow-down-short-wide text-cyan-700 mr-1"></i> Lista Principal (Ordenada de Mayor a Menor Importancia)
+                                </h4>
+                                <span id="cantActividadesPrincipal" class="text-[11px] font-bold bg-cyan-100 text-cyan-800 border border-cyan-200 px-2.5 py-0.5 rounded-full">0 actividades</span>
+                            </div>
+
+                            <div class="overflow-x-auto border border-slate-200 rounded-xl">
+                                <table class="w-full text-left text-xs border-collapse">
+                                    <thead class="bg-slate-100 text-slate-700 uppercase font-bold border-b border-slate-200">
+                                        <tr>
+                                            <th class="p-3 w-32 text-center">Jerarquía</th>
+                                            <th class="p-3">Actividad</th>
+                                            <th class="p-3 w-32 text-center">Importancia (1-15)</th>
+                                            <th class="p-3 w-44">Fecha de Registro</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tablaJerarquiaTerapeutaBody" class="divide-y divide-slate-200">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- SECCIÓN: AGREGADO DE MANERA ADICIONAL -->
+                        <div class="space-y-3 pt-4 border-t border-slate-200">
+                            <div class="flex justify-between items-center">
+                                <h4 class="text-xs font-bold uppercase tracking-wider text-amber-800 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-clock-rotate-left text-amber-600"></i> Agregado de manera adicional (Posterior al Bloqueo)
+                                </h4>
+                                <span id="cantActividadesAdicional" class="text-[11px] font-bold bg-amber-100 text-amber-900 border border-amber-300 px-2.5 py-0.5 rounded-full">0 adicionales</span>
+                            </div>
+
+                            <div class="overflow-x-auto border border-amber-200 rounded-xl bg-amber-50/30">
+                                <table class="w-full text-left text-xs border-collapse">
+                                    <thead class="bg-amber-100/70 text-amber-900 uppercase font-bold border-b border-amber-200">
+                                        <tr>
+                                            <th class="p-3 w-28 text-center">Estado</th>
+                                            <th class="p-3">Actividad Agregada</th>
+                                            <th class="p-3 w-32 text-center">Importancia (1-15)</th>
+                                            <th class="p-3 w-48">Fecha y Hora de Adición</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tablaJerarquiaAdicionalBody" class="divide-y divide-amber-200 text-slate-800">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
                 <!-- NOTAS CLINICAS -->
                 <div class="space-y-2 pt-2 border-t border-slate-200">
                     <label class="block text-sm font-bold text-slate-800"><i class="fa-solid fa-user-pen text-cyan-700 mr-1"></i> Observaciones Clínicas y Acuerdos Terapéuticos</label>
@@ -442,7 +529,7 @@
             </div>
         </section>
 
-        <!-- VISTA 3: PORTAL DEL PACIENTE (DASHBOARD) - SOLO MUESTRA LA TAREA DIRECTA -->
+        <!-- VISTA 3: PORTAL DEL PACIENTE (DASHBOARD TAREAS) -->
         <section id="secPacienteDashboard" class="hidden space-y-6">
             <div class="bg-white text-slate-900 p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200">
                 <div class="flex items-center gap-2 mb-2">
@@ -450,39 +537,59 @@
                     <span class="text-xs uppercase font-bold tracking-wider text-cyan-800">Portal del Paciente</span>
                 </div>
                 <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900" id="pacienteBienvenidaNombre">¡Hola, Paciente! 👋</h1>
-                <p class="text-slate-600 text-sm mt-1">Selecciona cualquier semana para consultar o registrar tus actividades.</p>
+                <p class="text-slate-600 text-sm mt-1">Ingresa a tus tareas asignadas para diligenciarlas o actualizarlas.</p>
                 
                 <div class="mt-4 flex flex-wrap items-center gap-3">
-                    <span class="text-xs text-slate-700 font-semibold"><i class="fa-regular fa-calendar-days mr-1 text-cyan-700"></i> Seleccionar Semana:</span>
+                    <span class="text-xs text-slate-700 font-semibold"><i class="fa-regular fa-calendar-days mr-1 text-cyan-700"></i> Seleccionar Semana de Monitoreo:</span>
                     <select id="selectSemanaPacienteDash" onchange="cambiarSemanaPaciente(this.value)" class="text-xs font-bold bg-slate-50 text-slate-800 border border-slate-300 rounded-lg px-3 py-1.5 focus:outline-none">
                     </select>
                     <span id="badgeEstadoBloqueoDash" class="text-xs px-2.5 py-1 rounded-full font-bold"></span>
                 </div>
             </div>
 
-            <!-- SECCIÓN DE TAREAS DIRECTAS (SIN MOSTRAR EL NOMBRE DE LA TERAPIA) -->
+            <!-- CARDS DE TAREAS ASIGNADAS -->
             <div class="space-y-4">
-                <div class="flex justify-between items-center">
-                    <h2 class="font-bold text-slate-900 text-lg flex items-center gap-2">
-                        <i class="fa-solid fa-clipboard-check text-cyan-700"></i> Tareas Asignadas
-                    </h2>
-                </div>
+                <h2 class="font-bold text-slate-900 text-lg flex items-center gap-2">
+                    <i class="fa-solid fa-clipboard-check text-cyan-700"></i> Tareas Terapéuticas Asignadas
+                </h2>
 
-                <div class="grid grid-cols-1 gap-4">
-                    <!-- TAREA 1: FORMULARIO DE MONITOREO DIARIO DE ACTIVIDADES -->
-                    <div id="cardModMonitoreo" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:border-cyan-600 transition space-y-4">
-                        <div class="flex justify-between items-start">
-                            <div class="w-12 h-12 bg-cyan-50 text-cyan-700 border border-cyan-200 rounded-xl flex items-center justify-center text-xl font-bold">
-                                <i class="fa-regular fa-calendar-check"></i>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- TAREA 1: MONITOREO DIARIO -->
+                    <div id="cardModMonitoreo" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:border-cyan-600 transition space-y-4 flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-start">
+                                <div class="w-12 h-12 bg-cyan-50 text-cyan-700 border border-cyan-200 rounded-xl flex items-center justify-center text-xl font-bold">
+                                    <i class="fa-regular fa-calendar-check"></i>
+                                </div>
+                                <span class="text-xs bg-emerald-100 text-emerald-800 border border-emerald-200 px-2.5 py-1 rounded-full font-bold">Asignado</span>
                             </div>
-                            <span class="text-xs bg-emerald-100 text-emerald-800 border border-emerald-200 px-2.5 py-1 rounded-full font-bold">Asignado</span>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-slate-900 text-base">Formulario de Monitoreo Diario de Actividades</h3>
-                            <p class="text-xs text-slate-500 mt-1">Registra tus actividades hora a hora (formato 12h) evaluando Disfrute (D) e Importancia (I).</p>
+                            <div>
+                                <h3 class="font-bold text-slate-900 text-base">Formulario de Monitoreo Diario de Actividades</h3>
+                                <p class="text-xs text-slate-500 mt-1">Registra tus actividades hora a hora (formato 12h) evaluando Disfrute (D) e Importancia (I).</p>
+                            </div>
                         </div>
                         <button onclick="abrirModuloMonitoreo()" class="w-full bg-cyan-700 hover:bg-cyan-800 text-white font-semibold py-2.5 rounded-xl text-sm transition flex items-center justify-center gap-2 shadow-sm">
                             <span>Ingresar y Diligenciar</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                    <!-- TAREA 2: JERARQUÍA DE ACTIVIDADES -->
+                    <div id="cardModJerarquia" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:border-cyan-600 transition space-y-4 flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-start">
+                                <div class="w-12 h-12 bg-cyan-50 text-cyan-700 border border-cyan-200 rounded-xl flex items-center justify-center text-xl font-bold">
+                                    <i class="fa-solid fa-list-ol"></i>
+                                </div>
+                                <span class="text-xs bg-emerald-100 text-emerald-800 border border-emerald-200 px-2.5 py-1 rounded-full font-bold">Asignado</span>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-slate-900 text-base">Jerarquía de Actividades a Programar</h3>
+                                <p class="text-xs text-slate-500 mt-1">Escribe tus actividades y asigna una importancia del 1 al 15 para estructurar tu plan terapéutico.</p>
+                            </div>
+                        </div>
+                        <button onclick="abrirModuloJerarquiaPaciente()" class="w-full bg-cyan-700 hover:bg-cyan-800 text-white font-semibold py-2.5 rounded-xl text-sm transition flex items-center justify-center gap-2 shadow-sm">
+                            <span>Ingresar y Configurar Jerarquía</span>
                             <i class="fa-solid fa-arrow-right"></i>
                         </button>
                     </div>
@@ -584,10 +691,66 @@
             </div>
         </section>
 
+        <!-- VISTA 5: FORMULARIO PACIENTE JERARQUÍA DE ACTIVIDADES -->
+        <section id="secPacienteFormJerarquia" class="hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                <button onclick="volverDashboardPaciente()" class="text-xs text-cyan-700 font-bold hover:underline mb-1 inline-flex items-center gap-1 no-print">
+                    <i class="fa-solid fa-arrow-left"></i> Volver a mis Tareas
+                </button>
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-900">Jerarquía de Actividades a Programar</h1>
+                    <p class="text-xs text-slate-500 mt-1">Escribe actividades que desees incluir en tu plan de tratamiento y califica su grado de Importancia de 1 (mínima) a 15 (máxima).</p>
+                </div>
+
+                <!-- BANNER ESTADO DE BLOQUEO DE ELIMINACIÓN -->
+                <div id="bannerBloqueoJerarquiaPaciente" class="hidden p-3.5 bg-amber-50 border-l-4 border-amber-500 text-amber-900 rounded-r text-xs flex items-center gap-2">
+                    <i class="fa-solid fa-lock text-amber-600 text-base shrink-0"></i>
+                    <span><strong>Modo Protegido Activo:</strong> Tu terapeuta ha fijado la lista actual. No puedes eliminar actividades previamente registradas, pero <strong>puedes continuar agregando nuevas actividades adicionales</strong>.</span>
+                </div>
+
+                <!-- FORMULARIO DE INGRESO DE NUEVA ACTIVIDAD -->
+                <form onsubmit="agregarActividadJerarquiaPaciente(event)" class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-col sm:flex-row items-end gap-3">
+                    <div class="flex-1 w-full">
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Nombre de la Actividad</label>
+                        <input type="text" id="inputJerarquiaActividad" required placeholder="Ej. Caminar 15 minutos en el parque" class="w-full px-3 py-2 bg-white text-slate-900 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-cyan-600 focus:outline-none">
+                    </div>
+                    <div class="w-full sm:w-40 shrink-0">
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Importancia (1 a 15)</label>
+                        <input type="number" min="1" max="15" id="inputJerarquiaImportancia" required placeholder="1 - 15" class="w-full px-3 py-2 bg-white text-slate-900 border border-slate-300 rounded-xl text-xs font-bold text-center focus:ring-2 focus:ring-cyan-600 focus:outline-none">
+                    </div>
+                    <button type="submit" class="w-full sm:w-auto bg-cyan-700 hover:bg-cyan-800 text-white font-semibold px-4 py-2 rounded-xl text-xs transition shadow-sm shrink-0 flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-plus"></i> Agregar
+                    </button>
+                </form>
+            </div>
+
+            <!-- LISTADO DE ACTIVIDADES DEL PACIENTE -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-list-check text-cyan-700"></i> Mis Actividades Registradas
+                </h3>
+
+                <div class="overflow-x-auto border border-slate-200 rounded-xl">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead class="bg-slate-100 text-slate-700 uppercase font-bold border-b border-slate-200">
+                            <tr>
+                                <th class="p-3">Actividad</th>
+                                <th class="p-3 w-36 text-center">Importancia (1-15)</th>
+                                <th class="p-3 w-40">Fecha</th>
+                                <th class="p-3 w-24 text-center">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaJerarquiaPacienteBody" class="divide-y divide-slate-200 text-slate-800">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
     </main>
     </div>
 
-    <!-- FOOTER CON MEMBRETE Y DATOS DE CONTACTO OFICIALES (FONDO NAVY PROFUNDO) -->
+    <!-- FOOTER CON MEMBRETE Y DATOS DE CONTACTO -->
     <footer class="mt-12 py-6 border-t border-slate-800 text-center text-slate-400 text-xs no-print bg-[#090e1a]">
         <div class="max-w-7xl mx-auto px-4 space-y-2">
             <div class="flex justify-center items-center space-x-2">
@@ -682,7 +845,7 @@
         let modoPacienteGuardando = false;
         let pacientesCache = [];
 
-        // Variables de Estado de Selección
+        // Variables de Estado de Navegación del Terapeuta
         let terapiaSeleccionada = 'activacion_conductual';
         let tareaSeleccionada = 'monitoreo';
 
@@ -711,7 +874,7 @@
             if (elemFecha) elemFecha.valueAsDate = new Date();
         });
 
-        // FUNCIONES DE MANEJO SEGURO DE FECHAS EN ORDEN DE CALENDARIO
+        // MANEJO DE FECHAS
         function parseFechaLocal(fechaStr) {
             if (!fechaStr) return new Date();
             if (typeof fechaStr === 'string' && fechaStr.length >= 10) {
@@ -815,11 +978,8 @@
 
         function filtrarPacientesEnMemoria(query) {
             const btnLimpiar = document.getElementById('btnLimpiarBuscar');
-            if (query.trim().length > 0) {
-                btnLimpiar.classList.remove('hidden');
-            } else {
-                btnLimpiar.classList.add('hidden');
-            }
+            if (query.trim().length > 0) btnLimpiar.classList.remove('hidden');
+            else btnLimpiar.classList.add('hidden');
 
             const q = query.toLowerCase().trim();
             const filtrados = pacientesCache.filter(p => (p.nombre || '').toLowerCase().includes(q));
@@ -894,7 +1054,9 @@
                 fechaInicio: fechaStr,
                 updatedAt: new Date().toISOString(),
                 notasClinicas: "",
-                modulosAsignados: ['monitoreo'],
+                modulosAsignados: ['monitoreo', 'jerarquia_actividades'],
+                jerarquiaBloqueada: false,
+                jerarquiaActividades: [],
                 semanas: { [fechaStr]: crearSemanaVacia() }
             };
 
@@ -945,9 +1107,12 @@
             document.getElementById('detIdPaciente').innerText = p.id;
             document.getElementById('detNotasClinicas').value = p.notasClinicas || "";
 
-            const mods = p.modulosAsignados || ['monitoreo'];
+            const mods = p.modulosAsignados || ['monitoreo', 'jerarquia_actividades'];
             if (document.getElementById('chkModMonitoreo')) {
                 document.getElementById('chkModMonitoreo').checked = mods.includes('monitoreo');
+            }
+            if (document.getElementById('chkModJerarquia')) {
+                document.getElementById('chkModJerarquia').checked = mods.includes('jerarquia_actividades');
             }
 
             const selectSem = document.getElementById('selectSemanaTerapeuta');
@@ -980,14 +1145,16 @@
                 renderGraficoEvolucion(p, semanaSeleccionadaKey);
                 renderAnalisisGlobalHistograma(p);
                 renderGraficoHistoricoTotal(p);
+            } else if (tareaSeleccionada === 'jerarquia_actividades') {
+                renderJerarquiaTerapeuta(p);
             }
         }
 
-        // FUNCIONES DE SELECCIÓN JERÁRQUICA DE TERAPIA Y TAREA
+        // SELECCIÓN DE TERAPIA Y TAREA
         function seleccionarTerapia(idTerapia) {
             terapiaSeleccionada = idTerapia;
             if (idTerapia === 'activacion_conductual') {
-                tareaSeleccionada = 'monitoreo'; // Selecciona por defecto la primera tarea
+                tareaSeleccionada = 'monitoreo';
             } else {
                 tareaSeleccionada = null;
             }
@@ -996,7 +1163,7 @@
 
         function seleccionarTarea(idTarea) {
             if (tareaSeleccionada === idTarea) {
-                tareaSeleccionada = null; // Permite deseleccionar
+                tareaSeleccionada = null;
             } else {
                 tareaSeleccionada = idTarea;
             }
@@ -1006,13 +1173,18 @@
         function actualizarSeleccionUI() {
             const cardAC = document.getElementById('cardTerapiaAC');
             const iconAC = document.getElementById('iconCheckAC');
+            
             const cardMon = document.getElementById('cardTareaMonitoreo');
             const iconMon = document.getElementById('iconCheckTareaMonitoreo');
 
-            const secDesglose = document.getElementById('secDesgloseTarea');
+            const cardJer = document.getElementById('cardTareaJerarquia');
+            const iconJer = document.getElementById('iconCheckTareaJerarquia');
+
+            const secMon = document.getElementById('secDesgloseTarea');
+            const secJer = document.getElementById('secDesgloseJerarquia');
             const msgVacio = document.getElementById('mensajeSinTareaSeleccionada');
 
-            // Terapia AC
+            // Card Terapia
             if (terapiaSeleccionada === 'activacion_conductual') {
                 cardAC.className = "cursor-pointer p-3.5 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-cyan-600 ring-2 ring-cyan-600/30";
                 iconAC.className = "fa-solid fa-circle-check text-cyan-600 text-lg";
@@ -1021,18 +1193,124 @@
                 iconAC.className = "fa-regular fa-circle text-slate-300 text-lg";
             }
 
-            // Tarea Monitoreo
+            // Cards Tareas
             if (tareaSeleccionada === 'monitoreo') {
                 cardMon.className = "cursor-pointer p-3.5 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-cyan-600 ring-2 ring-cyan-600/30";
                 iconMon.className = "fa-solid fa-circle-check text-cyan-600 text-base";
-                secDesglose.classList.remove('hidden');
+                
+                cardJer.className = "cursor-pointer p-3.5 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-slate-200 hover:border-cyan-400";
+                iconJer.className = "fa-regular fa-circle text-slate-300 text-base";
+
+                secMon.classList.remove('hidden');
+                secJer.classList.add('hidden');
+                msgVacio.classList.add('hidden');
+            } else if (tareaSeleccionada === 'jerarquia_actividades') {
+                cardJer.className = "cursor-pointer p-3.5 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-cyan-600 ring-2 ring-cyan-600/30";
+                iconJer.className = "fa-solid fa-circle-check text-cyan-600 text-base";
+
+                cardMon.className = "cursor-pointer p-3.5 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-slate-200 hover:border-cyan-400";
+                iconMon.className = "fa-regular fa-circle text-slate-300 text-base";
+
+                secMon.classList.add('hidden');
+                secJer.classList.remove('hidden');
                 msgVacio.classList.add('hidden');
             } else {
                 cardMon.className = "cursor-pointer p-3.5 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-slate-200 hover:border-cyan-400";
                 iconMon.className = "fa-regular fa-circle text-slate-300 text-base";
-                secDesglose.classList.add('hidden');
+                cardJer.className = "cursor-pointer p-3.5 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-slate-200 hover:border-cyan-400";
+                iconJer.className = "fa-regular fa-circle text-slate-300 text-base";
+
+                secMon.classList.add('hidden');
+                secJer.classList.add('hidden');
                 msgVacio.classList.remove('hidden');
             }
+        }
+
+        // RENDERING TAREA JERARQUÍA EN TERAPEUTA
+        function renderJerarquiaTerapeuta(p) {
+            const btnLock = document.getElementById('btnLockJerarquia');
+            if (p.jerarquiaBloqueada) {
+                btnLock.className = "text-xs bg-rose-50 text-rose-700 border border-rose-300 hover:bg-rose-100 px-4 py-2 rounded-xl font-bold transition flex items-center gap-2 shadow-sm";
+                btnLock.innerHTML = `<i class="fa-solid fa-lock text-rose-600"></i> Bloqueado (Paciente solo puede agregar)`;
+            } else {
+                btnLock.className = "text-xs bg-emerald-50 text-emerald-800 border border-emerald-300 hover:bg-emerald-100 px-4 py-2 rounded-xl font-bold transition flex items-center gap-2 shadow-sm";
+                btnLock.innerHTML = `<i class="fa-solid fa-lock-open text-emerald-600"></i> Desbloqueado (Edición Libre)`;
+            }
+
+            const items = p.jerarquiaActividades || [];
+            
+            // Separar lista principal y adicionales
+            const principales = items.filter(x => !x.esAdicional);
+            const adicionales = items.filter(x => x.esAdicional);
+
+            // Ordenar principales de menor a mayor para calcular número de jerarquía (donde 1 es la más baja)
+            const principalesAsc = [...principales].sort((a, b) => parseFloat(a.importancia) - parseFloat(b.importancia));
+            principalesAsc.forEach((item, index) => {
+                item.rankJerarquia = index + 1; // 1 = la más baja
+            });
+
+            // Ordenar de mayor a menor para la vista del terapeuta
+            const principalesDesc = [...principalesAsc].sort((a, b) => parseFloat(b.importancia) - parseFloat(a.importancia));
+
+            // Renderizar Lista Principal
+            const tbodyP = document.getElementById('tablaJerarquiaTerapeutaBody');
+            tbodyP.innerHTML = '';
+            document.getElementById('cantActividadesPrincipal').innerText = `${principalesDesc.length} actividades`;
+
+            if (principalesDesc.length === 0) {
+                tbodyP.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-slate-400">No hay actividades registradas en la jerarquía inicial.</td></tr>`;
+            } else {
+                principalesDesc.forEach(item => {
+                    const tr = document.createElement('tr');
+                    tr.className = "hover:bg-slate-50 transition";
+                    tr.innerHTML = `
+                        <td class="p-3 text-center">
+                            <span class="font-black text-cyan-800 bg-cyan-100 border border-cyan-300 px-2.5 py-1 rounded-lg">
+                                Nivel #${item.rankJerarquia}
+                            </span>
+                        </td>
+                        <td class="p-3 font-bold text-slate-900 text-sm">${escapeHtml(item.actividad)}</td>
+                        <td class="p-3 text-center font-extrabold text-sm text-emerald-700">
+                            <span class="bg-emerald-50 border border-emerald-300 px-3 py-1 rounded-lg">${item.importancia} / 15</span>
+                        </td>
+                        <td class="p-3 text-xs text-slate-500"><i class="fa-regular fa-clock mr-1"></i>${item.fecha || '--'}</td>
+                    `;
+                    tbodyP.appendChild(tr);
+                });
+            }
+
+            // Renderizar Lista Adicional
+            const tbodyA = document.getElementById('tablaJerarquiaAdicionalBody');
+            tbodyA.innerHTML = '';
+            document.getElementById('cantActividadesAdicional').innerText = `${adicionales.length} adicionales`;
+
+            if (adicionales.length === 0) {
+                tbodyA.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-slate-400">No hay actividades agregadas de manera adicional.</td></tr>`;
+            } else {
+                adicionales.forEach(item => {
+                    const tr = document.createElement('tr');
+                    tr.className = "hover:bg-amber-100/40 transition";
+                    tr.innerHTML = `
+                        <td class="p-3 text-center">
+                            <span class="text-[10px] uppercase font-bold text-amber-900 bg-amber-200 border border-amber-400 px-2 py-0.5 rounded-full">
+                                <i class="fa-solid fa-plus mr-1"></i> Posterior
+                            </span>
+                        </td>
+                        <td class="p-3 font-bold text-slate-900 text-sm">${escapeHtml(item.actividad)}</td>
+                        <td class="p-3 text-center font-extrabold text-sm text-amber-800">
+                            <span class="bg-amber-100 border border-amber-300 px-3 py-1 rounded-lg">${item.importancia} / 15</span>
+                        </td>
+                        <td class="p-3 text-xs text-amber-900 font-semibold"><i class="fa-regular fa-calendar-plus mr-1"></i>${item.fecha || '--'}</td>
+                    `;
+                    tbodyA.appendChild(tr);
+                });
+            }
+        }
+
+        function toggleBloqueoJerarquia() {
+            pacienteData.jerarquiaBloqueada = !pacienteData.jerarquiaBloqueada;
+            sincronizarGarantizado();
+            renderizarFichaClinica();
         }
 
         function actualizarEstadoBotonBloqueo() {
@@ -1090,7 +1368,7 @@
             semanaSeleccionadaKey = nuevaKeyStr;
             sincronizarGarantizado();
             renderizarFichaClinica();
-            alert(`¡Nuevo bloque semanal (${formatBloqueSemanal(nuevaKeyStr)}) habilitado en orden del calendario!`);
+            alert(`¡Nuevo bloque semanal (${formatBloqueSemanal(nuevaKeyStr)}) habilitado!`);
         }
 
         async function eliminarSemanaTerapeuta() {
@@ -1101,9 +1379,7 @@
             const numSem = idxSem >= 0 ? idxSem + 1 : 1;
             const fechaTexto = formatBloqueSemanal(semanaSeleccionadaKey);
 
-            if (!confirm(`¿Estás seguro de eliminar permanentemente la Semana ${numSem} (${fechaTexto})?\n\nEsta acción borrará todas las actividades registradas en ese bloque.`)) {
-                return;
-            }
+            if (!confirm(`¿Estás seguro de eliminar permanentemente la Semana ${numSem} (${fechaTexto})?`)) return;
 
             delete pacienteData.semanas[semanaSeleccionadaKey];
 
@@ -1122,7 +1398,7 @@
         }
 
         async function toggleModuloAsignado(modKey) {
-            if (!pacienteData.modulosAsignados) pacienteData.modulosAsignados = ['monitoreo'];
+            if (!pacienteData.modulosAsignados) pacienteData.modulosAsignados = ['monitoreo', 'jerarquia_actividades'];
             const idx = pacienteData.modulosAsignados.indexOf(modKey);
             if (idx === -1) pacienteData.modulosAsignados.push(modKey);
             else pacienteData.modulosAsignados.splice(idx, 1);
@@ -1220,9 +1496,7 @@
                         x: { ticks: { color: '#334155' }, grid: { color: '#e2e8f0' } },
                         y: { min: 0, max: 10, ticks: { color: '#334155' }, grid: { color: '#e2e8f0' } }
                     },
-                    plugins: {
-                        legend: { labels: { color: '#0f172a' } }
-                    }
+                    plugins: { legend: { labels: { color: '#0f172a' } } }
                 }
             });
         }
@@ -1292,9 +1566,7 @@
                         x: { ticks: { color: '#334155' }, grid: { display: false } },
                         y: { ticks: { color: '#334155', stepSize: 1 }, grid: { color: '#e2e8f0' } }
                     },
-                    plugins: {
-                        legend: { display: false }
-                    }
+                    plugins: { legend: { display: false } }
                 }
             });
         }
@@ -1343,9 +1615,7 @@
                         x: { ticks: { color: '#334155' }, grid: { color: '#e2e8f0' } },
                         y: { min: 0, max: 10, ticks: { color: '#334155' }, grid: { color: '#e2e8f0' } }
                     },
-                    plugins: {
-                        legend: { labels: { color: '#0f172a' } }
-                    }
+                    plugins: { legend: { labels: { color: '#0f172a' } } }
                 }
             });
         }
@@ -1357,7 +1627,7 @@
         }
 
         async function liberarEspacioPaciente() {
-            if (!confirm(`¿Estás seguro de eliminar permanentemente a ${pacienteData.nombre}?\n\nEsta acción liberará espacio y no se puede deshacer.`)) return;
+            if (!confirm(`¿Estás seguro de eliminar permanentemente a ${pacienteData.nombre}?`)) return;
 
             if (unsubscribeRealtime) unsubscribeRealtime();
 
@@ -1387,6 +1657,8 @@
                         if (!modoPacienteGuardando && !document.getElementById('secPacienteFormMonitoreo').classList.contains('hidden')) {
                             poblarSelectoresSemanaPaciente();
                             actualizarEstadoFormularioPaciente();
+                        } else if (!modoPacienteGuardando && !document.getElementById('secPacienteFormJerarquia').classList.contains('hidden')) {
+                            renderJerarquiaPaciente();
                         } else if (!modoPacienteGuardando) {
                             mostrarDashboardPaciente();
                         }
@@ -1415,8 +1687,9 @@
 
             poblarSelectoresSemanaPaciente();
 
-            const mods = pacienteData.modulosAsignados || ['monitoreo'];
-            document.getElementById('cardModMonitoreo').style.display = mods.includes('monitoreo') ? 'block' : 'none';
+            const mods = pacienteData.modulosAsignados || ['monitoreo', 'jerarquia_actividades'];
+            document.getElementById('cardModMonitoreo').style.display = mods.includes('monitoreo') ? 'flex' : 'none';
+            document.getElementById('cardModJerarquia').style.display = mods.includes('jerarquia_actividades') ? 'flex' : 'none';
         }
 
         function poblarSelectoresSemanaPaciente() {
@@ -1447,10 +1720,10 @@
             if (badge) {
                 if (esBloqueada) {
                     badge.className = "text-xs px-2.5 py-1 rounded-full font-bold bg-amber-100 text-amber-800 border border-amber-300";
-                    badge.innerText = "🔒 Semana Cerrada (Solo lectura)";
+                    badge.innerText = "🔒 Monitoreo Cerrado";
                 } else {
                     badge.className = "text-xs px-2.5 py-1 rounded-full font-bold bg-emerald-100 text-emerald-800 border border-emerald-300";
-                    badge.innerText = "🔓 Semana Habilitada para Edición";
+                    badge.innerText = "🔓 Monitoreo Abierto";
                 }
             }
         }
@@ -1470,12 +1743,101 @@
             cargarDiaPaciente(0);
         }
 
+        function abrirModuloJerarquiaPaciente() {
+            ocultarTodasLasSecciones();
+            document.getElementById('secPacienteFormJerarquia').classList.remove('hidden');
+            renderJerarquiaPaciente();
+        }
+
         function volverDashboardPaciente() {
             if (pacienteData && pacienteActualId) {
                 mostrarDashboardPaciente();
             }
         }
 
+        // LÓGICA DE PACIENTE PARA JERARQUÍA DE ACTIVIDADES
+        function renderJerarquiaPaciente() {
+            const banner = document.getElementById('bannerBloqueoJerarquiaPaciente');
+            if (pacienteData.jerarquiaBloqueada) banner.classList.remove('hidden');
+            else banner.classList.add('hidden');
+
+            const tbody = document.getElementById('tablaJerarquiaPacienteBody');
+            tbody.innerHTML = '';
+
+            const items = pacienteData.jerarquiaActividades || [];
+
+            if (items.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-slate-400">Aún no has agregado actividades. Utiliza el formulario superior para comenzar.</td></tr>`;
+                return;
+            }
+
+            items.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition";
+                
+                const deleteBtn = pacienteData.jerarquiaBloqueada ? 
+                    `<span class="text-[10px] text-slate-400 font-bold"><i class="fa-solid fa-lock"></i> Fijo</span>` :
+                    `<button onclick="eliminarActividadJerarquiaPaciente('${item.id}')" class="text-xs bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 px-2.5 py-1 rounded-lg transition font-medium">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>`;
+
+                tr.innerHTML = `
+                    <td class="p-3 font-bold text-slate-900 text-xs">
+                        ${escapeHtml(item.actividad)}
+                        ${item.esAdicional ? '<span class="ml-2 text-[9px] bg-amber-100 text-amber-800 border border-amber-300 px-1.5 py-0.5 rounded font-bold">Adicional</span>' : ''}
+                    </td>
+                    <td class="p-3 text-center font-extrabold text-xs text-emerald-800">
+                        <span class="bg-emerald-50 border border-emerald-300 px-2.5 py-1 rounded-lg">${item.importancia} / 15</span>
+                    </td>
+                    <td class="p-3 text-xs text-slate-500">${item.fecha || '--'}</td>
+                    <td class="p-3 text-center">${deleteBtn}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function agregarActividadJerarquiaPaciente(e) {
+            e.preventDefault();
+            const inputAct = document.getElementById('inputJerarquiaActividad');
+            const inputImp = document.getElementById('inputJerarquiaImportancia');
+
+            const actTexto = inputAct.value.trim();
+            const impValor = parseInt(inputImp.value);
+
+            if (!actTexto || isNaN(impValor) || impValor < 1 || impValor > 15) {
+                alert("Por favor ingresa una actividad válida y una importancia entre 1 y 15.");
+                return;
+            }
+
+            if (!pacienteData.jerarquiaActividades) pacienteData.jerarquiaActividades = [];
+
+            const now = new Date();
+            const fechaFormateada = `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+
+            const nuevaActividad = {
+                id: 'j_' + Math.random().toString(36).substr(2, 9),
+                actividad: actTexto,
+                importancia: impValor,
+                fecha: fechaFormateada,
+                esAdicional: pacienteData.jerarquiaBloqueada || false
+            };
+
+            pacienteData.jerarquiaActividades.push(nuevaActividad);
+            inputAct.value = '';
+            inputImp.value = '';
+
+            sincronizarGarantizado();
+            renderJerarquiaPaciente();
+        }
+
+        function eliminarActividadJerarquiaPaciente(id) {
+            if (pacienteData.jerarquiaBloqueada) return;
+            pacienteData.jerarquiaActividades = (pacienteData.jerarquiaActividades || []).filter(item => item.id !== id);
+            sincronizarGarantizado();
+            renderJerarquiaPaciente();
+        }
+
+        // LÓGICA DE PACIENTE PARA MONITOREO DIARIO
         function renderDiasTabs() {
             const container = document.getElementById('diasTabsContainer');
             container.innerHTML = '';
@@ -1650,6 +2012,7 @@
             document.getElementById('secDetallePacienteTerapeuta').classList.add('hidden');
             document.getElementById('secPacienteDashboard').classList.add('hidden');
             document.getElementById('secPacienteFormMonitoreo').classList.add('hidden');
+            document.getElementById('secPacienteFormJerarquia').classList.add('hidden');
         }
 
         function crearSemanaVacia() {
@@ -1671,7 +2034,9 @@
                 fechaInicio: '2026-10-26',
                 updatedAt: new Date().toISOString(),
                 notasClinicas: 'Paciente en monitoreo activo.',
-                modulosAsignados: ['monitoreo'],
+                modulosAsignados: ['monitoreo', 'jerarquia_actividades'],
+                jerarquiaBloqueada: false,
+                jerarquiaActividades: [],
                 semanas: { '2026-10-26': crearSemanaVacia() }
             }];
         }
