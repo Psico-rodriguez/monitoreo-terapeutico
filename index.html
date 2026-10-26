@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plataforma Terapéutica - Equilibrio · Crecimiento · Conexión</title>
+    <title>Plataforma Terapéutica - Oscar Steven Rodriguez Bustos</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -40,7 +40,10 @@
         @media print {
             .no-print { display: none !important; }
             .print-only { display: block !important; }
-            body { background: white; color: black; font-size: 10pt; }
+            body { background: white !important; color: black !important; font-size: 10pt; }
+            .print-bg-white { background: white !important; color: black !important; border-color: #cbd5e1 !important; }
+            .print-text-dark { color: #0f172a !important; }
+            input, select, textarea { border: 1px solid #94a3b8 !important; color: black !important; background: white !important; }
         }
         .print-only { display: none; }
         input[type=number]::-webkit-inner-spin-button, 
@@ -61,18 +64,19 @@
         }
     </style>
 </head>
-<body class="bg-slate-900 text-slate-100 font-sans min-h-screen">
+<body class="bg-slate-900 text-slate-100 font-sans min-h-screen flex flex-col justify-between">
 
-    <!-- BARRA SUPERIOR INSPIRADA EN EL LOGO -->
+    <div>
+    <!-- BARRA SUPERIOR E IMPRESIÓN CON MEMBRETE OFICIAL -->
     <nav class="bg-[#090e1a] text-white shadow-xl no-print sticky top-0 z-50 border-b border-cyan-950/80">
         <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-3 cursor-pointer" onclick="volverDashboardPaciente()">
-                <div class="relative w-9 h-9 flex items-center justify-center enso-ring bg-slate-950 shadow-inner">
-                    <span class="text-cyan-400 font-extrabold text-xl tracking-tighter" style="font-family: serif;">Ψ</span>
+                <div class="relative w-10 h-10 flex items-center justify-center enso-ring bg-slate-950 shadow-inner shrink-0">
+                    <span class="text-cyan-400 font-extrabold text-2xl tracking-tighter" style="font-family: serif;">Ψ</span>
                 </div>
                 <div>
-                    <span class="font-extrabold text-lg tracking-wide text-white block leading-none">Plataforma Terapéutica</span>
-                    <span class="text-[9px] tracking-widest text-cyan-400 uppercase font-semibold block mt-0.5">Equilibrio • Crecimiento • Conexión</span>
+                    <span class="font-extrabold text-base sm:text-lg tracking-wide text-white block leading-none">Oscar Steven Rodriguez Bustos</span>
+                    <span class="text-[10px] sm:text-xs tracking-wider text-cyan-400 font-semibold block mt-0.5">PSICÓLOGO & PSICOTERAPEUTA · T.P. 320214 COLPSIC</span>
                 </div>
             </div>
             <div id="navRight" class="flex items-center space-x-3">
@@ -95,7 +99,20 @@
         </div>
     </nav>
 
-    <main class="max-w-7xl mx-auto p-4 md:p-6">
+    <!-- MEMBRETE SOLO PARA IMPRESIÓN (PDF) -->
+    <div class="print-only p-4 border-b-2 border-slate-800 mb-4">
+        <div class="flex justify-between items-center">
+            <div>
+                <h1 class="text-xl font-bold uppercase text-black">Oscar Steven Rodriguez Bustos</h1>
+                <p class="text-xs font-semibold text-slate-700">PSICÓLOGO & PSICOTERAPEUTA · T.P. 320214 COLPSIC</p>
+                <p class="text-[10px] text-slate-500">Contacto: +57 322 852 9736 | psicologoorodriguez@gmail.com | Bogotá D.C., Colombia</p>
+            </div>
+            <div class="text-3xl font-serif text-black font-extrabold">Ψ</div>
+        </div>
+        <p class="text-center text-[9px] uppercase tracking-widest text-slate-600 font-bold mt-2">Plataforma Terapéutica — Equilibrio • Crecimiento • Conexión</p>
+    </div>
+
+    <main class="max-w-7xl mx-auto p-4 md:p-6 w-full">
 
         <!-- ALERTA FIREBASE -->
         <div id="firebaseAlert" class="hidden mb-6 p-4 bg-amber-950/90 border-l-4 border-amber-500 text-amber-200 rounded-r shadow-lg text-sm">
@@ -108,14 +125,14 @@
             </div>
         </div>
 
-        <!-- VISTA 1: LOGIN TERAPEUTA (VISIBLE POR DEFECTO PARA EVITAR PANTALLAS EN BLANCO) -->
+        <!-- VISTA 1: LOGIN TERAPEUTA -->
         <section id="secLoginTerapeuta" class="max-w-md mx-auto my-12 bg-slate-800/90 p-8 rounded-2xl shadow-2xl border border-slate-700/80 backdrop-blur-sm">
             <div class="text-center mb-6">
                 <div class="w-16 h-16 bg-cyan-950 text-cyan-400 border border-cyan-500/30 rounded-full flex items-center justify-center mx-auto mb-3 text-3xl font-serif">
                     Ψ
                 </div>
                 <h2 class="text-2xl font-bold text-white">Acceso Profesional</h2>
-                <p class="text-slate-400 text-sm mt-1">Ingresa con tus credenciales clínicas autorizadas</p>
+                <p class="text-slate-400 text-xs mt-1">Oscar Steven Rodriguez Bustos — Psicoterapeuta</p>
             </div>
             <form id="formLogin" onsubmit="loginTerapeuta(event)" class="space-y-4">
                 <div>
@@ -140,14 +157,13 @@
                     <h1 class="text-2xl font-bold text-white flex items-center gap-2">
                         <i class="fa-solid fa-users text-cyan-400"></i> Directorio de Pacientes
                     </h1>
-                    <p class="text-slate-400 text-sm mt-0.5">Selecciona un paciente para abrir su ficha clínica individual, gestionar tareas y evaluar el avance.</p>
+                    <p class="text-slate-400 text-sm mt-0.5">Selecciona un paciente para abrir su ficha clínica individual, gestionar tareas y evaluar su evolución.</p>
                 </div>
                 <button onclick="abrirModalNuevoPaciente()" class="bg-cyan-600 hover:bg-cyan-500 text-white px-4 py-2.5 rounded-xl font-medium shadow-lg transition flex items-center gap-2 text-sm">
                     <i class="fa-solid fa-user-plus"></i> Registrar Nuevo Paciente
                 </button>
             </div>
 
-            <!-- TABLA PRINCIPAL DE PACIENTES -->
             <div class="bg-slate-800/80 rounded-2xl shadow-lg border border-slate-700 overflow-hidden">
                 <div class="px-6 py-4 border-b border-slate-700/80 bg-slate-900/60 flex justify-between items-center">
                     <h3 class="font-bold text-cyan-300 text-sm">Pacientes Registrados</h3>
@@ -171,9 +187,9 @@
             </div>
         </section>
 
-        <!-- VISTA DETALLE DEL PACIENTE -->
+        <!-- VISTA DETALLE DEL PACIENTE (PANEL TERAPEUTA) -->
         <section id="secDetallePacienteTerapeuta" class="hidden space-y-6">
-            <button onclick="volverListaPacientes()" class="inline-flex items-center gap-2 text-xs font-bold text-cyan-300 hover:text-cyan-100 bg-cyan-950/80 hover:bg-cyan-900 border border-cyan-800 px-3.5 py-2 rounded-xl transition">
+            <button onclick="volverListaPacientes()" class="inline-flex items-center gap-2 text-xs font-bold text-cyan-300 hover:text-cyan-100 bg-cyan-950/80 hover:bg-cyan-900 border border-cyan-800 px-3.5 py-2 rounded-xl transition no-print">
                 <i class="fa-solid fa-arrow-left"></i> Volver a la Lista de Pacientes
             </button>
 
@@ -191,7 +207,7 @@
                             <span><i class="fa-solid fa-link text-cyan-400 mr-1"></i> ID Enlace: <code id="detIdPaciente" class="bg-slate-900 text-cyan-300 px-1.5 py-0.5 rounded border border-slate-700">---</code></span>
                         </div>
                     </div>
-                    <div class="flex flex-wrap gap-2">
+                    <div class="flex flex-wrap gap-2 no-print">
                         <button onclick="exportarPDF()" class="bg-slate-700 hover:bg-slate-600 text-slate-100 border border-slate-600 px-3.5 py-2 rounded-xl text-sm font-medium transition flex items-center gap-1.5 shadow">
                             <i class="fa-solid fa-file-pdf text-rose-400"></i> Descargar Reporte PDF
                         </button>
@@ -201,7 +217,8 @@
                     </div>
                 </div>
 
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900/80 p-4 rounded-xl border border-slate-700">
+                <!-- BLOQUE DE CONTROL DE EDICIÓN Y BLOQUEO DE SEMANAS POR EL TERAPEUTA -->
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-900/80 p-4 rounded-xl border border-slate-700 no-print">
                     <div class="flex items-center gap-3">
                         <i class="fa-regular fa-calendar-check text-cyan-400 text-xl"></i>
                         <div>
@@ -210,14 +227,42 @@
                             </select>
                         </div>
                     </div>
-                    <button onclick="crearNuevoBloqueSemanalTerapeuta()" class="text-xs bg-cyan-600 hover:bg-cyan-500 text-white font-semibold px-3.5 py-2 rounded-xl transition shadow-md flex items-center gap-1.5">
-                        <i class="fa-solid fa-plus"></i> Habilitar Nueva Semana
-                    </button>
+                    
+                    <div class="flex flex-wrap items-center gap-2">
+                        <button id="btnToggleBloqueoSemana" onclick="toggleBloqueoSemana()" class="text-xs px-3.5 py-2 rounded-xl font-semibold transition border flex items-center gap-1.5 shadow">
+                            <i class="fa-solid fa-lock"></i> Bloquear/Desbloquear Edición
+                        </button>
+                        <button onclick="crearNuevoBloqueSemanalTerapeuta()" class="text-xs bg-cyan-600 hover:bg-cyan-500 text-white font-semibold px-3.5 py-2 rounded-xl transition shadow-md flex items-center gap-1.5">
+                            <i class="fa-solid fa-plus"></i> Habilitar Nueva Semana
+                        </button>
+                    </div>
                 </div>
 
-                <div class="bg-slate-900/90 border border-cyan-900/50 p-5 rounded-2xl space-y-3">
+                <!-- SELECTOR DE VISTAS DE EVOLUCIÓN PARA EL TERAPEUTA -->
+                <div class="bg-slate-900/90 border border-slate-700 p-4 rounded-xl space-y-3 no-print">
+                    <h3 class="font-bold text-white text-xs uppercase tracking-wider flex items-center gap-2">
+                        <i class="fa-solid fa-eye text-cyan-400"></i> Seleccionar Vistas de Evolución a Mostrar
+                    </h3>
+                    <div class="flex flex-wrap gap-4 text-xs font-medium">
+                        <label class="flex items-center space-x-2 cursor-pointer bg-slate-800 px-3 py-2 rounded-lg border border-slate-700 hover:border-cyan-500">
+                            <input type="checkbox" id="chkVerSemanal" checked onchange="actualizarVistasTerapeuta()" class="w-4 h-4 text-cyan-500 rounded bg-slate-900">
+                            <span class="text-slate-200 font-bold">Evolución Semanal (Gráficos + Matriz)</span>
+                        </label>
+                        <label class="flex items-center space-x-2 cursor-pointer bg-slate-800 px-3 py-2 rounded-lg border border-slate-700 hover:border-cyan-500">
+                            <input type="checkbox" id="chkVerMensual" checked onchange="actualizarVistasTerapeuta()" class="w-4 h-4 text-cyan-500 rounded bg-slate-900">
+                            <span class="text-slate-200 font-bold">Análisis Clínico Mensual</span>
+                        </label>
+                        <label class="flex items-center space-x-2 cursor-pointer bg-slate-800 px-3 py-2 rounded-lg border border-slate-700 hover:border-cyan-500">
+                            <input type="checkbox" id="chkVerHistorico" checked onchange="actualizarVistasTerapeuta()" class="w-4 h-4 text-cyan-500 rounded bg-slate-900">
+                            <span class="text-slate-200 font-bold">Evolución Total / Histórica</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- CONTROL DE ASIGNACIÓN DE TAREAS Y LIBERACIÓN DE INFORMACIÓN -->
+                <div class="bg-slate-900/90 border border-cyan-900/50 p-5 rounded-2xl space-y-3 no-print">
                     <h3 class="font-bold text-white text-sm flex items-center gap-2">
-                        <i class="fa-solid fa-sliders text-cyan-400"></i> Tareas Asignadas y Liberação de Información
+                        <i class="fa-solid fa-sliders text-cyan-400"></i> Tareas Asignadas y Liberación de Información
                     </h3>
                     <p class="text-xs text-slate-400">Marca las tareas que deseas liberar o visibilizar para el paciente en su portal personal:</p>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
@@ -236,7 +281,8 @@
                     </div>
                 </div>
 
-                <div class="space-y-6">
+                <!-- CONTENEDOR VISTA SEMANAL -->
+                <div id="containerVerSemanal" class="space-y-6">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div class="bg-slate-900/70 p-4 rounded-xl border border-slate-700">
                             <span class="text-xs text-slate-400 font-semibold uppercase">Promedio Disfrute (D) - Semanal</span>
@@ -255,6 +301,7 @@
                         </div>
                     </div>
 
+                    <!-- GRÁFICO SEMANAL -->
                     <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-700">
                         <h4 class="font-bold text-slate-200 text-sm mb-3 flex items-center gap-2">
                             <i class="fa-solid fa-chart-line text-cyan-400"></i> Evolución en la Semana Seleccionada
@@ -264,6 +311,7 @@
                         </div>
                     </div>
 
+                    <!-- MATRIZ HORA POR HORA -->
                     <div class="overflow-x-auto border border-slate-700 rounded-xl bg-slate-900/90">
                         <table class="w-full text-xs text-center border-collapse" id="tablaSupervision">
                             <thead class="bg-slate-800 text-cyan-300 font-bold">
@@ -275,39 +323,52 @@
                             </tbody>
                         </table>
                     </div>
+                </div>
 
-                    <div class="bg-slate-950 text-white p-6 rounded-2xl border border-cyan-900/60 space-y-4 shadow-2xl">
-                        <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                            <h3 class="font-bold text-lg text-cyan-300 flex items-center gap-2">
-                                <i class="fa-solid fa-chart-pie text-cyan-400"></i> Análisis Clínico Global y Mensual
-                            </h3>
-                            <span class="text-xs bg-cyan-950 text-cyan-300 border border-cyan-800 px-3 py-1 rounded-full font-semibold">Resumen Integrado</span>
+                <!-- CONTENEDOR ANÁLISIS MENSUAL -->
+                <div id="containerVerMensual" class="bg-slate-950 text-white p-6 rounded-2xl border border-cyan-900/60 space-y-4 shadow-2xl">
+                    <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                        <h3 class="font-bold text-lg text-cyan-300 flex items-center gap-2">
+                            <i class="fa-solid fa-chart-pie text-cyan-400"></i> Análisis Clínico Mensual
+                        </h3>
+                        <span class="text-xs bg-cyan-950 text-cyan-300 border border-cyan-800 px-3 py-1 rounded-full font-semibold">Resumen Integrado</span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-slate-300 text-xs">
+                        <div class="bg-slate-900 p-4 rounded-xl border border-slate-800">
+                            <span class="text-slate-400 uppercase font-semibold">Semanas Registradas</span>
+                            <div class="text-2xl font-bold text-white mt-1" id="statCantSemanasGlobal">0 semanas</div>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-slate-300 text-xs">
-                            <div class="bg-slate-900 p-4 rounded-xl border border-slate-800">
-                                <span class="text-slate-400 uppercase font-semibold">Semanas Registradas</span>
-                                <div class="text-2xl font-bold text-white mt-1" id="statCantSemanasGlobal">0 semanas</div>
-                            </div>
-                            <div class="bg-slate-900 p-4 rounded-xl border border-slate-800">
-                                <span class="text-slate-400 uppercase font-semibold">Tendencia de Ánimo Mensual</span>
-                                <div class="text-2xl font-bold text-emerald-400 mt-1" id="statTendenciaGlobal">Estable</div>
-                            </div>
-                            <div class="bg-slate-900 p-4 rounded-xl border border-slate-800">
-                                <span class="text-slate-400 uppercase font-semibold">Puntuación Media Global</span>
-                                <div class="text-2xl font-bold text-amber-400 mt-1" id="statMediaGlobal">D: 0.0 | I: 0.0</div>
-                            </div>
+                        <div class="bg-slate-900 p-4 rounded-xl border border-slate-800">
+                            <span class="text-slate-400 uppercase font-semibold">Tendencia de Ánimo Mensual</span>
+                            <div class="text-2xl font-bold text-emerald-400 mt-1" id="statTendenciaGlobal">Estable</div>
+                        </div>
+                        <div class="bg-slate-900 p-4 rounded-xl border border-slate-800">
+                            <span class="text-slate-400 uppercase font-semibold">Puntuación Media Mensual</span>
+                            <div class="text-2xl font-bold text-amber-400 mt-1" id="statMediaGlobal">D: 0.0 | I: 0.0</div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="space-y-2">
-                        <label class="block text-sm font-bold text-slate-200"><i class="fa-solid fa-user-pen text-cyan-400 mr-1"></i> Observaciones Clínicas y Acuerdos Terapéuticos</label>
-                        <textarea id="detNotasClinicas" rows="3" placeholder="Anota tus observaciones clínicas o acuerdos aquí..." class="w-full p-3 bg-slate-900 text-slate-100 border border-slate-700 rounded-xl focus:ring-2 focus:ring-cyan-500 text-sm" onchange="guardarNotasClinicas()"></textarea>
+                <!-- CONTENEDOR EVOLUCIÓN HISTÓRICA / TOTAL -->
+                <div id="containerVerHistorico" class="bg-slate-900/90 p-6 rounded-2xl border border-slate-700 space-y-4 shadow-xl">
+                    <h3 class="font-bold text-lg text-white flex items-center gap-2">
+                        <i class="fa-solid fa-chart-column text-cyan-400"></i> Evolución Total / Histórica (Todas las Semanas)
+                    </h3>
+                    <p class="text-xs text-slate-400">Curva de avance histórico comparando los promedios de Disfrute, Importancia y Ánimo acumulados semana a semana.</p>
+                    <div class="h-64">
+                        <canvas id="chartEvolucionHistorica"></canvas>
                     </div>
+                </div>
+
+                <!-- NOTAS CLINICAS -->
+                <div class="space-y-2">
+                    <label class="block text-sm font-bold text-slate-200"><i class="fa-solid fa-user-pen text-cyan-400 mr-1"></i> Observaciones Clínicas y Acuerdos Terapéuticos</label>
+                    <textarea id="detNotasClinicas" rows="3" placeholder="Anota tus observaciones clínicas o acuerdos aquí..." class="w-full p-3 bg-slate-900 text-slate-100 border border-slate-700 rounded-xl focus:ring-2 focus:ring-cyan-500 text-sm" onchange="guardarNotasClinicas()"></textarea>
                 </div>
             </div>
         </section>
 
-        <!-- VISTA 3: PORTAL DEL PACIENTE -->
+        <!-- VISTA 3: PORTAL DEL PACIENTE (DASHBOARD) -->
         <section id="secPacienteDashboard" class="hidden space-y-6">
             <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-950 text-white p-6 sm:p-8 rounded-2xl shadow-xl border border-cyan-900/40">
                 <div class="flex items-center gap-2 mb-2">
@@ -315,19 +376,23 @@
                     <span class="text-xs uppercase font-bold tracking-wider text-cyan-300">Portal del Paciente</span>
                 </div>
                 <h1 class="text-2xl sm:text-3xl font-extrabold" id="pacienteBienvenidaNombre">¡Hola, Paciente! 👋</h1>
-                <p class="text-slate-300 text-sm mt-1">Selecciona la semana activa y completa tus tareas asignadas.</p>
+                <p class="text-slate-300 text-sm mt-1">Selecciona cualquier semana para consultar o registrar tus actividades.</p>
                 
+                <!-- SELECTOR DE SEMANA LIBRE PARA PACIENTE Y ESTADO DE BLOQUEO -->
                 <div class="mt-4 flex flex-wrap items-center gap-3">
-                    <span class="text-xs text-cyan-300 font-semibold"><i class="fa-regular fa-calendar-days mr-1"></i> Bloque Semanal:</span>
+                    <span class="text-xs text-cyan-300 font-semibold"><i class="fa-regular fa-calendar-days mr-1"></i> Seleccionar Semana:</span>
                     <select id="selectSemanaPacienteDash" onchange="cambiarSemanaPaciente(this.value)" class="text-xs font-bold bg-slate-900 text-cyan-200 border border-slate-700 rounded-lg px-3 py-1.5 focus:outline-none">
                     </select>
+                    <span id="badgeEstadoBloqueoDash" class="text-xs px-2.5 py-1 rounded-full font-bold"></span>
                 </div>
             </div>
 
             <div class="space-y-4">
-                <h2 class="font-bold text-white text-lg flex items-center gap-2">
-                    <i class="fa-solid fa-clipboard-check text-cyan-400"></i> Tareas Asignadas
-                </h2>
+                <div class="flex justify-between items-center">
+                    <h2 class="font-bold text-white text-lg flex items-center gap-2">
+                        <i class="fa-solid fa-clipboard-check text-cyan-400"></i> Tareas Asignadas
+                    </h2>
+                </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div id="cardModMonitoreo" class="bg-slate-800/90 p-6 rounded-2xl border border-slate-700 shadow-lg hover:border-cyan-500 transition space-y-4">
@@ -382,24 +447,42 @@
             </div>
         </section>
 
-        <!-- VISTA 4: FORMULARIO PACIENTE MONITOREO -->
+        <!-- VISTA 4: FORMULARIO PACIENTE MONITOREO CON DESCARGAS EN LIMPIO / DILIGENCIADO Y CONTROL DE EDICIÓN -->
         <section id="secPacienteFormMonitoreo" class="hidden space-y-6">
             <div class="bg-slate-800/90 p-6 rounded-2xl shadow-lg border border-slate-700 space-y-4">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div>
-                        <button onclick="volverDashboardPaciente()" class="text-xs text-cyan-400 font-bold hover:underline mb-2 inline-flex items-center gap-1">
+                        <button onclick="volverDashboardPaciente()" class="text-xs text-cyan-400 font-bold hover:underline mb-2 inline-flex items-center gap-1 no-print">
                             <i class="fa-solid fa-arrow-left"></i> Volver a mis Tareas
                         </button>
                         <h1 class="text-2xl font-bold text-white">Formulario de Monitoreo Diario</h1>
                     </div>
                     
-                    <div class="flex items-center space-x-2 bg-slate-900 p-2 rounded-xl border border-slate-700">
-                        <span class="text-xs font-bold text-slate-300">Semana:</span>
-                        <select id="selectSemanaPacienteForm" onchange="cambiarSemanaPaciente(this.value)" class="text-xs font-bold bg-slate-800 text-cyan-200 border border-slate-700 rounded-lg px-2.5 py-1 focus:outline-none">
-                        </select>
+                    <div class="flex flex-wrap items-center gap-2 no-print">
+                        <div class="flex items-center space-x-2 bg-slate-900 p-2 rounded-xl border border-slate-700">
+                            <span class="text-xs font-bold text-slate-300">Semana:</span>
+                            <select id="selectSemanaPacienteForm" onchange="cambiarSemanaPaciente(this.value)" class="text-xs font-bold bg-slate-800 text-cyan-200 border border-slate-700 rounded-lg px-2.5 py-1 focus:outline-none">
+                            </select>
+                        </div>
+
+                        <!-- OPCIONES DE DESCARGA / IMPRESIÓN PARA EL PACIENTE -->
+                        <button onclick="imprimirPlantillaLimpia()" title="Descargar plantilla vacía para imprimir y llenar a mano" class="text-xs bg-amber-950/80 hover:bg-amber-900 text-amber-300 border border-amber-800 px-3 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shadow">
+                            <i class="fa-solid fa-file-arrow-down text-amber-400"></i> Descargar en Limpio (PDF)
+                        </button>
+
+                        <button onclick="exportarPDF()" title="Descargar o guardar como PDF lo que has diligenciado" class="text-xs bg-cyan-950/80 hover:bg-cyan-900 text-cyan-300 border border-cyan-800 px-3 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shadow">
+                            <i class="fa-solid fa-file-pdf text-cyan-400"></i> Descargar Diligenciado (PDF)
+                        </button>
                     </div>
                 </div>
 
+                <!-- ALERTA DE BLOQUEO DE EDICIÓN -->
+                <div id="bannerSemanaBloqueada" class="hidden p-3 bg-amber-950/90 border-l-4 border-amber-500 text-amber-200 rounded-r text-xs flex items-center gap-2">
+                    <i class="fa-solid fa-lock text-amber-400 text-base"></i>
+                    <span><strong>Semana Bloqueada:</strong> Tu terapeuta ha cerrado la edición para esta semana. Puedes consultar tus datos pero los campos están deshabilitados.</span>
+                </div>
+
+                <!-- GUÍA CLÍNICA DE SIGLAS -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2 text-xs">
                     <div class="bg-slate-900/80 border border-cyan-900/50 p-3 rounded-xl flex items-start gap-3">
                         <div class="bg-cyan-600 text-white font-black rounded-lg w-7 h-7 flex items-center justify-center text-sm shrink-0">D</div>
@@ -418,21 +501,24 @@
                 </div>
             </div>
 
-            <div class="flex overflow-x-auto space-x-2 pb-2 no-scrollbar" id="diasTabsContainer">
+            <!-- PESTAÑAS DE DÍAS -->
+            <div class="flex overflow-x-auto space-x-2 pb-2 no-scrollbar no-print" id="diasTabsContainer">
             </div>
 
+            <!-- MATRIZ HORA POR HORA -->
             <div class="bg-slate-800/90 rounded-2xl shadow-lg border border-slate-700 overflow-hidden">
                 <div class="p-4 bg-slate-900 border-b border-slate-700 flex justify-between items-center">
                     <h3 class="font-bold text-slate-200 text-sm flex items-center gap-2">
                         <i class="fa-regular fa-clock text-cyan-400"></i>
                         <span id="diaActualNombre">Día de la semana</span>
                     </h3>
-                    <span class="text-xs text-slate-400 font-medium" id="statusGuardadoText">Autoguardado continuo</span>
+                    <span class="text-xs text-slate-400 font-medium no-print" id="statusGuardadoText">Autoguardado continuo</span>
                 </div>
 
                 <div class="divide-y divide-slate-700/60" id="listaHorasPaciente">
                 </div>
 
+                <!-- ÁNIMO GENERAL DEL DÍA -->
                 <div class="p-6 bg-slate-900/90 border-t border-slate-700 space-y-3">
                     <div class="flex justify-between items-center">
                         <label class="text-sm font-bold text-slate-200 flex items-center gap-2">
@@ -457,14 +543,19 @@
         </section>
 
     </main>
+    </div>
 
-    <!-- FOOTER CON LEMA -->
-    <footer class="mt-12 py-6 border-t border-slate-800 text-center text-slate-500 text-xs no-print">
-        <div class="flex justify-center items-center space-x-2 mb-1">
-            <span class="text-cyan-400 font-serif font-bold text-sm">Ψ</span>
-            <span class="font-semibold text-slate-400">Plataforma Terapéutica</span>
+    <!-- FOOTER CON MEMBRETE Y DATOS DE CONTACTO OFICIALES DEL PDF -->
+    <footer class="mt-12 py-6 border-t border-slate-800 text-center text-slate-400 text-xs no-print bg-[#090e1a]">
+        <div class="max-w-7xl mx-auto px-4 space-y-2">
+            <div class="flex justify-center items-center space-x-2">
+                <span class="text-cyan-400 font-serif font-bold text-base">Ψ</span>
+                <span class="font-bold text-white text-sm">Oscar Steven Rodriguez Bustos</span>
+            </div>
+            <p class="text-cyan-300 font-semibold text-[11px]">PSICÓLOGO Y PSICOTERAPEUTA · T.P. N° 320214 COLPSIC</p>
+            <p class="text-slate-400 text-[11px]">Contacto: +57 322 852 9736 | psicologoorodriguez@gmail.com | Bogotá D.C., Colombia</p>
+            <p class="tracking-widest text-[9px] text-slate-500 uppercase font-bold mt-2">EQUILIBRIO • CRECIMIENTO • CONEXIÓN</p>
         </div>
-        <p class="tracking-widest text-[10px] text-cyan-500 uppercase font-semibold">EQUILIBRIO • CRECIMIENTO • CONEXIÓN</p>
     </footer>
 
     <!-- MODAL REGISTRO NUEVO PACIENTE -->
@@ -544,6 +635,7 @@
         let diaSeleccionadoIndex = 0;
         let saveTimeout = null;
         let chartInstance = null;
+        let chartHistoricoInstance = null;
         let modoPacienteGuardando = false;
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -593,7 +685,7 @@
                 }
             } else {
                 if (pass === '1234' || email) {
-                    cargarDashboardTerapeuta({ email: email || 'terapeuta@demo.com' });
+                    cargarDashboardTerapeuta({ email: email || 'psicologoorodriguez@gmail.com' });
                 } else {
                     errDiv.innerText = "Modo Demo: Ingresa cualquier correo y contraseña 1234";
                     errDiv.classList.remove('hidden');
@@ -702,7 +794,7 @@
             }
 
             cerrarModalNuevoPaciente();
-            cargarDashboardTerapeuta({ email: auth ? auth.currentUser.email : 'terapeuta@demo.com' });
+            cargarDashboardTerapeuta({ email: auth ? auth.currentUser.email : 'psicologoorodriguez@gmail.com' });
         }
 
         async function verDetalleClinico(pId) {
@@ -759,14 +851,52 @@
             keysFinal.forEach((sk, idx) => {
                 const opt = document.createElement('option');
                 opt.value = sk;
-                opt.innerText = `Semana ${idx + 1} (${formatBloqueSemanal(sk)})`;
+                const estaBloqueada = p.semanas[sk]?.bloqueada ? ' 🔒 (Bloqueada)' : ' 🔓 (Abierta)';
+                opt.innerText = `Semana ${idx + 1} (${formatBloqueSemanal(sk)})${estaBloqueada}`;
                 if (sk === semanaSeleccionadaKey) opt.selected = true;
                 selectSem.appendChild(opt);
             });
 
+            actualizarEstadoBotonBloqueo();
+            actualizarVistasTerapeuta();
+
             renderSupervisionTabla(p, semanaSeleccionadaKey);
             renderGraficoEvolucion(p, semanaSeleccionadaKey);
             renderAnalisisGlobalMensual(p);
+            renderGraficoHistoricoTotal(p);
+        }
+
+        function actualizarEstadoBotonBloqueo() {
+            const btn = document.getElementById('btnToggleBloqueoSemana');
+            const semData = pacienteData.semanas[semanaSeleccionadaKey];
+            if (semData && semData.bloqueada) {
+                btn.className = "text-xs bg-rose-950 text-rose-300 border border-rose-800 hover:bg-rose-900 px-3.5 py-2 rounded-xl font-semibold transition flex items-center gap-1.5 shadow";
+                btn.innerHTML = `<i class="fa-solid fa-lock text-rose-400"></i> Semana Bloqueada (Clic para Desbloquear)`;
+            } else {
+                btn.className = "text-xs bg-emerald-950 text-emerald-300 border border-emerald-800 hover:bg-emerald-900 px-3.5 py-2 rounded-xl font-semibold transition flex items-center gap-1.5 shadow";
+                btn.innerHTML = `<i class="fa-solid fa-lock-open text-emerald-400"></i> Semana Abierta (Clic para Bloquear)`;
+            }
+        }
+
+        function toggleBloqueoSemana() {
+            if (!pacienteData.semanas[semanaSeleccionadaKey]) {
+                pacienteData.semanas[semanaSeleccionadaKey] = crearSemanaVacia();
+            }
+            const actual = pacienteData.semanas[semanaSeleccionadaKey].bloqueada || false;
+            pacienteData.semanas[semanaSeleccionadaKey].bloqueada = !actual;
+
+            sincronizarGarantizado();
+            renderizarFichaClinica();
+        }
+
+        function actualizarVistasTerapeuta() {
+            const verSem = document.getElementById('chkVerSemanal').checked;
+            const verMen = document.getElementById('chkVerMensual').checked;
+            const verHis = document.getElementById('chkVerHistorico').checked;
+
+            document.getElementById('containerVerSemanal').style.display = verSem ? 'block' : 'none';
+            document.getElementById('containerVerMensual').style.display = verMen ? 'block' : 'none';
+            document.getElementById('containerVerHistorico').style.display = verHis ? 'block' : 'none';
         }
 
         function cambiarSemanaTerapeuta(semanaKey) {
@@ -894,6 +1024,56 @@
             });
         }
 
+        function renderGraficoHistoricoTotal(p) {
+            const ctx = document.getElementById('chartEvolucionHistorica').getContext('2d');
+            const semanasEntries = Object.entries(p.semanas || {});
+
+            const labels = [];
+            const histD = [];
+            const histI = [];
+            const histAnimo = [];
+
+            semanasEntries.forEach(([sk, sData], idx) => {
+                labels.push(`Sem ${idx + 1}`);
+                let totalD = 0, cD = 0, totalI = 0, cI = 0, totalAnimo = 0;
+                (sData.dias || []).forEach(d => {
+                    if (d.animo !== undefined) totalAnimo += d.animo;
+                    Object.values(d.horas || {}).forEach(h => {
+                        if (h.d !== '') { totalD += parseFloat(h.d); cD++; }
+                        if (h.i !== '') { totalI += parseFloat(h.i); cI++; }
+                    });
+                });
+                histD.push(cD > 0 ? (totalD / cD).toFixed(1) : 0);
+                histI.push(cI > 0 ? (totalI / cI).toFixed(1) : 0);
+                histAnimo.push((totalAnimo / 7).toFixed(1));
+            });
+
+            if (chartHistoricoInstance) chartHistoricoInstance.destroy();
+
+            chartHistoricoInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        { label: 'Promedio Disfrute (D)', data: histD, backgroundColor: '#38bdf8' },
+                        { label: 'Promedio Importancia (I)', data: histI, backgroundColor: '#34d399' },
+                        { label: 'Promedio Ánimo', data: histAnimo, backgroundColor: '#fbbf24' }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } },
+                        y: { min: 0, max: 10, ticks: { color: '#94a3b8' }, grid: { color: '#334155' } }
+                    },
+                    plugins: {
+                        legend: { labels: { color: '#e2e8f0' } }
+                    }
+                }
+            });
+        }
+
         function renderAnalisisGlobalMensual(p) {
             const semanas = Object.values(p.semanas || {});
             document.getElementById('statCantSemanasGlobal').innerText = `${semanas.length} semana(s)`;
@@ -951,7 +1131,7 @@ Esta acción liberará espacio y no se puede deshacer.`)) return;
             }
 
             volverListaPacientes();
-            cargarDashboardTerapeuta({ email: auth ? auth.currentUser.email : 'terapeuta@demo.com' });
+            cargarDashboardTerapeuta({ email: auth ? auth.currentUser.email : 'psicologoorodriguez@gmail.com' });
         }
 
         function iniciarModoPaciente(pId) {
@@ -966,7 +1146,8 @@ Esta acción liberará espacio y no se puede deshacer.`)) return;
                         localStorage.setItem('backup_' + pId, JSON.stringify(pacienteData));
                         
                         if (!modoPacienteGuardando && !document.getElementById('secPacienteFormMonitoreo').classList.contains('hidden')) {
-                            // Mantener interfaz sin saltos
+                            poblarSelectoresSemanaPaciente();
+                            actualizarEstadoFormularioPaciente();
                         } else if (!modoPacienteGuardando) {
                             mostrarDashboardPaciente();
                         }
@@ -1012,10 +1193,22 @@ Esta acción liberará espacio y no se puede deshacer.`)) return;
             sel1.innerHTML = ''; sel2.innerHTML = '';
 
             semKeys.forEach((sk, idx) => {
-                const optText = `Semana ${idx + 1} (${formatBloqueSemanal(sk)})`;
+                const bloqueada = pacienteData.semanas[sk]?.bloqueada;
+                const optText = `Semana ${idx + 1} (${formatBloqueSemanal(sk)})${bloqueada ? ' 🔒 (Bloqueada)' : ''}`;
                 sel1.innerHTML += `<option value="${sk}" ${sk === semanaSeleccionadaKey ? 'selected' : ''}>${optText}</option>`;
                 sel2.innerHTML += `<option value="${sk}" ${sk === semanaSeleccionadaKey ? 'selected' : ''}>${optText}</option>`;
             });
+
+            // Actualizar badge en dashboard
+            const esBloqueada = pacienteData.semanas[semanaSeleccionadaKey]?.bloqueada;
+            const badge = document.getElementById('badgeEstadoBloqueoDash');
+            if (esBloqueada) {
+                badge.className = "text-xs px-2.5 py-1 rounded-full font-bold bg-amber-950 text-amber-300 border border-amber-800";
+                badge.innerText = "🔒 Semana Cerrada (Solo lectura)";
+            } else {
+                badge.className = "text-xs px-2.5 py-1 rounded-full font-bold bg-emerald-950 text-emerald-300 border border-emerald-800";
+                badge.innerText = "🔓 Semana Habilitada para Edición";
+            }
         }
 
         function cambiarSemanaPaciente(semKey) {
@@ -1071,6 +1264,7 @@ Esta acción liberará espacio y no se puede deshacer.`)) return;
 
             const semanaData = pacienteData.semanas[semanaSeleccionadaKey] || crearSemanaVacia();
             const diaData = semanaData.dias[diaIdx] || { horas: {}, animo: 5 };
+            const esBloqueada = semanaData.bloqueada || false;
 
             const listContainer = document.getElementById('listaHorasPaciente');
             listContainer.innerHTML = '';
@@ -1084,21 +1278,21 @@ Esta acción liberará espacio y no se puede deshacer.`)) return;
                         ${h}
                     </div>
                     <div class="flex-1 w-full">
-                        <input type="text" value="${escapeHtml(item.act)}" placeholder="¿Qué actividad realizaste?" 
-                            class="w-full px-3 py-1.5 bg-slate-900 text-slate-100 border border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-cyan-500 focus:outline-none"
+                        <input type="text" value="${escapeHtml(item.act)}" ${esBloqueada ? 'disabled' : ''} placeholder="¿Qué actividad realizaste?" 
+                            class="w-full px-3 py-1.5 bg-slate-900 text-slate-100 border border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-cyan-500 focus:outline-none disabled:opacity-60 disabled:cursor-not-allowed"
                             oninput="guardarEntradaHora('${h}', 'act', this.value)">
                     </div>
                     <div class="flex items-center space-x-3 w-full sm:w-auto shrink-0">
                         <div class="flex items-center space-x-1">
                             <span class="text-xs font-bold text-cyan-300 bg-cyan-950 px-2 py-1 rounded border border-cyan-800">D</span>
-                            <input type="number" min="0" max="10" value="${item.d}" placeholder="0-10" 
-                                class="w-12 text-center py-1 bg-slate-900 border border-slate-700 rounded-lg text-sm font-bold text-cyan-400 focus:ring-2 focus:ring-cyan-500"
+                            <input type="number" min="0" max="10" value="${item.d}" ${esBloqueada ? 'disabled' : ''} placeholder="0-10" 
+                                class="w-12 text-center py-1 bg-slate-900 border border-slate-700 rounded-lg text-sm font-bold text-cyan-400 focus:ring-2 focus:ring-cyan-500 disabled:opacity-60 disabled:cursor-not-allowed"
                                 oninput="guardarEntradaHora('${h}', 'd', this.value)">
                         </div>
                         <div class="flex items-center space-x-1">
                             <span class="text-xs font-bold text-emerald-300 bg-emerald-950 px-2 py-1 rounded border border-emerald-800">I</span>
-                            <input type="number" min="0" max="10" value="${item.i}" placeholder="0-10" 
-                                class="w-12 text-center py-1 bg-slate-900 border border-slate-700 rounded-lg text-sm font-bold text-emerald-400 focus:ring-2 focus:ring-cyan-500"
+                            <input type="number" min="0" max="10" value="${item.i}" ${esBloqueada ? 'disabled' : ''} placeholder="0-10" 
+                                class="w-12 text-center py-1 bg-slate-900 border border-slate-700 rounded-lg text-sm font-bold text-emerald-400 focus:ring-2 focus:ring-cyan-500 disabled:opacity-60 disabled:cursor-not-allowed"
                                 oninput="guardarEntradaHora('${h}', 'i', this.value)">
                         </div>
                     </div>
@@ -1106,11 +1300,26 @@ Esta acción liberará espacio y no se puede deshacer.`)) return;
                 listContainer.appendChild(row);
             });
 
-            document.getElementById('inputAnimoDia').value = diaData.animo !== undefined ? diaData.animo : 5;
+            const animoSlider = document.getElementById('inputAnimoDia');
+            animoSlider.value = diaData.animo !== undefined ? diaData.animo : 5;
+            animoSlider.disabled = esBloqueada;
+
             document.getElementById('animoValueDisplay').innerText = `${diaData.animo !== undefined ? diaData.animo : 5} / 10`;
+
+            actualizarEstadoFormularioPaciente();
+        }
+
+        function actualizarEstadoFormularioPaciente() {
+            const semanaData = pacienteData.semanas[semanaSeleccionadaKey] || {};
+            const esBloqueada = semanaData.bloqueada || false;
+            const banner = document.getElementById('bannerSemanaBloqueada');
+            if (esBloqueada) banner.classList.remove('hidden');
+            else banner.classList.add('hidden');
         }
 
         function guardarEntradaHora(hora, campo, valor) {
+            if (pacienteData.semanas[semanaSeleccionadaKey]?.bloqueada) return;
+
             modoPacienteGuardando = true;
             if (!pacienteData.semanas[semanaSeleccionadaKey]) {
                 pacienteData.semanas[semanaSeleccionadaKey] = crearSemanaVacia();
@@ -1126,6 +1335,8 @@ Esta acción liberará espacio y no se puede deshacer.`)) return;
         }
 
         function actualizarAnimoDia(valor) {
+            if (pacienteData.semanas[semanaSeleccionadaKey]?.bloqueada) return;
+
             modoPacienteGuardando = true;
             document.getElementById('animoValueDisplay').innerText = `${valor} / 10`;
             if (!pacienteData.semanas[semanaSeleccionadaKey]) {
@@ -1176,6 +1387,21 @@ Esta acción liberará espacio y no se puede deshacer.`)) return;
 
         function exportarPDF() { window.print(); }
 
+        function imprimirPlantillaLimpia() {
+            // Limpia temporalmente inputs para impresión en limpio
+            const inputs = document.querySelectorAll('#listaHorasPaciente input');
+            const prevValues = [];
+            inputs.forEach(i => {
+                prevValues.push(i.value);
+                i.value = '';
+            });
+            window.print();
+            // Restaura valores
+            inputs.forEach((i, idx) => {
+                i.value = prevValues[idx];
+            });
+        }
+
         function ocultarTodasLasSecciones() {
             document.getElementById('secLoginTerapeuta').classList.add('hidden');
             document.getElementById('secPanelTerapeuta').classList.add('hidden');
@@ -1191,7 +1417,7 @@ Esta acción liberará espacio y no se puede deshacer.`)) return;
                 HORAS_12H.forEach(h => horas[h] = { act: '', d: '', i: '' });
                 dias.push({ horas, animo: 5 });
             }
-            return { dias };
+            return { dias, bloqueada: false };
         }
 
         function formatBloqueSemanal(fechaStr) {
