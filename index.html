@@ -68,7 +68,7 @@
                 <i class="fa-solid fa-triangle-exclamation text-amber-600 text-xl mr-3 mt-0.5"></i>
                 <div>
                     <h4 class="font-bold">Modo de Demostración Local (Firebase sin configurar)</h4>
-                    <p class="mt-0.5 text-xs">Para conectar a Firebase en Modo Producción, reemplaza el objeto <code>firebaseConfig</code> en este archivo HTML.</p>
+                    <p class="mt-0.5 text-xs">Para conectar a Firebase en Modo Producción, verifica tus credenciales en las primeras líneas de este archivo HTML.</p>
                 </div>
             </div>
         </div>
@@ -80,7 +80,7 @@
                     <i class="fa-solid fa-user-shield"></i>
                 </div>
                 <h2 class="text-2xl font-bold text-slate-800">Acceso Profesional</h2>
-                <p class="text-slate-500 text-sm">Ingresa con tu correo y contraseña</p>
+                <p class="text-slate-500 text-sm">Ingresa con tu correo y contraseña registrados</p>
             </div>
             <form id="formLogin" onsubmit="loginTerapeuta(event)" class="space-y-4">
                 <div>
@@ -384,7 +384,7 @@
         </div>
     </div>
 
-    <!-- SCRIPT PRINCIPAL -->
+    <!-- SCRIPT PRINCIPAL CON TUS CREDENCIALES EXACTAS -->
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyApMHM-PlfHaqnfgOkRnVu79NVe3C3hcXI",
@@ -401,12 +401,13 @@
         let unsubscribeRealtime = null;
 
         try {
-            if (firebaseConfig.apiKey !== "TU_API_KEY") {
+            if (firebaseConfig.apiKey && firebaseConfig.apiKey !== "TU_API_KEY") {
                 firebase.initializeApp(firebaseConfig);
                 db = firebase.firestore();
                 auth = firebase.auth();
                 firebaseActivo = true;
-                document.getElementById('firebaseAlert').classList.add('hidden');
+                const alertEl = document.getElementById('firebaseAlert');
+                if (alertEl) alertEl.classList.add('hidden');
             }
         } catch (e) {
             console.warn("Firebase no inicializado.", e);
@@ -468,7 +469,7 @@
                     const res = await auth.signInWithEmailAndPassword(email, pass);
                     cargarDashboardTerapeuta(res.user);
                 } catch (err) {
-                    errDiv.innerText = "Error: " + err.message;
+                    errDiv.innerText = "Error al iniciar sesión: " + err.message;
                     errDiv.classList.remove('hidden');
                 }
             } else {
@@ -495,8 +496,12 @@
 
             let pacientes = [];
             if (firebaseActivo) {
-                const snapshot = await db.collection('pacientes').get();
-                snapshot.forEach(doc => pacientes.push({ id: doc.id, ...doc.data() }));
+                try {
+                    const snapshot = await db.collection('pacientes').get();
+                    snapshot.forEach(doc => pacientes.push({ id: doc.id, ...doc.data() }));
+                } catch(e) {
+                    console.error("Error al cargar pacientes de Firestore:", e);
+                }
             } else {
                 const localData = localStorage.getItem('demo_pacientes');
                 pacientes = localData ? JSON.parse(localData) : getPacientesEjemplo();
@@ -511,7 +516,7 @@
             tbody.innerHTML = '';
 
             if (pacientes.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-400">No hay pacientes registrados.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-400">No hay pacientes registrados aún. Haz clic en "Registrar Nuevo Paciente".</td></tr>`;
                 return;
             }
 
@@ -549,8 +554,7 @@
 
         function copiarEnlace(url) {
             navigator.clipboard.writeText(url);
-            alert("¡Enlace único copiado al portapapeles!
-Puedes enviárselo por WhatsApp a tu paciente.");
+            alert("¡Enlace único copiado al portapapeles! Reenvíalo a tu paciente.");
         }
 
         function abrirModalNuevoPaciente() { document.getElementById('modalNuevoPaciente').classList.remove('hidden'); }
@@ -596,7 +600,7 @@ Puedes enviárselo por WhatsApp a tu paciente.");
                         localStorage.setItem('backup_' + pId, JSON.stringify(pacienteData));
                         mostrarDashboardPaciente();
                     } else {
-                        alert("El enlace no existe o ha sido eliminado.");
+                        alert("El enlace no existe o fue eliminado.");
                     }
                 }, err => {
                     console.error("Error en tiempo real:", err);
