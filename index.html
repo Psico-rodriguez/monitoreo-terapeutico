@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plataforma Terapéutica - Monitoreo Diario</title>
+    <title>Plataforma Terapéutica - Monitoreo y Gestión Clínica</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Firebase SDKs -->
+    <!-- Firebase SDKs (Compat version) -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -33,7 +33,7 @@
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans min-h-screen">
 
-    <!-- BARRA SUPERIOR CON ESTADO EN TIEMPO REAL -->
+    <!-- BARRA SUPERIOR -->
     <nav class="bg-indigo-700 text-white shadow-md no-print sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-3 cursor-pointer" onclick="volverDashboardPaciente()">
@@ -62,13 +62,13 @@
 
     <main class="max-w-7xl mx-auto p-4 md:p-6">
 
-        <!-- ALERTA CONFIGURACIÓN FIREBASE -->
+        <!-- ALERTA FIREBASE -->
         <div id="firebaseAlert" class="mb-6 p-4 bg-amber-50 border-l-4 border-amber-500 text-amber-900 rounded-r shadow-sm text-sm">
             <div class="flex items-start">
                 <i class="fa-solid fa-triangle-exclamation text-amber-600 text-xl mr-3 mt-0.5"></i>
                 <div>
-                    <h4 class="font-bold">Modo de Demostración Local (Firebase sin configurar)</h4>
-                    <p class="mt-0.5 text-xs">Para conectar a Firebase en Modo Producción, verifica tus credenciales en las primeras líneas de este archivo HTML.</p>
+                    <h4 class="font-bold">Modo de Demostración Local (Firebase no conectado)</h4>
+                    <p class="mt-0.5 text-xs">Para sincronizar en tiempo real con Firebase Producción, verifica tus claves en la constante <code>firebaseConfig</code> del código HTML.</p>
                 </div>
             </div>
         </div>
@@ -80,7 +80,7 @@
                     <i class="fa-solid fa-user-shield"></i>
                 </div>
                 <h2 class="text-2xl font-bold text-slate-800">Acceso Profesional</h2>
-                <p class="text-slate-500 text-sm">Ingresa con tu correo y contraseña registrados</p>
+                <p class="text-slate-500 text-sm">Ingresa con tus credenciales clínicas autorizadas</p>
             </div>
             <form id="formLogin" onsubmit="loginTerapeuta(event)" class="space-y-4">
                 <div>
@@ -98,33 +98,33 @@
             </form>
         </section>
 
-        <!-- VISTA 2: PANEL DEL TERAPEUTA -->
+        <!-- VISTA 2: PANEL GENERAL DEL TERAPEUTA (SOLO LISTA DE PACIENTES) -->
         <section id="secPanelTerapeuta" class="hidden space-y-6">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
                 <div>
-                    <h1 class="text-2xl font-bold text-slate-800"><i class="fa-solid fa-users text-indigo-600 mr-2"></i>Panel del Terapeuta</h1>
-                    <p class="text-slate-500 text-sm">Supervisión clínica en tiempo real y asignación de tareas por paciente.</p>
+                    <h1 class="text-2xl font-bold text-slate-800"><i class="fa-solid fa-users text-indigo-600 mr-2"></i>Panel de Pacientes</h1>
+                    <p class="text-slate-500 text-sm">Selecciona un paciente para desplegar su ficha clínica completa, tareas e informes mensuales.</p>
                 </div>
                 <button onclick="abrirModalNuevoPaciente()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-xl font-medium shadow-sm transition flex items-center gap-2 text-sm">
                     <i class="fa-solid fa-user-plus"></i> Registrar Nuevo Paciente
                 </button>
             </div>
 
-            <!-- TABLA DE PACIENTES -->
+            <!-- TABLA PRINCIPAL DE PACIENTES -->
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
                 <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
-                    <h3 class="font-bold text-slate-700 text-sm">Pacientes Activos</h3>
-                    <span id="cantPacientes" class="text-xs bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full font-bold">0 pacientes</span>
+                    <h3 class="font-bold text-slate-700 text-sm">Directorio de Pacientes</h3>
+                    <span id="cantPacientes" class="text-xs bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full font-bold">0 paciente(s)</span>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="bg-slate-100/70 text-slate-600 text-xs uppercase tracking-wider">
-                                <th class="p-4">Paciente</th>
-                                <th class="p-4">Bloque Semanal</th>
-                                <th class="p-4">Tareas Asignadas</th>
-                                <th class="p-4">Enlace del Paciente (Reenviar)</th>
-                                <th class="p-4 text-center">Acciones</th>
+                                <th class="p-4">Paciente (Nombres y Apellidos)</th>
+                                <th class="p-4">Edad</th>
+                                <th class="p-4">Fecha Nacimiento</th>
+                                <th class="p-4">Enlace de Registro (WhatsApp)</th>
+                                <th class="p-4 text-center">Acción</th>
                             </tr>
                         </thead>
                         <tbody id="tablaPacientesBody" class="divide-y divide-slate-100 text-sm">
@@ -132,34 +132,60 @@
                     </table>
                 </div>
             </div>
+        </section>
 
-            <!-- FICHA DE SUPERVISIÓN EN TIEMPO REAL -->
-            <div id="detallePacienteCard" class="hidden bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-6">
+        <!-- VISTA DETALLE DEL PACIENTE (SE DESPLIEGA AL SELECCIONAR UN PACIENTE) -->
+        <section id="secDetallePacienteTerapeuta" class="hidden space-y-6">
+            <button onclick="volverListaPacientes()" class="inline-flex items-center gap-2 text-xs font-bold text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 px-3.5 py-2 rounded-xl transition border border-indigo-200">
+                <i class="fa-solid fa-arrow-left"></i> Volver a la Lista de Pacientes
+            </button>
+
+            <!-- CARD FICHA PERSONAL DEL PACIENTE -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-6">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b pb-4 gap-4">
                     <div>
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs uppercase font-bold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-md">Ficha Clínica en Vivo</span>
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-xs uppercase font-bold text-indigo-600 bg-indigo-50 px-2.5 py-0.5 rounded-md">Ficha Clínica Individual</span>
                             <span class="text-xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold animate-pulse"><i class="fa-solid fa-signal mr-1"></i>Tiempo Real</span>
                         </div>
-                        <h2 id="detNombrePaciente" class="text-2xl font-bold text-slate-800 mt-1">Nombre Paciente</h2>
-                        <p id="detRangoSemana" class="text-slate-500 text-sm"><i class="fa-regular fa-calendar mr-1"></i> Bloque Semanal</p>
+                        <h2 id="detNombrePaciente" class="text-2xl font-bold text-slate-800">Nombre Completo</h2>
+                        <div class="flex flex-wrap items-center gap-4 text-xs text-slate-500 mt-2">
+                            <span><i class="fa-solid fa-cake-candles text-indigo-500 mr-1"></i> <strong id="detEdadPaciente">0</strong> años</span>
+                            <span><i class="fa-regular fa-calendar-days text-indigo-500 mr-1"></i> Nacimiento: <span id="detFechaNacPaciente">--/--/----</span></span>
+                            <span><i class="fa-solid fa-link text-indigo-500 mr-1"></i> ID Enlace: <code id="detIdPaciente" class="bg-slate-100 px-1 py-0.5 rounded">---</code></span>
+                        </div>
                     </div>
                     <div class="flex flex-wrap gap-2">
                         <button onclick="exportarPDF()" class="bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 px-3.5 py-2 rounded-xl text-sm font-medium transition flex items-center gap-1.5">
-                            <i class="fa-solid fa-file-pdf text-rose-500"></i> Descargar / Imprimir PDF
+                            <i class="fa-solid fa-file-pdf text-rose-500"></i> Descargar Reporte PDF
                         </button>
                         <button onclick="liberarEspacioPaciente()" class="bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 px-3.5 py-2 rounded-xl text-sm font-medium transition flex items-center gap-1.5">
-                            <i class="fa-solid fa-trash-can"></i> Liberar Espacio (Borrar)
+                            <i class="fa-solid fa-trash-can"></i> Eliminar Paciente
                         </button>
                     </div>
                 </div>
 
-                <!-- CONFIGURACIÓN DE TAREAS VISIBLES -->
-                <div class="bg-indigo-50/50 border border-indigo-100 p-5 rounded-2xl space-y-3">
+                <!-- SELECTOR DE BLOQUE SEMANAL -->
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <div class="flex items-center gap-3">
+                        <i class="fa-regular fa-calendar-check text-indigo-600 text-xl"></i>
+                        <div>
+                            <span class="text-xs font-semibold text-slate-500 uppercase">Seleccionar Bloque Semanal</span>
+                            <select id="selectSemanaTerapeuta" onchange="cambiarSemanaTerapeuta(this.value)" class="block text-sm font-bold text-slate-800 bg-white border border-slate-300 rounded-lg px-3 py-1.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none mt-0.5">
+                            </select>
+                        </div>
+                    </div>
+                    <button onclick="crearNuevoBloqueSemanalTerapeuta()" class="text-xs bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-3.5 py-2 rounded-xl transition shadow-sm flex items-center gap-1.5">
+                        <i class="fa-solid fa-plus"></i> Habilitar Nueva Semana
+                    </button>
+                </div>
+
+                <!-- CONTROL DE ASIGNACIÓN DE TAREAS Y LIBERACIÓN DE INFORMACIÓN -->
+                <div class="bg-indigo-50/60 border border-indigo-100 p-5 rounded-2xl space-y-3">
                     <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
-                        <i class="fa-solid fa-sliders text-indigo-600"></i> Asignación de Tareas y Módulos Visibles
+                        <i class="fa-solid fa-sliders text-indigo-600"></i> Tareas Asignadas y Liberación de Información
                     </h3>
-                    <p class="text-xs text-slate-500">Marca las tareas que deseas habilitar en la pantalla principal del paciente:</p>
+                    <p class="text-xs text-slate-500">Configura qué módulos y tareas deseas liberar o visibilizar para el paciente en su portal personal:</p>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
                         <label class="flex items-center p-3 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-indigo-300 transition">
                             <input type="checkbox" id="chkModMonitoreo" onchange="toggleModuloAsignado('monitoreo')" class="w-4 h-4 text-indigo-600 rounded">
@@ -176,35 +202,35 @@
                     </div>
                 </div>
 
-                <!-- MÉTRICAS CLÍNICAS -->
+                <!-- METRICAS DE LA SEMANA SELECCIONADA -->
                 <div class="space-y-6">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                            <span class="text-xs text-slate-500 font-semibold uppercase">Promedio Disfrute (D)</span>
+                            <span class="text-xs text-slate-500 font-semibold uppercase">Promedio Disfrute (D) - Semanal</span>
                             <div class="text-3xl font-extrabold text-indigo-600 mt-1" id="statAvgD">0.0 / 10</div>
                             <p class="text-xs text-slate-400 mt-1">Placer / Gozo (0 a 10)</p>
                         </div>
                         <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                            <span class="text-xs text-slate-500 font-semibold uppercase">Promedio Importancia (I)</span>
+                            <span class="text-xs text-slate-500 font-semibold uppercase">Promedio Importancia (I) - Semanal</span>
                             <div class="text-3xl font-extrabold text-emerald-600 mt-1" id="statAvgI">0.0 / 10</div>
-                            <p class="text-xs text-slate-400 mt-1">Valor / Sensación de logro (0 a 10)</p>
+                            <p class="text-xs text-slate-400 mt-1">Valor / Logro (0 a 10)</p>
                         </div>
                         <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
                             <span class="text-xs text-slate-500 font-semibold uppercase">Ánimo General Promedio</span>
                             <div class="text-3xl font-extrabold text-amber-500 mt-1" id="statAvgAnimo">0.0 / 10</div>
-                            <p class="text-xs text-slate-400 mt-1">Evaluación global del día</p>
+                            <p class="text-xs text-slate-400 mt-1">Evaluación global percibida</p>
                         </div>
                     </div>
 
-                    <!-- GRÁFICO DE TENDENCIA -->
+                    <!-- GRÁFICO SEMANAL -->
                     <div class="bg-white p-4 rounded-xl border border-slate-200">
-                        <h4 class="font-bold text-slate-700 text-sm mb-3"><i class="fa-solid fa-chart-line text-indigo-500 mr-1"></i> Evolución Semanal de Disfrute, Importancia y Ánimo</h4>
+                        <h4 class="font-bold text-slate-700 text-sm mb-3"><i class="fa-solid fa-chart-line text-indigo-500 mr-1"></i> Evolución en la Semana Seleccionada</h4>
                         <div class="h-64">
                             <canvas id="chartEvolucion"></canvas>
                         </div>
                     </div>
 
-                    <!-- MATRIZ CLÍNICA 12 HORAS -->
+                    <!-- MATRIZ CLINICA HORA POR HORA (FORMATO 12 HORAS) -->
                     <div class="overflow-x-auto border rounded-xl">
                         <table class="w-full text-xs text-center border-collapse" id="tablaSupervision">
                             <thead class="bg-slate-100 text-slate-700 font-bold">
@@ -217,24 +243,51 @@
                         </table>
                     </div>
 
-                    <!-- NOTAS CLÍNICAS -->
+                    <!-- SECCIÓN DE ANÁLISIS GLOBAL Y MENSUAL -->
+                    <div class="bg-slate-900 text-white p-6 rounded-2xl space-y-4">
+                        <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                            <h3 class="font-bold text-lg text-indigo-300 flex items-center gap-2">
+                                <i class="fa-solid fa-chart-pie text-indigo-400"></i> Análisis Clinico Global y Mensual
+                            </h3>
+                            <span class="text-xs bg-indigo-950 text-indigo-300 border border-indigo-700 px-3 py-1 rounded-full font-semibold">Resumen Integrado</span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-slate-300 text-xs">
+                            <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700">
+                                <span class="text-slate-400 uppercase font-semibold">Semanas Registradas</span>
+                                <div class="text-2xl font-bold text-white mt-1" id="statCantSemanasGlobal">0 semanas</div>
+                            </div>
+                            <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700">
+                                <span class="text-slate-400 uppercase font-semibold">Tendencia de Ánimo Mensual</span>
+                                <div class="text-2xl font-bold text-emerald-400 mt-1" id="statTendenciaGlobal">Estable</div>
+                            </div>
+                            <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700">
+                                <span class="text-slate-400 uppercase font-semibold">Puntuación Media Global</span>
+                                <div class="text-2xl font-bold text-amber-400 mt-1" id="statMediaGlobal">D: 0.0 | I: 0.0</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- NOTAS CLINICAS -->
                     <div class="space-y-2">
-                        <label class="block text-sm font-bold text-slate-700"><i class="fa-solid fa-user-pen text-indigo-600 mr-1"></i> Observaciones Clínicas (Privado)</label>
-                        <textarea id="detNotasClinicas" rows="3" placeholder="Anota tus observaciones clínicas aquí..." class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-500 text-sm" onchange="guardarNotasClinicas()"></textarea>
+                        <label class="block text-sm font-bold text-slate-700"><i class="fa-solid fa-user-pen text-indigo-600 mr-1"></i> Observaciones Clínicas y Acuerdos Terapéuticos</label>
+                        <textarea id="detNotasClinicas" rows="3" placeholder="Anota tus notas privadas o acuerdos terapéuticos..." class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-500 text-sm" onchange="guardarNotasClinicas()"></textarea>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- VISTA 3: PORTAL DEL PACIENTE -->
+        <!-- VISTA 3: PORTAL DEL PACIENTE (DASHBOARD) -->
         <section id="secPacienteDashboard" class="hidden space-y-6">
             <div class="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white p-6 sm:p-8 rounded-2xl shadow-md">
                 <span class="text-xs uppercase font-bold tracking-wider bg-white/20 px-3 py-1 rounded-full text-indigo-100">Portal de Tareas Terapéuticas</span>
                 <h1 class="text-2xl sm:text-3xl font-extrabold mt-2" id="pacienteBienvenidaNombre">¡Hola, Paciente! 👋</h1>
-                <p class="text-indigo-100 text-sm mt-1">A continuación encontrarás tus registros y tareas asignadas para esta semana.</p>
-                <div class="mt-4 flex items-center text-xs bg-white/10 w-fit px-3 py-1.5 rounded-lg border border-white/20">
-                    <i class="fa-regular fa-calendar mr-2"></i>
-                    <span id="pacienteRangoSemanaHeader">Semana activa</span>
+                <p class="text-indigo-100 text-sm mt-1">Selecciona el bloque semanal e ingresa a tus tareas asignadas.</p>
+                
+                <!-- SELECTOR DE SEMANA PARA PACIENTE -->
+                <div class="mt-4 flex flex-wrap items-center gap-3">
+                    <span class="text-xs text-indigo-200 font-semibold"><i class="fa-regular fa-calendar-days mr-1"></i> Bloque Semanal:</span>
+                    <select id="selectSemanaPacienteDash" onchange="cambiarSemanaPaciente(this.value)" class="text-xs font-bold bg-white text-indigo-900 border border-indigo-300 rounded-lg px-3 py-1.5 focus:outline-none">
+                    </select>
                 </div>
             </div>
 
@@ -253,7 +306,7 @@
                         </div>
                         <div>
                             <h3 class="font-bold text-slate-800 text-base">1. Monitoreo Diario de Actividades</h3>
-                            <p class="text-xs text-slate-500 mt-1">Registra tus actividades hora a hora (formato 12h) evaluando el Disfrute (D) e Importancia (I).</p>
+                            <p class="text-xs text-slate-500 mt-1">Registra tus actividades hora a hora (formato 12h) evaluando Disfrute (D) e Importancia (I).</p>
                         </div>
                         <button onclick="abrirModuloMonitoreo()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-xl text-sm transition flex items-center justify-center gap-2">
                             <span>Ingresar y Diligenciar</span>
@@ -270,7 +323,7 @@
                         </div>
                         <div>
                             <h3 class="font-bold text-slate-800 text-base">2. Registro de Pensamientos (RPA)</h3>
-                            <p class="text-xs text-slate-500 mt-1">Anota situaciones, emociones y respuestas alternativas trabajadas en consulta.</p>
+                            <p class="text-xs text-slate-500 mt-1">Anota situaciones, emociones y respuestas alternativas acordadas en sesión.</p>
                         </div>
                         <button onclick="alert('Esta tarea está asignada. Sigue las indicaciones dadas por tu terapeuta en la sesión.')" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2.5 rounded-xl text-sm transition">
                             <span>Ver Indicaciones</span>
@@ -286,7 +339,7 @@
                         </div>
                         <div>
                             <h3 class="font-bold text-slate-800 text-base">3. Jerarquía de Exposición (SUDs)</h3>
-                            <p class="text-xs text-slate-500 mt-1">Registra la escala de ansiedad (0-100) antes y después de cada ejercicio conductual.</p>
+                            <p class="text-xs text-slate-500 mt-1">Registra la escala de malestar antes y después de cada ejercicio conductual.</p>
                         </div>
                         <button onclick="alert('Esta tarea está asignada. Sigue las indicaciones dadas por tu terapeuta en la sesión.')" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2.5 rounded-xl text-sm transition">
                             <span>Ver Indicaciones</span>
@@ -296,7 +349,7 @@
             </div>
         </section>
 
-        <!-- VISTA 4: FORMULARIO PACIENTE -->
+        <!-- VISTA 4: FORMULARIO PACIENTE MONITOREO -->
         <section id="secPacienteFormMonitoreo" class="hidden space-y-6">
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -306,17 +359,21 @@
                         </button>
                         <h1 class="text-2xl font-bold text-slate-800">Formulario de Monitoreo Diario</h1>
                     </div>
-                    <div class="flex items-center space-x-2 bg-slate-100 p-1.5 rounded-xl border border-slate-200">
-                        <span id="labelBloqueSemanal" class="text-xs font-bold text-slate-700 px-3 py-1">Semana Activa</span>
+                    
+                    <div class="flex items-center space-x-2 bg-slate-100 p-2 rounded-xl border border-slate-200">
+                        <span class="text-xs font-bold text-slate-600">Semana:</span>
+                        <select id="selectSemanaPacienteForm" onchange="cambiarSemanaPaciente(this.value)" class="text-xs font-bold bg-white text-slate-800 border border-slate-300 rounded-lg px-2.5 py-1 focus:outline-none">
+                        </select>
                     </div>
                 </div>
 
+                <!-- GUÍA CLÍNICA DE SIGLAS -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2 text-xs">
                     <div class="bg-indigo-50/70 border border-indigo-100 p-3 rounded-xl flex items-start gap-3">
                         <div class="bg-indigo-600 text-white font-black rounded-lg w-7 h-7 flex items-center justify-center text-sm shrink-0">D</div>
                         <div>
                             <span class="font-bold text-indigo-900">D = Disfrute (0 a 10)</span>
-                            <p class="text-indigo-700 mt-0.5">Grado de placer, gusto o satisfacción experimentado al realizar la actividad.</p>
+                            <p class="text-indigo-700 mt-0.5">Grado de placer, gusto o satisfacción al realizar la actividad.</p>
                         </div>
                     </div>
                     <div class="bg-emerald-50/70 border border-emerald-100 p-3 rounded-xl flex items-start gap-3">
@@ -329,21 +386,24 @@
                 </div>
             </div>
 
+            <!-- PESTAÑAS DE DÍAS -->
             <div class="flex overflow-x-auto space-x-2 pb-2 no-scrollbar" id="diasTabsContainer">
             </div>
 
+            <!-- MATRIZ HORA POR HORA (20 FRANJAS 12 HORAS) -->
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
                 <div class="p-4 bg-slate-50 border-b flex justify-between items-center">
                     <h3 class="font-bold text-slate-700 text-sm flex items-center gap-2">
                         <i class="fa-regular fa-clock text-indigo-600"></i>
                         <span id="diaActualNombre">Día de la semana</span>
                     </h3>
-                    <span class="text-xs text-slate-400 font-medium" id="statusGuardadoText">Autoguardado activado</span>
+                    <span class="text-xs text-slate-400 font-medium" id="statusGuardadoText">Autoguardado continuo</span>
                 </div>
 
                 <div class="divide-y divide-slate-100" id="listaHorasPaciente">
                 </div>
 
+                <!-- ÁNIMO GENERAL DEL DÍA CON ACLARACIÓN / DISCLAIMER ENFOCADO -->
                 <div class="p-6 bg-slate-50 border-t border-slate-200 space-y-3">
                     <div class="flex justify-between items-center">
                         <label class="text-sm font-bold text-slate-700 flex items-center gap-2">
@@ -351,6 +411,13 @@
                         </label>
                         <span id="animoValueDisplay" class="font-extrabold text-indigo-600 text-base">5 / 10</span>
                     </div>
+
+                    <!-- DISCLAIMER CLÍNICO SOLICITADO -->
+                    <div class="p-3 bg-amber-50/80 border border-amber-200 rounded-xl text-xs text-amber-900 flex items-start gap-2">
+                        <i class="fa-solid fa-circle-info text-amber-600 mt-0.5 text-sm shrink-0"></i>
+                        <span><strong>Nota importante:</strong> Esta calificación no se calcula matemáticamente a partir de las actividades. Está enfocada en que indiques subjetivamente <strong>cómo te sentiste en el día en su conjunto</strong>.</span>
+                    </div>
+
                     <input type="range" id="inputAnimoDia" min="0" max="10" step="1" value="5" class="w-full accent-indigo-600 cursor-pointer" oninput="actualizarAnimoDia(this.value)">
                     <div class="flex justify-between text-xs text-slate-400 font-semibold px-1">
                         <span>0 (Muy Bajo)</span>
@@ -363,14 +430,24 @@
 
     </main>
 
-    <!-- MODAL NUEVO PACIENTE -->
+    <!-- MODAL REGISTRO NUEVO PACIENTE -->
     <div id="modalNuevoPaciente" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 space-y-4">
             <h3 class="text-lg font-bold text-slate-800">Registrar Nuevo Paciente</h3>
             <form onsubmit="crearPaciente(event)" class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Nombre Completo del Paciente</label>
-                    <input type="text" id="nuevoNombrePaciente" required placeholder="Ej. Ana María Gómez" class="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm">
+                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Nombres y Apellidos</label>
+                    <input type="text" id="nuevoNombrePaciente" required placeholder="Ej. Ana María Gómez Pérez" class="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Edad</label>
+                        <input type="number" min="1" max="120" id="nuevaEdadPaciente" required placeholder="Ej. 28" class="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Fecha Nacimiento</label>
+                        <input type="date" id="nuevaFechaNacimiento" required class="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm">
+                    </div>
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Fecha de Inicio de Monitoreo</label>
@@ -378,13 +455,13 @@
                 </div>
                 <div class="flex justify-end space-x-3 pt-2">
                     <button type="button" onclick="cerrarModalNuevoPaciente()" class="px-4 py-2 text-slate-600 text-sm font-medium hover:bg-slate-100 rounded-xl">Cancelar</button>
-                    <button type="submit" class="px-4 py-2 bg-indigo-600 text-white text-sm font-semibold rounded-xl hover:bg-indigo-700">Crear y Generar Enlace</button>
+                    <button type="submit" class="px-4 py-2 bg-indigo-600 text-white text-sm font-semibold rounded-xl hover:bg-indigo-700">Crear Paciente</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- SCRIPT PRINCIPAL CON TUS CREDENCIALES EXACTAS -->
+    <!-- SCRIPT DE LÓGICA COMPLETA -->
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyApMHM-PlfHaqnfgOkRnVu79NVe3C3hcXI",
@@ -424,9 +501,11 @@
 
         let pacienteActualId = null;
         let pacienteData = null;
+        let semanaSeleccionadaKey = null;
         let diaSeleccionadoIndex = 0;
         let saveTimeout = null;
         let chartInstance = null;
+        let modoPacienteGuardando = false;
 
         window.addEventListener('DOMContentLoaded', () => {
             const params = new URLSearchParams(window.location.search);
@@ -452,6 +531,7 @@
             document.getElementById('nuevaFechaInicio').valueAsDate = new Date();
         });
 
+        // --- SISTEMA AUTENTICACIÓN TERAPEUTA ---
         function mostrarLoginTerapeuta() {
             ocultarTodasLasSecciones();
             document.getElementById('secLoginTerapeuta').classList.remove('hidden');
@@ -487,6 +567,7 @@
             window.location.href = window.location.pathname + '?mode=therapist';
         }
 
+        // --- PANEL PRINCIPAL DEL TERAPEUTA (LISTA LIMPIA DE PACIENTES) ---
         async function cargarDashboardTerapeuta(user) {
             ocultarTodasLasSecciones();
             document.getElementById('secPanelTerapeuta').classList.remove('hidden');
@@ -499,9 +580,7 @@
                 try {
                     const snapshot = await db.collection('pacientes').get();
                     snapshot.forEach(doc => pacientes.push({ id: doc.id, ...doc.data() }));
-                } catch(e) {
-                    console.error("Error al cargar pacientes de Firestore:", e);
-                }
+                } catch(e) { console.error("Error al cargar pacientes:", e); }
             } else {
                 const localData = localStorage.getItem('demo_pacientes');
                 pacientes = localData ? JSON.parse(localData) : getPacientesEjemplo();
@@ -523,20 +602,16 @@
             pacientes.forEach(p => {
                 const baseUrl = window.location.origin + window.location.pathname;
                 const enlacePaciente = `${baseUrl}?p=${p.id}`;
-                const rangoFecha = formatBloqueSemanal(p.fechaInicio || new Date());
-                const mods = p.modulosAsignados || ['monitoreo'];
 
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-50 transition";
                 tr.innerHTML = `
                     <td class="p-4 font-bold text-slate-800">${escapeHtml(p.nombre)}</td>
-                    <td class="p-4 text-xs text-slate-600"><i class="fa-regular fa-calendar mr-1 text-indigo-500"></i> ${rangoFecha}</td>
-                    <td class="p-4 text-xs">
-                        <span class="bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-full font-bold">${mods.length} tarea(s)</span>
-                    </td>
+                    <td class="p-4 text-xs text-slate-600">${p.edad || '--'} años</td>
+                    <td class="p-4 text-xs text-slate-600">${p.fechaNacimiento || '--'}</td>
                     <td class="p-4">
                         <div class="flex items-center space-x-2">
-                            <input type="text" readonly value="${enlacePaciente}" class="text-xs bg-slate-100 border p-1.5 rounded w-44 text-slate-500 truncate">
+                            <input type="text" readonly value="${enlacePaciente}" class="text-xs bg-slate-100 border p-1.5 rounded w-48 text-slate-500 truncate">
                             <button onclick="copiarEnlace('${enlacePaciente}')" class="text-xs bg-indigo-50 text-indigo-600 border border-indigo-200 hover:bg-indigo-100 px-2.5 py-1 rounded font-medium flex items-center gap-1">
                                 <i class="fa-regular fa-copy"></i> Copiar
                             </button>
@@ -544,7 +619,7 @@
                     </td>
                     <td class="p-4 text-center">
                         <button onclick="verDetalleClinico('${p.id}')" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-3.5 py-1.5 rounded-lg font-semibold shadow-sm">
-                            <i class="fa-solid fa-eye mr-1"></i> Ver Ficha
+                            <i class="fa-solid fa-folder-open mr-1"></i> Abrir Ficha
                         </button>
                     </td>
                 `;
@@ -554,7 +629,8 @@
 
         function copiarEnlace(url) {
             navigator.clipboard.writeText(url);
-            alert("¡Enlace único copiado al portapapeles! Reenvíalo a tu paciente.");
+            alert("¡Enlace del paciente copiado al portapapeles!
+Puedes enviárselo por WhatsApp.");
         }
 
         function abrirModalNuevoPaciente() { document.getElementById('modalNuevoPaciente').classList.remove('hidden'); }
@@ -563,12 +639,16 @@
         async function crearPaciente(e) {
             e.preventDefault();
             const nombre = document.getElementById('nuevoNombrePaciente').value.trim();
+            const edad = document.getElementById('nuevaEdadPaciente').value;
+            const fechaNac = document.getElementById('nuevaFechaNacimiento').value;
             const fechaStr = document.getElementById('nuevaFechaInicio').value;
             const pId = 'p_' + Math.random().toString(36).substr(2, 9);
 
             const nuevoPaciente = {
                 id: pId,
                 nombre: nombre,
+                edad: edad,
+                fechaNacimiento: fechaNac,
                 fechaInicio: fechaStr,
                 updatedAt: new Date().toISOString(),
                 notasClinicas: "",
@@ -588,192 +668,7 @@
             cargarDashboardTerapeuta({ email: auth ? auth.currentUser.email : 'terapeuta@demo.com' });
         }
 
-        function iniciarModoPaciente(pId) {
-            actualizarStatusSync("En línea", "bg-emerald-400");
-            document.getElementById('syncBadge').classList.remove('hidden');
-
-            if (firebaseActivo) {
-                if (unsubscribeRealtime) unsubscribeRealtime();
-                unsubscribeRealtime = db.collection('pacientes').doc(pId).onSnapshot(doc => {
-                    if (doc.exists) {
-                        pacienteData = doc.data();
-                        localStorage.setItem('backup_' + pId, JSON.stringify(pacienteData));
-                        mostrarDashboardPaciente();
-                    } else {
-                        alert("El enlace no existe o fue eliminado.");
-                    }
-                }, err => {
-                    console.error("Error en tiempo real:", err);
-                    cargarRespaldoLocalPaciente(pId);
-                });
-            } else {
-                cargarRespaldoLocalPaciente(pId);
-            }
-        }
-
-        function cargarRespaldoLocalPaciente(pId) {
-            let local = JSON.parse(localStorage.getItem('demo_pacientes') || '[]');
-            pacienteData = local.find(p => p.id === pId) || JSON.parse(localStorage.getItem('backup_' + pId) || 'null') || getPacientesEjemplo()[0];
-            mostrarDashboardPaciente();
-        }
-
-        function mostrarDashboardPaciente() {
-            ocultarTodasLasSecciones();
-            document.getElementById('secPacienteDashboard').classList.remove('hidden');
-            document.getElementById('pacienteBienvenidaNombre').innerText = `¡Hola, ${pacienteData.nombre}! 👋`;
-            document.getElementById('pacienteRangoSemanaHeader').innerText = "Semana: " + formatBloqueSemanal(pacienteData.fechaInicio);
-
-            const mods = pacienteData.modulosAsignados || ['monitoreo'];
-            document.getElementById('cardModMonitoreo').style.display = mods.includes('monitoreo') ? 'block' : 'none';
-            document.getElementById('cardModPensamientos').style.display = mods.includes('pensamientos') ? 'block' : 'none';
-            document.getElementById('cardModExposicion').style.display = mods.includes('exposicion') ? 'block' : 'none';
-        }
-
-        function abrirModuloMonitoreo() {
-            ocultarTodasLasSecciones();
-            document.getElementById('secPacienteFormMonitoreo').classList.remove('hidden');
-            renderDiasTabs();
-            cargarDiaPaciente(0);
-        }
-
-        function volverDashboardPaciente() {
-            if (pacienteData && pacienteActualId) {
-                mostrarDashboardPaciente();
-            }
-        }
-
-        function renderDiasTabs() {
-            const container = document.getElementById('diasTabsContainer');
-            container.innerHTML = '';
-            const fechaInicio = new Date(pacienteData.fechaInicio || new Date());
-
-            DIAS_NOMBRE.forEach((dia, idx) => {
-                const fechaDia = new Date(fechaInicio);
-                fechaDia.setDate(fechaDia.getDate() + idx);
-                const dateStr = fechaDia.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
-
-                const btn = document.createElement('button');
-                btn.className = `flex-1 min-w-[95px] py-2.5 px-3 rounded-xl border text-center transition ${idx === diaSeleccionadoIndex ? 'bg-indigo-600 text-white font-bold border-indigo-600 shadow-sm' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`;
-                btn.onclick = () => cargarDiaPaciente(idx);
-                btn.innerHTML = `
-                    <div class="text-[11px] uppercase tracking-wider">${dia}</div>
-                    <div class="text-xs font-semibold mt-0.5">${dateStr}</div>
-                `;
-                container.appendChild(btn);
-            });
-
-            document.getElementById('labelBloqueSemanal').innerText = formatBloqueSemanal(pacienteData.fechaInicio);
-        }
-
-        function cargarDiaPaciente(diaIdx) {
-            diaSeleccionadoIndex = diaIdx;
-            renderDiasTabs();
-
-            const fechaInicio = new Date(pacienteData.fechaInicio || new Date());
-            const fechaDia = new Date(fechaInicio);
-            fechaDia.setDate(fechaDia.getDate() + diaIdx);
-            document.getElementById('diaActualNombre').innerText = `${DIAS_NOMBRE[diaIdx]} ${fechaDia.getDate()} de ${fechaDia.toLocaleDateString('es-ES', {month:'long'})}`;
-
-            const semanaKey = pacienteData.fechaInicio;
-            const semanaData = pacienteData.semanas[semanaKey] || crearSemanaVacia();
-            const diaData = semanaData.dias[diaIdx] || { horas: {}, animo: 5 };
-
-            const listContainer = document.getElementById('listaHorasPaciente');
-            listContainer.innerHTML = '';
-
-            HORAS_12H.forEach(h => {
-                const item = diaData.horas[h] || { act: '', d: '', i: '' };
-                const row = document.createElement('div');
-                row.className = "p-3 sm:p-4 hover:bg-slate-50/80 transition flex flex-col sm:flex-row items-start sm:items-center gap-3";
-                row.innerHTML = `
-                    <div class="w-24 font-extrabold text-slate-700 text-xs bg-slate-100 px-2 py-1.5 rounded-lg text-center shrink-0">
-                        ${h}
-                    </div>
-                    <div class="flex-1 w-full">
-                        <input type="text" value="${escapeHtml(item.act)}" placeholder="¿Qué actividad realizaste?" 
-                            class="w-full px-3 py-1.5 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-                            onchange="guardarEntradaHora('${h}', 'act', this.value)">
-                    </div>
-                    <div class="flex items-center space-x-3 w-full sm:w-auto shrink-0">
-                        <div class="flex items-center space-x-1">
-                            <span class="text-xs font-bold text-indigo-700 bg-indigo-50 px-2 py-1 rounded border border-indigo-200">D</span>
-                            <input type="number" min="0" max="10" value="${item.d}" placeholder="0-10" 
-                                class="w-12 text-center py-1 border border-slate-200 rounded-lg text-sm font-bold text-indigo-600 focus:ring-2 focus:ring-indigo-500"
-                                onchange="guardarEntradaHora('${h}', 'd', this.value)">
-                        </div>
-                        <div class="flex items-center space-x-1">
-                            <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-1 rounded border border-emerald-200">I</span>
-                            <input type="number" min="0" max="10" value="${item.i}" placeholder="0-10" 
-                                class="w-12 text-center py-1 border border-slate-200 rounded-lg text-sm font-bold text-emerald-600 focus:ring-2 focus:ring-emerald-500"
-                                onchange="guardarEntradaHora('${h}', 'i', this.value)">
-                        </div>
-                    </div>
-                `;
-                listContainer.appendChild(row);
-            });
-
-            document.getElementById('inputAnimoDia').value = diaData.animo || 5;
-            document.getElementById('animoValueDisplay').innerText = `${diaData.animo || 5} / 10`;
-        }
-
-        function guardarEntradaHora(hora, campo, valor) {
-            const semanaKey = pacienteData.fechaInicio;
-            if (!pacienteData.semanas[semanaKey]) pacienteData.semanas[semanaKey] = crearSemanaVacia();
-            if (!pacienteData.semanas[semanaKey].dias[diaSeleccionadoIndex].horas[hora]) {
-                pacienteData.semanas[semanaKey].dias[diaSeleccionadoIndex].horas[hora] = { act: '', d: '', i: '' };
-            }
-
-            pacienteData.semanas[semanaKey].dias[diaSeleccionadoIndex].horas[hora][campo] = valor;
-            pacienteData.updatedAt = new Date().toISOString();
-
-            sincronizarGarantizado();
-        }
-
-        function actualizarAnimoDia(valor) {
-            document.getElementById('animoValueDisplay').innerText = `${valor} / 10`;
-            const semanaKey = pacienteData.fechaInicio;
-            pacienteData.semanas[semanaKey].dias[diaSeleccionadoIndex].animo = parseInt(valor);
-            pacienteData.updatedAt = new Date().toISOString();
-
-            sincronizarGarantizado();
-        }
-
-        function sincronizarGarantizado() {
-            localStorage.setItem('backup_' + pacienteActualId, JSON.stringify(pacienteData));
-            let local = JSON.parse(localStorage.getItem('demo_pacientes') || '[]');
-            const idx = local.findIndex(p => p.id === pacienteActualId);
-            if (idx !== -1) local[idx] = pacienteData;
-            else local.push(pacienteData);
-            localStorage.setItem('demo_pacientes', JSON.stringify(local));
-
-            actualizarStatusSync("Guardando...", "bg-amber-400");
-
-            clearTimeout(saveTimeout);
-            saveTimeout = setTimeout(async () => {
-                if (firebaseActivo) {
-                    try {
-                        await db.collection('pacientes').doc(pacienteActualId).set(pacienteData, { merge: true });
-                        actualizarStatusSync("Sincronizado", "bg-emerald-400");
-                    } catch (err) {
-                        console.error("Error al sincronizar con Firebase:", err);
-                        actualizarStatusSync("Guardado Local", "bg-amber-400");
-                    }
-                } else {
-                    actualizarStatusSync("Guardado Local", "bg-emerald-400");
-                }
-            }, 1500);
-        }
-
-        function actualizarStatusSync(texto, colorBg) {
-            const txtEl = document.getElementById('syncText');
-            const dotEl = document.getElementById('syncDot');
-            const statusLabel = document.getElementById('statusGuardadoText');
-
-            if (txtEl) txtEl.innerText = texto;
-            if (dotEl) dotEl.className = `w-2.5 h-2.5 rounded-full ${colorBg} animate-pulse`;
-            if (statusLabel) statusLabel.innerText = texto;
-        }
-
+        // --- FICHA DETALLADA DEL PACIENTE EN PANEL TERAPEUTA ---
         async function verDetalleClinico(pId) {
             pacienteActualId = pId;
 
@@ -792,11 +687,21 @@
             }
         }
 
+        function volverListaPacientes() {
+            if (unsubscribeRealtime) unsubscribeRealtime();
+            ocultarTodasLasSecciones();
+            document.getElementById('secPanelTerapeuta').classList.remove('hidden');
+        }
+
         function renderizarFichaClinica() {
             const p = pacienteData;
-            document.getElementById('detallePacienteCard').classList.remove('hidden');
-            document.getElementById('detNombrePaciente').innerText = p.nombre;
-            document.getElementById('detRangoSemana').innerText = "Semana: " + formatBloqueSemanal(p.fechaInicio);
+            ocultarTodasLasSecciones();
+            document.getElementById('secDetallePacienteTerapeuta').classList.remove('hidden');
+
+            document.getElementById('detNombrePaciente').innerText = p.nombre || "Paciente";
+            document.getElementById('detEdadPaciente').innerText = p.edad || "--";
+            document.getElementById('detFechaNacPaciente').innerText = p.fechaNacimiento || "--";
+            document.getElementById('detIdPaciente').innerText = p.id;
             document.getElementById('detNotasClinicas').value = p.notasClinicas || "";
 
             const mods = p.modulosAsignados || ['monitoreo'];
@@ -804,10 +709,48 @@
             document.getElementById('chkModPensamientos').checked = mods.includes('pensamientos');
             document.getElementById('chkModExposicion').checked = mods.includes('exposicion');
 
-            renderSupervisionTabla(p);
-            renderGraficoEvolucion(p);
+            // Poblar selector de semanas
+            const selectSem = document.getElementById('selectSemanaTerapeuta');
+            selectSem.innerHTML = '';
+            const semanasKeys = Object.keys(p.semanas || {});
+            if (semanasKeys.length === 0) {
+                p.semanas = { [p.fechaInicio || '2026-10-26']: crearSemanaVacia() };
+            }
+            const keysFinal = Object.keys(p.semanas);
+            if (!semanaSeleccionadaKey || !keysFinal.includes(semanaSeleccionadaKey)) {
+                semanaSeleccionadaKey = keysFinal[0];
+            }
 
-            document.getElementById('detallePacienteCard').scrollIntoView({ behavior: 'smooth' });
+            keysFinal.forEach((sk, idx) => {
+                const opt = document.createElement('option');
+                opt.value = sk;
+                opt.innerText = `Semana ${idx + 1} (${formatBloqueSemanal(sk)})`;
+                if (sk === semanaSeleccionadaKey) opt.selected = true;
+                selectSem.appendChild(opt);
+            });
+
+            renderSupervisionTabla(p, semanaSeleccionadaKey);
+            renderGraficoEvolucion(p, semanaSeleccionadaKey);
+            renderAnalisisGlobalMensual(p);
+        }
+
+        function cambiarSemanaTerapeuta(semanaKey) {
+            semanaSeleccionadaKey = semanaKey;
+            renderizarFichaClinica();
+        }
+
+        async function crearNuevoBloqueSemanalTerapeuta() {
+            const semanasKeys = Object.keys(pacienteData.semanas || {});
+            const ultimaKey = semanasKeys[semanasKeys.length - 1] || pacienteData.fechaInicio || '2026-10-26';
+            const dUltima = new Date(ultimaKey);
+            dUltima.setDate(dUltima.getDate() + 7);
+            const nuevaKeyStr = dUltima.toISOString().split('T')[0];
+
+            pacienteData.semanas[nuevaKeyStr] = crearSemanaVacia();
+            semanaSeleccionadaKey = nuevaKeyStr;
+            sincronizarGarantizado();
+            renderizarFichaClinica();
+            alert(`¡Nuevo bloque semanal (${formatBloqueSemanal(nuevaKeyStr)}) creado con éxito!`);
         }
 
         async function toggleModuloAsignado(modKey) {
@@ -819,13 +762,12 @@
             sincronizarGarantizado();
         }
 
-        function renderSupervisionTabla(p) {
-            const semanaKey = p.fechaInicio;
-            const semanaData = p.semanas[semanaKey] || crearSemanaVacia();
+        function renderSupervisionTabla(p, semKey) {
+            const semanaData = p.semanas[semKey] || crearSemanaVacia();
 
             const headerRow = document.getElementById('headerFechasSupervision');
             headerRow.innerHTML = `<th class="p-2 border bg-slate-200 min-w-[100px]">HORA (12h)</th>`;
-            const fechaInicio = new Date(p.fechaInicio || new Date());
+            const fechaInicio = new Date(semKey || new Date());
 
             DIAS_NOMBRE.forEach((dia, idx) => {
                 const f = new Date(fechaInicio);
@@ -873,10 +815,9 @@
             document.getElementById('statAvgAnimo').innerText = `${(totalAnimo / 7).toFixed(1)} / 10`;
         }
 
-        function renderGraficoEvolucion(p) {
+        function renderGraficoEvolucion(p, semKey) {
             const ctx = document.getElementById('chartEvolucion').getContext('2d');
-            const semanaKey = p.fechaInicio;
-            const semanaData = p.semanas[semanaKey] || crearSemanaVacia();
+            const semanaData = p.semanas[semKey] || crearSemanaVacia();
 
             const dataD = [], dataI = [], dataAnimo = [];
 
@@ -912,6 +853,42 @@
             });
         }
 
+        // --- ANÁLISIS GLOBAL Y MENSUAL ---
+        function renderAnalisisGlobalMensual(p) {
+            const semanas = Object.values(p.semanas || {});
+            document.getElementById('statCantSemanasGlobal').innerText = `${semanas.length} semana(s)`;
+
+            let sumTotalD = 0, cD = 0;
+            let sumTotalI = 0, cI = 0;
+            let animos = [];
+
+            semanas.forEach(sem => {
+                (sem.dias || []).forEach(dia => {
+                    if (dia.animo !== undefined) animos.push(dia.animo);
+                    Object.values(dia.horas || {}).forEach(h => {
+                        if (h.d !== '') { sumTotalD += parseFloat(h.d); cD++; }
+                        if (h.i !== '') { sumTotalI += parseFloat(h.i); cI++; }
+                    });
+                });
+            });
+
+            const avgGlobalD = cD > 0 ? (sumTotalD / cD).toFixed(1) : "0.0";
+            const avgGlobalI = cI > 0 ? (sumTotalI / cI).toFixed(1) : "0.0";
+            document.getElementById('statMediaGlobal').innerText = `D: ${avgGlobalD} | I: ${avgGlobalI}`;
+
+            let tendenciaStr = "Estable";
+            if (animos.length >= 7) {
+                const primMitad = animos.slice(0, Math.floor(animos.length/2));
+                const segMitad = animos.slice(Math.floor(animos.length/2));
+                const avg1 = primMitad.reduce((a,b)=>a+b,0)/primMitad.length;
+                const avg2 = segMitad.reduce((a,b)=>a+b,0)/segMitad.length;
+                if (avg2 - avg1 > 0.5) tendenciaStr = "📈 En Ascenso (Mejoría)";
+                else if (avg1 - avg2 > 0.5) tendenciaStr = "📉 En Descenso (Atención)";
+                else tendenciaStr = "➡️ Estable";
+            }
+            document.getElementById('statTendenciaGlobal').innerText = tendenciaStr;
+        }
+
         async function guardarNotasClinicas() {
             const notas = document.getElementById('detNotasClinicas').value;
             pacienteData.notasClinicas = notas;
@@ -919,7 +896,9 @@
         }
 
         async function liberarEspacioPaciente() {
-            if (!confirm(`¿Estás seguro de borrar a ${pacienteData.nombre}?`)) return;
+            if (!confirm(`¿Estás seguro de eliminar permanentemente a ${pacienteData.nombre}?
+
+Esta acción liberará espacio y no se puede deshacer.`)) return;
 
             if (unsubscribeRealtime) unsubscribeRealtime();
 
@@ -931,8 +910,231 @@
                 localStorage.setItem('demo_pacientes', JSON.stringify(local));
             }
 
-            document.getElementById('detallePacienteCard').classList.add('hidden');
+            volverListaPacientes();
             cargarDashboardTerapeuta({ email: auth ? auth.currentUser.email : 'terapeuta@demo.com' });
+        }
+
+        // --- MODO PACIENTE (SIN RE-RENDERIZACIÓN MOLESTA NI SALTOS AL ESCRIBIR) ---
+        function iniciarModoPaciente(pId) {
+            actualizarStatusSync("En línea", "bg-emerald-400");
+            document.getElementById('syncBadge').classList.remove('hidden');
+
+            if (firebaseActivo) {
+                if (unsubscribeRealtime) unsubscribeRealtime();
+                unsubscribeRealtime = db.collection('pacientes').doc(pId).onSnapshot(doc => {
+                    if (doc.exists) {
+                        pacienteData = doc.data();
+                        localStorage.setItem('backup_' + pId, JSON.stringify(pacienteData));
+                        
+                        // SOLUCIÓN A SALTOS: Si el paciente está escribiendo en el formulario, NO re-renderizar todo el DOM
+                        if (!modoPacienteGuardando && !document.getElementById('secPacienteFormMonitoreo').classList.contains('hidden')) {
+                            // Solo actualizar datos de fondo en silencio
+                        } else if (!modoPacienteGuardando) {
+                            mostrarDashboardPaciente();
+                        }
+                    } else {
+                        alert("El enlace del paciente no existe o fue eliminado.");
+                    }
+                }, err => {
+                    console.error("Error en tiempo real:", err);
+                    cargarRespaldoLocalPaciente(pId);
+                });
+            } else {
+                cargarRespaldoLocalPaciente(pId);
+            }
+        }
+
+        function cargarRespaldoLocalPaciente(pId) {
+            let local = JSON.parse(localStorage.getItem('demo_pacientes') || '[]');
+            pacienteData = local.find(p => p.id === pId) || JSON.parse(localStorage.getItem('backup_' + pId) || 'null') || getPacientesEjemplo()[0];
+            mostrarDashboardPaciente();
+        }
+
+        function mostrarDashboardPaciente() {
+            ocultarTodasLasSecciones();
+            document.getElementById('secPacienteDashboard').classList.remove('hidden');
+            document.getElementById('pacienteBienvenidaNombre').innerText = `¡Hola, ${pacienteData.nombre}! 👋`;
+
+            poblarSelectoresSemanaPaciente();
+
+            const mods = pacienteData.modulosAsignados || ['monitoreo'];
+            document.getElementById('cardModMonitoreo').style.display = mods.includes('monitoreo') ? 'block' : 'none';
+            document.getElementById('cardModPensamientos').style.display = mods.includes('pensamientos') ? 'block' : 'none';
+            document.getElementById('cardModExposicion').style.display = mods.includes('exposicion') ? 'block' : 'none';
+        }
+
+        function poblarSelectoresSemanaPaciente() {
+            const semKeys = Object.keys(pacienteData.semanas || {});
+            if (!semanaSeleccionadaKey || !semKeys.includes(semanaSeleccionadaKey)) {
+                semanaSeleccionadaKey = semKeys[0] || pacienteData.fechaInicio || '2026-10-26';
+            }
+
+            const sel1 = document.getElementById('selectSemanaPacienteDash');
+            const sel2 = document.getElementById('selectSemanaPacienteForm');
+            sel1.innerHTML = ''; sel2.innerHTML = '';
+
+            semKeys.forEach((sk, idx) => {
+                const optText = `Semana ${idx + 1} (${formatBloqueSemanal(sk)})`;
+                sel1.innerHTML += `<option value="${sk}" ${sk === semanaSeleccionadaKey ? 'selected' : ''}>${optText}</option>`;
+                sel2.innerHTML += `<option value="${sk}" ${sk === semanaSeleccionadaKey ? 'selected' : ''}>${optText}</option>`;
+            });
+        }
+
+        function cambiarSemanaPaciente(semKey) {
+            semanaSeleccionadaKey = semKey;
+            poblarSelectoresSemanaPaciente();
+            if (!document.getElementById('secPacienteFormMonitoreo').classList.contains('hidden')) {
+                cargarDiaPaciente(diaSeleccionadoIndex);
+            }
+        }
+
+        function abrirModuloMonitoreo() {
+            ocultarTodasLasSecciones();
+            document.getElementById('secPacienteFormMonitoreo').classList.remove('hidden');
+            renderDiasTabs();
+            cargarDiaPaciente(0);
+        }
+
+        function volverDashboardPaciente() {
+            if (pacienteData && pacienteActualId) {
+                mostrarDashboardPaciente();
+            }
+        }
+
+        function renderDiasTabs() {
+            const container = document.getElementById('diasTabsContainer');
+            container.innerHTML = '';
+            const fechaInicio = new Date(semanaSeleccionadaKey || pacienteData.fechaInicio || new Date());
+
+            DIAS_NOMBRE.forEach((dia, idx) => {
+                const fechaDia = new Date(fechaInicio);
+                fechaDia.setDate(fechaDia.getDate() + idx);
+                const dateStr = fechaDia.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
+
+                const btn = document.createElement('button');
+                btn.className = `flex-1 min-w-[95px] py-2.5 px-3 rounded-xl border text-center transition ${idx === diaSeleccionadoIndex ? 'bg-indigo-600 text-white font-bold border-indigo-600 shadow-sm' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`;
+                btn.onclick = () => cargarDiaPaciente(idx);
+                btn.innerHTML = `
+                    <div class="text-[11px] uppercase tracking-wider">${dia}</div>
+                    <div class="text-xs font-semibold mt-0.5">${dateStr}</div>
+                `;
+                container.appendChild(btn);
+            });
+        }
+
+        function cargarDiaPaciente(diaIdx) {
+            diaSeleccionadoIndex = diaIdx;
+            renderDiasTabs();
+
+            const fechaInicio = new Date(semanaSeleccionadaKey || pacienteData.fechaInicio || new Date());
+            const fechaDia = new Date(fechaInicio);
+            fechaDia.setDate(fechaDia.getDate() + diaIdx);
+            document.getElementById('diaActualNombre').innerText = `${DIAS_NOMBRE[diaIdx]} ${fechaDia.getDate()} de ${fechaDia.toLocaleDateString('es-ES', {month:'long'})}`;
+
+            const semanaData = pacienteData.semanas[semanaSeleccionadaKey] || crearSemanaVacia();
+            const diaData = semanaData.dias[diaIdx] || { horas: {}, animo: 5 };
+
+            const listContainer = document.getElementById('listaHorasPaciente');
+            listContainer.innerHTML = '';
+
+            HORAS_12H.forEach(h => {
+                const item = diaData.horas[h] || { act: '', d: '', i: '' };
+                const row = document.createElement('div');
+                row.className = "p-3 sm:p-4 hover:bg-slate-50/80 transition flex flex-col sm:flex-row items-start sm:items-center gap-3";
+                row.innerHTML = `
+                    <div class="w-24 font-extrabold text-slate-700 text-xs bg-slate-100 px-2 py-1.5 rounded-lg text-center shrink-0">
+                        ${h}
+                    </div>
+                    <div class="flex-1 w-full">
+                        <input type="text" value="${escapeHtml(item.act)}" placeholder="¿Qué actividad realizaste?" 
+                            class="w-full px-3 py-1.5 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                            oninput="guardarEntradaHora('${h}', 'act', this.value)">
+                    </div>
+                    <div class="flex items-center space-x-3 w-full sm:w-auto shrink-0">
+                        <div class="flex items-center space-x-1">
+                            <span class="text-xs font-bold text-indigo-700 bg-indigo-50 px-2 py-1 rounded border border-indigo-200">D</span>
+                            <input type="number" min="0" max="10" value="${item.d}" placeholder="0-10" 
+                                class="w-12 text-center py-1 border border-slate-200 rounded-lg text-sm font-bold text-indigo-600 focus:ring-2 focus:ring-indigo-500"
+                                oninput="guardarEntradaHora('${h}', 'd', this.value)">
+                        </div>
+                        <div class="flex items-center space-x-1">
+                            <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-1 rounded border border-emerald-200">I</span>
+                            <input type="number" min="0" max="10" value="${item.i}" placeholder="0-10" 
+                                class="w-12 text-center py-1 border border-slate-200 rounded-lg text-sm font-bold text-emerald-600 focus:ring-2 focus:ring-emerald-500"
+                                oninput="guardarEntradaHora('${h}', 'i', this.value)">
+                        </div>
+                    </div>
+                `;
+                listContainer.appendChild(row);
+            });
+
+            document.getElementById('inputAnimoDia').value = diaData.animo !== undefined ? diaData.animo : 5;
+            document.getElementById('animoValueDisplay').innerText = `${diaData.animo !== undefined ? diaData.animo : 5} / 10`;
+        }
+
+        // GUARDADO EN TIEMPO REAL SIN SALTOS NI DEVOLUCIONES DE PÁGINA
+        function guardarEntradaHora(hora, campo, valor) {
+            modoPacienteGuardando = true;
+            if (!pacienteData.semanas[semanaSeleccionadaKey]) {
+                pacienteData.semanas[semanaSeleccionadaKey] = crearSemanaVacia();
+            }
+            if (!pacienteData.semanas[semanaSeleccionadaKey].dias[diaSeleccionadoIndex].horas[hora]) {
+                pacienteData.semanas[semanaSeleccionadaKey].dias[diaSeleccionadoIndex].horas[hora] = { act: '', d: '', i: '' };
+            }
+
+            pacienteData.semanas[semanaSeleccionadaKey].dias[diaSeleccionadoIndex].horas[hora][campo] = valor;
+            pacienteData.updatedAt = new Date().toISOString();
+
+            sincronizarGarantizado();
+        }
+
+        function actualizarAnimoDia(valor) {
+            modoPacienteGuardando = true;
+            document.getElementById('animoValueDisplay').innerText = `${valor} / 10`;
+            if (!pacienteData.semanas[semanaSeleccionadaKey]) {
+                pacienteData.semanas[semanaSeleccionadaKey] = crearSemanaVacia();
+            }
+            pacienteData.semanas[semanaSeleccionadaKey].dias[diaSeleccionadoIndex].animo = parseInt(valor);
+            pacienteData.updatedAt = new Date().toISOString();
+
+            sincronizarGarantizado();
+        }
+
+        function sincronizarGarantizado() {
+            localStorage.setItem('backup_' + pacienteActualId, JSON.stringify(pacienteData));
+            let local = JSON.parse(localStorage.getItem('demo_pacientes') || '[]');
+            const idx = local.findIndex(p => p.id === pacienteActualId);
+            if (idx !== -1) local[idx] = pacienteData;
+            else local.push(pacienteData);
+            localStorage.setItem('demo_pacientes', JSON.stringify(local));
+
+            actualizarStatusSync("Guardando...", "bg-amber-400");
+
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(async () => {
+                if (firebaseActivo) {
+                    try {
+                        await db.collection('pacientes').doc(pacienteActualId).set(pacienteData, { merge: true });
+                        actualizarStatusSync("Sincronizado", "bg-emerald-400");
+                    } catch (err) {
+                        console.error("Error al sincronizar:", err);
+                        actualizarStatusSync("Guardado Local", "bg-amber-400");
+                    }
+                } else {
+                    actualizarStatusSync("Guardado Local", "bg-emerald-400");
+                }
+                modoPacienteGuardando = false;
+            }, 1000);
+        }
+
+        function actualizarStatusSync(texto, colorBg) {
+            const txtEl = document.getElementById('syncText');
+            const dotEl = document.getElementById('syncDot');
+            const statusLabel = document.getElementById('statusGuardadoText');
+
+            if (txtEl) txtEl.innerText = texto;
+            if (dotEl) dotEl.className = `w-2.5 h-2.5 rounded-full ${colorBg} animate-pulse`;
+            if (statusLabel) statusLabel.innerText = texto;
         }
 
         function exportarPDF() { window.print(); }
@@ -940,6 +1142,7 @@
         function ocultarTodasLasSecciones() {
             document.getElementById('secLoginTerapeuta').classList.add('hidden');
             document.getElementById('secPanelTerapeuta').classList.add('hidden');
+            document.getElementById('secDetallePacienteTerapeuta').classList.add('hidden');
             document.getElementById('secPacienteDashboard').classList.add('hidden');
             document.getElementById('secPacienteFormMonitoreo').classList.add('hidden');
         }
@@ -964,7 +1167,9 @@
         function getPacientesEjemplo() {
             return [{
                 id: 'p_ejemplo1',
-                nombre: 'Carlos Mendoza (Ejemplo)',
+                nombre: 'Carlos Mendoza Pérez (Ejemplo)',
+                edad: 32,
+                fechaNacimiento: '1994-05-14',
                 fechaInicio: '2026-10-26',
                 updatedAt: new Date().toISOString(),
                 notasClinicas: 'Paciente en monitoreo activo.',
