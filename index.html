@@ -599,7 +599,7 @@
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Fecha Nacimiento</label>
-                        <input type="date" id="nuevaFechaNacimiento" required class="w-full px-4 py-2 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-cyan-600 focus:outline-none text-sm text-slate-900">
+                        <input type="date" id="nuevaFechaNacimiento" required onchange="actualizarEdadPorFechaNacimiento(this.value)" oninput="actualizarEdadPorFechaNacimiento(this.value)" class="w-full px-4 py-2 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-cyan-600 focus:outline-none text-sm text-slate-900">
                     </div>
                 </div>
                 <div>
@@ -808,6 +808,27 @@
         function copiarEnlace(url) {
             navigator.clipboard.writeText(url);
             alert("¡Enlace del paciente copiado al portapapeles!\nPuedes enviárselo por WhatsApp.");
+        }
+
+        
+        function calcularEdad(fechaStr) {
+            if (!fechaStr) return '';
+            const fechaNac = new Date(fechaStr + 'T00:00:00');
+            const hoy = new Date();
+            let edad = hoy.getFullYear() - fechaNac.getFullYear();
+            const mesDiff = hoy.getMonth() - fechaNac.getMonth();
+            if (mesDiff < 0 || (mesDiff === 0 && hoy.getDate() < fechaNac.getDate())) {
+                edad--;
+            }
+            return edad >= 0 ? edad : 0;
+        }
+
+        function actualizarEdadPorFechaNacimiento(fechaStr) {
+            const edadInput = document.getElementById('nuevaEdadPaciente');
+            if (edadInput && fechaStr) {
+                const edadCalculada = calcularEdad(fechaStr);
+                edadInput.value = edadCalculada;
+            }
         }
 
         function abrirModalNuevoPaciente() { document.getElementById('modalNuevoPaciente').classList.remove('hidden'); }
