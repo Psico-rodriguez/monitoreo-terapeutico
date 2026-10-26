@@ -825,8 +825,7 @@
 
         function copiarEnlace(url) {
             navigator.clipboard.writeText(url);
-            alert("¡Enlace del paciente copiado al portapapeles!
-Puedes enviárselo por WhatsApp.");
+            alert("¡Enlace del paciente copiado al portapapeles!\nPuedes enviárselo por WhatsApp.");
         }
 
         function abrirModalNuevoPaciente() { document.getElementById('modalNuevoPaciente').classList.remove('hidden'); }
@@ -1256,9 +1255,7 @@ Puedes enviárselo por WhatsApp.");
         }
 
         async function liberarEspacioPaciente() {
-            if (!confirm(`¿Estás seguro de eliminar permanentemente a ${pacienteData.nombre}?
-
-Esta acción liberará espacio y no se puede deshacer.`)) return;
+            if (!confirm(`¿Estás seguro de eliminar permanentemente a ${pacienteData.nombre}?\n\nEsta acción liberará espacio y no se puede deshacer.`)) return;
 
             if (unsubscribeRealtime) unsubscribeRealtime();
 
