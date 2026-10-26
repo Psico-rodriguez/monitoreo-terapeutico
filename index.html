@@ -252,146 +252,190 @@
                     </div>
                 </div>
 
-                <!-- GESTIÓN DE TERAPIAS Y TAREAS (SOLO ACTIVACIÓN CONDUCTUAL) -->
-                <div class="bg-cyan-50/70 border border-cyan-200 p-5 rounded-2xl space-y-4 no-print">
+                <!-- SELECCIÓN JERÁRQUICA: PASO 1 (TERAPIA) -> PASO 2 (TAREA) -->
+                <div class="bg-slate-50 border border-slate-200 p-5 rounded-2xl space-y-4 no-print">
                     <div>
                         <h3 class="font-bold text-slate-900 text-base flex items-center gap-2">
-                            <i class="fa-solid fa-layer-group text-cyan-700"></i> Terapias Activas y Asignación de Tareas
+                            <i class="fa-solid fa-sitemap text-cyan-700"></i> Selección de Terapias y Tareas a Supervisar
                         </h3>
-                        <p class="text-xs text-slate-600 mt-0.5">Activa o desactiva las tareas terapéuticas para que el paciente las visualice y complete en su portal personal.</p>
+                        <p class="text-xs text-slate-600 mt-0.5">Selecciona primero la terapia y luego la tarea específica que deseas inspeccionar clínicamente.</p>
                     </div>
 
-                    <!-- BLOQUE DE TERAPIA: ACTIVACIÓN CONDUCTUAL -->
-                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-3">
-                        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
-                            <div class="flex items-center space-x-2">
-                                <i class="fa-solid fa-person-walking text-cyan-700 text-lg"></i>
-                                <h4 class="font-extrabold text-slate-900 text-sm">Terapia de Activación Conductual</h4>
+                    <!-- PASO 1: NAVEGACIÓN DE TERAPIAS -->
+                    <div class="space-y-2">
+                        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider block">1. Seleccionar Terapia:</span>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                            <!-- Card Terapia de Activación Conductual -->
+                            <div id="cardTerapiaAC" onclick="seleccionarTerapia('activacion_conductual')" class="cursor-pointer p-3.5 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-cyan-600 ring-2 ring-cyan-600/30">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-9 h-9 bg-cyan-100 text-cyan-800 rounded-lg flex items-center justify-center font-bold text-lg">
+                                        <i class="fa-solid fa-person-walking"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-xs text-slate-900">Terapia de Activación Conductual</h4>
+                                        <span class="text-[10px] text-cyan-700 font-semibold">1 Tarea disponible</span>
+                                    </div>
+                                </div>
+                                <i id="iconCheckAC" class="fa-solid fa-circle-check text-cyan-600 text-lg"></i>
                             </div>
-                            <span class="text-[11px] font-bold bg-cyan-100 text-cyan-800 px-2.5 py-0.5 rounded-full">Terapia Activa</span>
                         </div>
-                        <div class="pl-2 space-y-2">
-                            <label class="flex items-center p-2.5 rounded-lg hover:bg-slate-50 cursor-pointer border border-slate-200 transition">
-                                <input type="checkbox" id="chkModMonitoreo" onchange="toggleModuloAsignado('monitoreo')" class="w-4 h-4 text-cyan-600 rounded bg-slate-50 border-slate-300">
-                                <span class="ml-3 text-xs font-bold text-slate-800">Formulario de Monitoreo Diario de Actividades</span>
+                    </div>
+
+                    <!-- PASO 2: TAREAS DE LA TERAPIA SELECCIONADA -->
+                    <div id="containerTareasDisponibles" class="space-y-2 pt-2 border-t border-slate-200">
+                        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider block">2. Seleccionar Tarea a Observar y Gestionar Asignación:</span>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <!-- Card Tarea Monitoreo -->
+                            <div id="cardTareaMonitoreo" onclick="seleccionarTarea('monitoreo')" class="cursor-pointer p-3.5 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-cyan-600 ring-2 ring-cyan-600/30">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 bg-cyan-50 text-cyan-700 border border-cyan-200 rounded-lg flex items-center justify-center text-sm font-bold">
+                                        <i class="fa-regular fa-calendar-check"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="font-bold text-xs text-slate-900">Formulario de Monitoreo Diario de Actividades</h5>
+                                        <p class="text-[10px] text-slate-500">Evaluación de Disfrute (D), Importancia (I) y Ánimo</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-3" onclick="event.stopPropagation()">
+                                    <label class="flex items-center space-x-1.5 cursor-pointer bg-slate-50 hover:bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200 transition" title="Activa o desactiva la tarea en el portal del paciente">
+                                        <input type="checkbox" id="chkModMonitoreo" onchange="toggleModuloAsignado('monitoreo')" class="w-4 h-4 text-cyan-600 rounded bg-white">
+                                        <span class="text-[11px] font-bold text-slate-700">Asignada</span>
+                                    </label>
+                                    <i id="iconCheckTareaMonitoreo" class="fa-solid fa-circle-check text-cyan-600 text-base"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AVISO DE SELECCIÓN VACÍA -->
+                <div id="mensajeSinTareaSeleccionada" class="hidden p-8 text-center bg-slate-50 border border-dashed border-slate-300 rounded-2xl">
+                    <i class="fa-solid fa-hand-pointer text-cyan-600 text-3xl mb-2"></i>
+                    <h4 class="font-bold text-slate-800 text-sm">Selecciona una Tarea para ver el Desglose</h4>
+                    <p class="text-xs text-slate-500 mt-1 max-w-md mx-auto">Haz clic sobre una de las tareas asignadas en la sección superior para desplegar las vistas de evolución, matrices y gráficos correspondientes.</p>
+                </div>
+
+                <!-- CONTENEDOR DEL DESGLOSE CLÍNICO (SÓLO CUANDO LA TAREA ESTÁ SELECCIONADA) -->
+                <div id="secDesgloseTarea" class="space-y-6">
+
+                    <!-- SELECTOR DE VISTAS DE EVOLUCIÓN PARA EL TERAPEUTA -->
+                    <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-3 no-print">
+                        <div class="flex justify-between items-center">
+                            <h3 class="font-bold text-slate-800 text-xs uppercase tracking-wider flex items-center gap-2">
+                                <i class="fa-solid fa-eye text-cyan-700"></i> Seleccionar Vistas de Evolución a Mostrar
+                            </h3>
+                            <span class="text-[11px] font-bold bg-cyan-100 text-cyan-800 border border-cyan-200 px-2.5 py-0.5 rounded-full">Tarea: Monitoreo Diario</span>
+                        </div>
+                        <div class="flex flex-wrap gap-4 text-xs font-medium">
+                            <label class="flex items-center space-x-2 cursor-pointer bg-white px-3 py-2 rounded-lg border border-slate-200 hover:border-cyan-600 shadow-sm">
+                                <input type="checkbox" id="chkVerSemanal" checked onchange="actualizarVistasTerapeuta()" class="w-4 h-4 text-cyan-600 rounded bg-slate-50">
+                                <span class="text-slate-800 font-bold">Evolución Semanal (Gráficos + Matriz)</span>
+                            </label>
+                            <label class="flex items-center space-x-2 cursor-pointer bg-white px-3 py-2 rounded-lg border border-slate-200 hover:border-cyan-600 shadow-sm">
+                                <input type="checkbox" id="chkVerMensual" checked onchange="actualizarVistasTerapeuta()" class="w-4 h-4 text-cyan-600 rounded bg-slate-50">
+                                <span class="text-slate-800 font-bold">Análisis Clínico Mensual (Histograma)</span>
+                            </label>
+                            <label class="flex items-center space-x-2 cursor-pointer bg-white px-3 py-2 rounded-lg border border-slate-200 hover:border-cyan-600 shadow-sm">
+                                <input type="checkbox" id="chkVerHistorico" checked onchange="actualizarVistasTerapeuta()" class="w-4 h-4 text-cyan-600 rounded bg-slate-50">
+                                <span class="text-slate-800 font-bold">Evolución Total / Histórica</span>
                             </label>
                         </div>
                     </div>
-                </div>
 
-                <!-- SELECTOR DE VISTAS DE EVOLUCIÓN PARA EL TERAPEUTA -->
-                <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-3 no-print">
-                    <h3 class="font-bold text-slate-800 text-xs uppercase tracking-wider flex items-center gap-2">
-                        <i class="fa-solid fa-eye text-cyan-700"></i> Seleccionar Vistas de Evolución a Mostrar
-                    </h3>
-                    <div class="flex flex-wrap gap-4 text-xs font-medium">
-                        <label class="flex items-center space-x-2 cursor-pointer bg-white px-3 py-2 rounded-lg border border-slate-200 hover:border-cyan-600 shadow-sm">
-                            <input type="checkbox" id="chkVerSemanal" checked onchange="actualizarVistasTerapeuta()" class="w-4 h-4 text-cyan-600 rounded bg-slate-50">
-                            <span class="text-slate-800 font-bold">Evolución Semanal (Gráficos + Matriz)</span>
-                        </label>
-                        <label class="flex items-center space-x-2 cursor-pointer bg-white px-3 py-2 rounded-lg border border-slate-200 hover:border-cyan-600 shadow-sm">
-                            <input type="checkbox" id="chkVerMensual" checked onchange="actualizarVistasTerapeuta()" class="w-4 h-4 text-cyan-600 rounded bg-slate-50">
-                            <span class="text-slate-800 font-bold">Análisis Clínico Mensual (Histograma)</span>
-                        </label>
-                        <label class="flex items-center space-x-2 cursor-pointer bg-white px-3 py-2 rounded-lg border border-slate-200 hover:border-cyan-600 shadow-sm">
-                            <input type="checkbox" id="chkVerHistorico" checked onchange="actualizarVistasTerapeuta()" class="w-4 h-4 text-cyan-600 rounded bg-slate-50">
-                            <span class="text-slate-800 font-bold">Evolución Total / Histórica</span>
-                        </label>
+                    <!-- CONTENEDOR VISTA SEMANAL -->
+                    <div id="containerVerSemanal" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                                <span class="text-xs text-slate-500 font-semibold uppercase">Promedio Disfrute (D) - Semanal</span>
+                                <div class="text-3xl font-extrabold text-cyan-700 mt-1" id="statAvgD">0.0 / 10</div>
+                                <p class="text-xs text-slate-500 mt-1">Placer / Gozo (0 a 10)</p>
+                            </div>
+                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                                <span class="text-xs text-slate-500 font-semibold uppercase">Promedio Importancia (I) - Semanal</span>
+                                <div class="text-3xl font-extrabold text-emerald-700 mt-1" id="statAvgI">0.0 / 10</div>
+                                <p class="text-xs text-slate-500 mt-1">Valor / Logro (0 a 10)</p>
+                            </div>
+                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                                <span class="text-xs text-slate-500 font-semibold uppercase">Ánimo General Promedio</span>
+                                <div class="text-3xl font-extrabold text-amber-600 mt-1" id="statAvgAnimo">0.0 / 10</div>
+                                <p class="text-xs text-slate-500 mt-1">Evaluación global percibida</p>
+                            </div>
+                        </div>
+
+                        <!-- GRÁFICO SEMANAL -->
+                        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                            <h4 class="font-bold text-slate-900 text-sm mb-3 flex items-center gap-2">
+                                <i class="fa-solid fa-chart-line text-cyan-700"></i> Evolución en la Semana Seleccionada
+                            </h4>
+                            <div class="h-64">
+                                <canvas id="chartEvolucion"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- MATRIZ HORA POR HORA -->
+                        <div class="overflow-x-auto border border-slate-200 rounded-xl bg-white shadow-sm">
+                            <table class="w-full text-xs text-center border-collapse" id="tablaSupervision">
+                                <thead class="bg-slate-800 text-white font-bold">
+                                    <tr id="headerFechasSupervision">
+                                        <th class="p-2 border border-slate-700 min-w-[100px]">HORA (12h)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="bodySupervision" class="divide-y divide-slate-200 text-slate-800">
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                </div>
 
-                <!-- CONTENEDOR VISTA SEMANAL -->
-                <div id="containerVerSemanal" class="space-y-6">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                            <span class="text-xs text-slate-500 font-semibold uppercase">Promedio Disfrute (D) - Semanal</span>
-                            <div class="text-3xl font-extrabold text-cyan-700 mt-1" id="statAvgD">0.0 / 10</div>
-                            <p class="text-xs text-slate-500 mt-1">Placer / Gozo (0 a 10)</p>
+                    <!-- CONTENEDOR ANÁLISIS MENSUAL EN MODO HISTOGRAMA -->
+                    <div id="containerVerMensual" class="bg-white p-6 rounded-2xl border border-slate-200 space-y-5 shadow-sm">
+                        <div class="flex justify-between items-center border-b border-slate-200 pb-3">
+                            <div>
+                                <h3 class="font-bold text-lg text-slate-900 flex items-center gap-2">
+                                    <i class="fa-solid fa-chart-column text-cyan-700"></i> Análisis Clínico Mensual (Histograma de Frecuencia de Ánimo)
+                                </h3>
+                                <p class="text-xs text-slate-500 mt-0.5">Distribución en histograma del nivel de ánimo durante el último período de 30 días.</p>
+                            </div>
+                            <span class="text-xs bg-cyan-100 text-cyan-800 border border-cyan-200 px-3 py-1 rounded-full font-semibold">Modo Histograma</span>
                         </div>
-                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                            <span class="text-xs text-slate-500 font-semibold uppercase">Promedio Importancia (I) - Semanal</span>
-                            <div class="text-3xl font-extrabold text-emerald-700 mt-1" id="statAvgI">0.0 / 10</div>
-                            <p class="text-xs text-slate-500 mt-1">Valor / Logro (0 a 10)</p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-slate-800 text-xs">
+                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                                <span class="text-slate-500 uppercase font-semibold">Semanas Registradas</span>
+                                <div class="text-2xl font-bold text-slate-900 mt-1" id="statCantSemanasGlobal">0 semanas</div>
+                            </div>
+                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                                <span class="text-slate-500 uppercase font-semibold">Tendencia de Ánimo Mensual</span>
+                                <div class="text-2xl font-bold text-emerald-700 mt-1" id="statTendenciaGlobal">Estable</div>
+                            </div>
+                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                                <span class="text-slate-500 uppercase font-semibold">Puntuación Media Mensual</span>
+                                <div class="text-2xl font-bold text-amber-600 mt-1" id="statMediaGlobal">D: 0.0 | I: 0.0</div>
+                            </div>
                         </div>
+
                         <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                            <span class="text-xs text-slate-500 font-semibold uppercase">Ánimo General Promedio</span>
-                            <div class="text-3xl font-extrabold text-amber-600 mt-1" id="statAvgAnimo">0.0 / 10</div>
-                            <p class="text-xs text-slate-500 mt-1">Evaluación global percibida</p>
+                            <h4 class="font-bold text-slate-800 text-xs uppercase tracking-wider mb-2">Histograma: Frecuencia de Días por Rango de Ánimo (0-10)</h4>
+                            <div class="h-64">
+                                <canvas id="chartHistogramaMensual"></canvas>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- GRÁFICO SEMANAL -->
-                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-                        <h4 class="font-bold text-slate-900 text-sm mb-3 flex items-center gap-2">
-                            <i class="fa-solid fa-chart-line text-cyan-700"></i> Evolución en la Semana Seleccionada
-                        </h4>
+                    <!-- CONTENEDOR EVOLUCIÓN HISTÓRICA / TOTAL -->
+                    <div id="containerVerHistorico" class="bg-white p-6 rounded-2xl border border-slate-200 space-y-4 shadow-sm">
+                        <h3 class="font-bold text-lg text-slate-900 flex items-center gap-2">
+                            <i class="fa-solid fa-chart-simple text-cyan-700"></i> Evolución Total / Histórica (Todas las Semanas)
+                        </h3>
+                        <p class="text-xs text-slate-500">Curva de avance histórico comparando los promedios de Disfrute, Importancia y Ánimo acumulados semana a semana.</p>
                         <div class="h-64">
-                            <canvas id="chartEvolucion"></canvas>
+                            <canvas id="chartEvolucionHistorica"></canvas>
                         </div>
                     </div>
 
-                    <!-- MATRIZ HORA POR HORA -->
-                    <div class="overflow-x-auto border border-slate-200 rounded-xl bg-white shadow-sm">
-                        <table class="w-full text-xs text-center border-collapse" id="tablaSupervision">
-                            <thead class="bg-slate-800 text-white font-bold">
-                                <tr id="headerFechasSupervision">
-                                    <th class="p-2 border border-slate-700 min-w-[100px]">HORA (12h)</th>
-                                </tr>
-                            </thead>
-                            <tbody id="bodySupervision" class="divide-y divide-slate-200 text-slate-800">
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- CONTENEDOR ANÁLISIS MENSUAL EN MODO HISTOGRAMA -->
-                <div id="containerVerMensual" class="bg-white p-6 rounded-2xl border border-slate-200 space-y-5 shadow-sm">
-                    <div class="flex justify-between items-center border-b border-slate-200 pb-3">
-                        <div>
-                            <h3 class="font-bold text-lg text-slate-900 flex items-center gap-2">
-                                <i class="fa-solid fa-chart-column text-cyan-700"></i> Análisis Clínico Mensual (Histograma de Frecuencia de Ánimo)
-                            </h3>
-                            <p class="text-xs text-slate-500 mt-0.5">Distribución en histograma del nivel de ánimo durante el último período de 30 días.</p>
-                        </div>
-                        <span class="text-xs bg-cyan-100 text-cyan-800 border border-cyan-200 px-3 py-1 rounded-full font-semibold">Modo Histograma</span>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-slate-800 text-xs">
-                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                            <span class="text-slate-500 uppercase font-semibold">Semanas Registradas</span>
-                            <div class="text-2xl font-bold text-slate-900 mt-1" id="statCantSemanasGlobal">0 semanas</div>
-                        </div>
-                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                            <span class="text-slate-500 uppercase font-semibold">Tendencia de Ánimo Mensual</span>
-                            <div class="text-2xl font-bold text-emerald-700 mt-1" id="statTendenciaGlobal">Estable</div>
-                        </div>
-                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                            <span class="text-slate-500 uppercase font-semibold">Puntuación Media Mensual</span>
-                            <div class="text-2xl font-bold text-amber-600 mt-1" id="statMediaGlobal">D: 0.0 | I: 0.0</div>
-                        </div>
-                    </div>
-
-                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                        <h4 class="font-bold text-slate-800 text-xs uppercase tracking-wider mb-2">Histograma: Frecuencia de Días por Rango de Ánimo (0-10)</h4>
-                        <div class="h-64">
-                            <canvas id="chartHistogramaMensual"></canvas>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- CONTENEDOR EVOLUCIÓN HISTÓRICA / TOTAL -->
-                <div id="containerVerHistorico" class="bg-white p-6 rounded-2xl border border-slate-200 space-y-4 shadow-sm">
-                    <h3 class="font-bold text-lg text-slate-900 flex items-center gap-2">
-                        <i class="fa-solid fa-chart-simple text-cyan-700"></i> Evolución Total / Histórica (Todas las Semanas)
-                    </h3>
-                    <p class="text-xs text-slate-500">Curva de avance histórico comparando los promedios de Disfrute, Importancia y Ánimo acumulados semana a semana.</p>
-                    <div class="h-64">
-                        <canvas id="chartEvolucionHistorica"></canvas>
-                    </div>
                 </div>
 
                 <!-- NOTAS CLINICAS -->
-                <div class="space-y-2">
+                <div class="space-y-2 pt-2 border-t border-slate-200">
                     <label class="block text-sm font-bold text-slate-800"><i class="fa-solid fa-user-pen text-cyan-700 mr-1"></i> Observaciones Clínicas y Acuerdos Terapéuticos</label>
                     <textarea id="detNotasClinicas" rows="3" placeholder="Anota tus observaciones clínicas o acuerdos aquí..." class="w-full p-3 bg-slate-50 text-slate-900 border border-slate-300 rounded-xl focus:ring-2 focus:ring-cyan-600 text-sm" onchange="guardarNotasClinicas()"></textarea>
                 </div>
@@ -638,6 +682,10 @@
         let modoPacienteGuardando = false;
         let pacientesCache = [];
 
+        // Variables de Estado de Selección
+        let terapiaSeleccionada = 'activacion_conductual';
+        let tareaSeleccionada = 'monitoreo';
+
         window.addEventListener('DOMContentLoaded', () => {
             const params = new URLSearchParams(window.location.search);
             const pId = params.get('p');
@@ -679,7 +727,6 @@
         function obtenerSemanasOrdenadas(pData) {
             if (!pData || !pData.semanas) return [];
             const keys = Object.keys(pData.semanas);
-            // Ordena estrictamente por fecha cronológica ascendente
             keys.sort((a, b) => parseFechaLocal(a).getTime() - parseFechaLocal(b).getTime());
             return keys;
         }
@@ -925,12 +972,67 @@
             });
 
             actualizarEstadoBotonBloqueo();
+            actualizarSeleccionUI();
             actualizarVistasTerapeuta();
 
-            renderSupervisionTabla(p, semanaSeleccionadaKey);
-            renderGraficoEvolucion(p, semanaSeleccionadaKey);
-            renderAnalisisGlobalHistograma(p);
-            renderGraficoHistoricoTotal(p);
+            if (tareaSeleccionada === 'monitoreo') {
+                renderSupervisionTabla(p, semanaSeleccionadaKey);
+                renderGraficoEvolucion(p, semanaSeleccionadaKey);
+                renderAnalisisGlobalHistograma(p);
+                renderGraficoHistoricoTotal(p);
+            }
+        }
+
+        // FUNCIONES DE SELECCIÓN JERÁRQUICA DE TERAPIA Y TAREA
+        function seleccionarTerapia(idTerapia) {
+            terapiaSeleccionada = idTerapia;
+            if (idTerapia === 'activacion_conductual') {
+                tareaSeleccionada = 'monitoreo'; // Selecciona por defecto la primera tarea
+            } else {
+                tareaSeleccionada = null;
+            }
+            renderizarFichaClinica();
+        }
+
+        function seleccionarTarea(idTarea) {
+            if (tareaSeleccionada === idTarea) {
+                tareaSeleccionada = null; // Permite deseleccionar
+            } else {
+                tareaSeleccionada = idTarea;
+            }
+            renderizarFichaClinica();
+        }
+
+        function actualizarSeleccionUI() {
+            const cardAC = document.getElementById('cardTerapiaAC');
+            const iconAC = document.getElementById('iconCheckAC');
+            const cardMon = document.getElementById('cardTareaMonitoreo');
+            const iconMon = document.getElementById('iconCheckTareaMonitoreo');
+
+            const secDesglose = document.getElementById('secDesgloseTarea');
+            const msgVacio = document.getElementById('mensajeSinTareaSeleccionada');
+
+            // Terapia AC
+            if (terapiaSeleccionada === 'activacion_conductual') {
+                cardAC.className = "cursor-pointer p-3.5 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-cyan-600 ring-2 ring-cyan-600/30";
+                iconAC.className = "fa-solid fa-circle-check text-cyan-600 text-lg";
+            } else {
+                cardAC.className = "cursor-pointer p-3.5 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-slate-200 hover:border-cyan-400";
+                iconAC.className = "fa-regular fa-circle text-slate-300 text-lg";
+            }
+
+            // Tarea Monitoreo
+            if (tareaSeleccionada === 'monitoreo') {
+                cardMon.className = "cursor-pointer p-3.5 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-cyan-600 ring-2 ring-cyan-600/30";
+                iconMon.className = "fa-solid fa-circle-check text-cyan-600 text-base";
+                secDesglose.classList.remove('hidden');
+                msgVacio.classList.add('hidden');
+            } else {
+                cardMon.className = "cursor-pointer p-3.5 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-slate-200 hover:border-cyan-400";
+                iconMon.className = "fa-regular fa-circle text-slate-300 text-base";
+                secDesglose.classList.add('hidden');
+                msgVacio.classList.remove('hidden');
+            }
         }
 
         function actualizarEstadoBotonBloqueo() {
