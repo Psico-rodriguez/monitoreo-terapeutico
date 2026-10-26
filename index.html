@@ -165,14 +165,12 @@
             </div>
 
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                <!-- CABECERA DEL DIRECTORIO CON BÚSQUEDA OPTIMIZADA -->
                 <div class="px-6 py-4 border-b border-slate-200 bg-slate-50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                     <div class="flex items-center gap-2">
                         <h3 class="font-bold text-slate-800 text-sm">Pacientes Registrados</h3>
                         <span id="cantPacientes" class="text-xs bg-cyan-100 text-cyan-800 border border-cyan-200 px-3 py-0.5 rounded-full font-bold">0 paciente(s)</span>
                     </div>
 
-                    <!-- BUSCADOR CON COINCIDENCIAS EN TIEMPO REAL (0 READS ADICIONALES DE FIREBASE) -->
                     <div class="relative w-full sm:w-72">
                         <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-400 text-xs"></i>
                         <input type="text" id="inputBuscarPaciente" oninput="filtrarPacientesEnMemoria(this.value)" placeholder="Buscar por nombre..." class="w-full pl-9 pr-8 py-1.5 bg-white text-slate-800 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-cyan-600 focus:outline-none">
@@ -230,12 +228,12 @@
                     </div>
                 </div>
 
-                <!-- BLOQUE DE CONTROL DE EDICIÓN Y BLOQUEO DE SEMANAS POR EL TERAPEUTA -->
+                <!-- BLOQUE DE CONTROL DE EDICIÓN, CREACIÓN Y ELIMINACIÓN DE SEMANAS -->
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200 no-print">
                     <div class="flex items-center gap-3">
                         <i class="fa-regular fa-calendar-check text-cyan-700 text-xl"></i>
                         <div>
-                            <span class="text-xs font-semibold text-slate-500 uppercase">Seleccionar Bloque Semanal</span>
+                            <span class="text-xs font-semibold text-slate-500 uppercase">Bloque Semanal (Orden Cronológico)</span>
                             <select id="selectSemanaTerapeuta" onchange="cambiarSemanaTerapeuta(this.value)" class="block text-sm font-bold text-slate-800 bg-white border border-slate-300 rounded-lg px-3 py-1.5 focus:ring-2 focus:ring-cyan-600 focus:outline-none mt-0.5">
                             </select>
                         </div>
@@ -243,11 +241,41 @@
                     
                     <div class="flex flex-wrap items-center gap-2">
                         <button id="btnToggleBloqueoSemana" onclick="toggleBloqueoSemana()" class="text-xs px-3.5 py-2 rounded-xl font-semibold transition border flex items-center gap-1.5 shadow-sm">
-                            <i class="fa-solid fa-lock"></i> Bloquear/Desbloquear Edición
+                            <i class="fa-solid fa-lock"></i> Bloquear/Desbloquear
                         </button>
                         <button onclick="crearNuevoBloqueSemanalTerapeuta()" class="text-xs bg-cyan-700 hover:bg-cyan-800 text-white font-semibold px-3.5 py-2 rounded-xl transition shadow-sm flex items-center gap-1.5">
                             <i class="fa-solid fa-plus"></i> Habilitar Nueva Semana
                         </button>
+                        <button onclick="eliminarSemanaTerapeuta()" class="text-xs bg-rose-100 hover:bg-rose-200 text-rose-800 border border-rose-300 font-semibold px-3.5 py-2 rounded-xl transition shadow-sm flex items-center gap-1.5">
+                            <i class="fa-solid fa-trash-can text-rose-600"></i> Eliminar Semana
+                        </button>
+                    </div>
+                </div>
+
+                <!-- GESTIÓN DE TERAPIAS Y TAREAS (SOLO ACTIVACIÓN CONDUCTUAL) -->
+                <div class="bg-cyan-50/70 border border-cyan-200 p-5 rounded-2xl space-y-4 no-print">
+                    <div>
+                        <h3 class="font-bold text-slate-900 text-base flex items-center gap-2">
+                            <i class="fa-solid fa-layer-group text-cyan-700"></i> Terapias Activas y Asignación de Tareas
+                        </h3>
+                        <p class="text-xs text-slate-600 mt-0.5">Activa o desactiva las tareas terapéuticas para que el paciente las visualice y complete en su portal personal.</p>
+                    </div>
+
+                    <!-- BLOQUE DE TERAPIA: ACTIVACIÓN CONDUCTUAL -->
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-3">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                            <div class="flex items-center space-x-2">
+                                <i class="fa-solid fa-person-walking text-cyan-700 text-lg"></i>
+                                <h4 class="font-extrabold text-slate-900 text-sm">Terapia de Activación Conductual</h4>
+                            </div>
+                            <span class="text-[11px] font-bold bg-cyan-100 text-cyan-800 px-2.5 py-0.5 rounded-full">Terapia Activa</span>
+                        </div>
+                        <div class="pl-2 space-y-2">
+                            <label class="flex items-center p-2.5 rounded-lg hover:bg-slate-50 cursor-pointer border border-slate-200 transition">
+                                <input type="checkbox" id="chkModMonitoreo" onchange="toggleModuloAsignado('monitoreo')" class="w-4 h-4 text-cyan-600 rounded bg-slate-50 border-slate-300">
+                                <span class="ml-3 text-xs font-bold text-slate-800">Formulario de Monitoreo Diario de Actividades</span>
+                            </label>
+                        </div>
                     </div>
                 </div>
 
@@ -268,28 +296,6 @@
                         <label class="flex items-center space-x-2 cursor-pointer bg-white px-3 py-2 rounded-lg border border-slate-200 hover:border-cyan-600 shadow-sm">
                             <input type="checkbox" id="chkVerHistorico" checked onchange="actualizarVistasTerapeuta()" class="w-4 h-4 text-cyan-600 rounded bg-slate-50">
                             <span class="text-slate-800 font-bold">Evolución Total / Histórica</span>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- CONTROL DE ASIGNACIÓN DE TAREAS Y LIBERACIÓN DE INFORMACIÓN -->
-                <div class="bg-cyan-50/60 border border-cyan-200 p-5 rounded-2xl space-y-3 no-print">
-                    <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
-                        <i class="fa-solid fa-sliders text-cyan-700"></i> Tareas Asignadas y Liberación de Información
-                    </h3>
-                    <p class="text-xs text-slate-600">Marca las tareas que deseas liberar o visibilizar para el paciente en su portal personal:</p>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
-                        <label class="flex items-center p-3 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-cyan-600 transition shadow-sm">
-                            <input type="checkbox" id="chkModMonitoreo" onchange="toggleModuloAsignado('monitoreo')" class="w-4 h-4 text-cyan-600 rounded bg-slate-50 border-slate-300">
-                            <span class="ml-3 text-xs font-bold text-slate-800">1. Monitoreo Diario de Actividades</span>
-                        </label>
-                        <label class="flex items-center p-3 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-cyan-600 transition shadow-sm">
-                            <input type="checkbox" id="chkModPensamientos" onchange="toggleModuloAsignado('pensamientos')" class="w-4 h-4 text-cyan-600 rounded bg-slate-50 border-slate-300">
-                            <span class="ml-3 text-xs font-bold text-slate-800">2. Registro de Pensamientos (RPA)</span>
-                        </label>
-                        <label class="flex items-center p-3 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-cyan-600 transition shadow-sm">
-                            <input type="checkbox" id="chkModExposicion" onchange="toggleModuloAsignado('exposicion')" class="w-4 h-4 text-cyan-600 rounded bg-slate-50 border-slate-300">
-                            <span class="ml-3 text-xs font-bold text-slate-800">3. Jerarquía de Exposición (SUDs)</span>
                         </label>
                     </div>
                 </div>
@@ -365,7 +371,6 @@
                         </div>
                     </div>
 
-                    <!-- HISTOGRAMA GRÁFICO -->
                     <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
                         <h4 class="font-bold text-slate-800 text-xs uppercase tracking-wider mb-2">Histograma: Frecuencia de Días por Rango de Ánimo (0-10)</h4>
                         <div class="h-64">
@@ -393,7 +398,7 @@
             </div>
         </section>
 
-        <!-- VISTA 3: PORTAL DEL PACIENTE (DASHBOARD) -->
+        <!-- VISTA 3: PORTAL DEL PACIENTE (DASHBOARD) - SOLO MUESTRA LA TAREA DIRECTA -->
         <section id="secPacienteDashboard" class="hidden space-y-6">
             <div class="bg-white text-slate-900 p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200">
                 <div class="flex items-center gap-2 mb-2">
@@ -403,7 +408,6 @@
                 <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900" id="pacienteBienvenidaNombre">¡Hola, Paciente! 👋</h1>
                 <p class="text-slate-600 text-sm mt-1">Selecciona cualquier semana para consultar o registrar tus actividades.</p>
                 
-                <!-- SELECTOR DE SEMANA LIBRE PARA PACIENTE Y ESTADO DE BLOQUEO -->
                 <div class="mt-4 flex flex-wrap items-center gap-3">
                     <span class="text-xs text-slate-700 font-semibold"><i class="fa-regular fa-calendar-days mr-1 text-cyan-700"></i> Seleccionar Semana:</span>
                     <select id="selectSemanaPacienteDash" onchange="cambiarSemanaPaciente(this.value)" class="text-xs font-bold bg-slate-50 text-slate-800 border border-slate-300 rounded-lg px-3 py-1.5 focus:outline-none">
@@ -412,6 +416,7 @@
                 </div>
             </div>
 
+            <!-- SECCIÓN DE TAREAS DIRECTAS (SIN MOSTRAR EL NOMBRE DE LA TERAPIA) -->
             <div class="space-y-4">
                 <div class="flex justify-between items-center">
                     <h2 class="font-bold text-slate-900 text-lg flex items-center gap-2">
@@ -419,7 +424,8 @@
                     </h2>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 gap-4">
+                    <!-- TAREA 1: FORMULARIO DE MONITOREO DIARIO DE ACTIVIDADES -->
                     <div id="cardModMonitoreo" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:border-cyan-600 transition space-y-4">
                         <div class="flex justify-between items-start">
                             <div class="w-12 h-12 bg-cyan-50 text-cyan-700 border border-cyan-200 rounded-xl flex items-center justify-center text-xl font-bold">
@@ -428,7 +434,7 @@
                             <span class="text-xs bg-emerald-100 text-emerald-800 border border-emerald-200 px-2.5 py-1 rounded-full font-bold">Asignado</span>
                         </div>
                         <div>
-                            <h3 class="font-bold text-slate-900 text-base">1. Monitoreo Diario de Actividades</h3>
+                            <h3 class="font-bold text-slate-900 text-base">Formulario de Monitoreo Diario de Actividades</h3>
                             <p class="text-xs text-slate-500 mt-1">Registra tus actividades hora a hora (formato 12h) evaluando Disfrute (D) e Importancia (I).</p>
                         </div>
                         <button onclick="abrirModuloMonitoreo()" class="w-full bg-cyan-700 hover:bg-cyan-800 text-white font-semibold py-2.5 rounded-xl text-sm transition flex items-center justify-center gap-2 shadow-sm">
@@ -436,43 +442,11 @@
                             <i class="fa-solid fa-arrow-right"></i>
                         </button>
                     </div>
-
-                    <div id="cardModPensamientos" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:border-cyan-600 transition space-y-4">
-                        <div class="flex justify-between items-start">
-                            <div class="w-12 h-12 bg-amber-50 text-amber-700 border border-amber-200 rounded-xl flex items-center justify-center text-xl font-bold">
-                                <i class="fa-solid fa-brain"></i>
-                            </div>
-                            <span class="text-xs bg-emerald-100 text-emerald-800 border border-emerald-200 px-2.5 py-1 rounded-full font-bold">Asignado</span>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-slate-900 text-base">2. Registro de Pensamientos (RPA)</h3>
-                            <p class="text-xs text-slate-500 mt-1">Anota situaciones, emociones y respuestas alternativas acordadas en consulta.</p>
-                        </div>
-                        <button onclick="alert('Esta tarea está asignada. Sigue las indicaciones dadas por tu terapeuta en la sesión.')" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2.5 rounded-xl text-sm transition">
-                            <span>Ver Indicaciones</span>
-                        </button>
-                    </div>
-
-                    <div id="cardModExposicion" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:border-cyan-600 transition space-y-4">
-                        <div class="flex justify-between items-start">
-                            <div class="w-12 h-12 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-xl flex items-center justify-center text-xl font-bold">
-                                <i class="fa-solid fa-stairs"></i>
-                            </div>
-                            <span class="text-xs bg-emerald-100 text-emerald-800 border border-emerald-200 px-2.5 py-1 rounded-full font-bold">Asignado</span>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-slate-900 text-base">3. Jerarquía de Exposición (SUDs)</h3>
-                            <p class="text-xs text-slate-500 mt-1">Registra la escala de malestar antes y después de cada ejercicio conductual.</p>
-                        </div>
-                        <button onclick="alert('Esta tarea está asignada. Sigue las indicaciones dadas por tu terapeuta en la sesión.')" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2.5 rounded-xl text-sm transition">
-                            <span>Ver Indicaciones</span>
-                        </button>
-                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- VISTA 4: FORMULARIO PACIENTE MONITOREO CON DESCARGAS EN LIMPIO / DILIGENCIADO Y CONTROL DE EDICIÓN -->
+        <!-- VISTA 4: FORMULARIO PACIENTE MONITOREO -->
         <section id="secPacienteFormMonitoreo" class="hidden space-y-6">
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -480,7 +454,7 @@
                         <button onclick="volverDashboardPaciente()" class="text-xs text-cyan-700 font-bold hover:underline mb-2 inline-flex items-center gap-1 no-print">
                             <i class="fa-solid fa-arrow-left"></i> Volver a mis Tareas
                         </button>
-                        <h1 class="text-2xl font-bold text-slate-900">Formulario de Monitoreo Diario</h1>
+                        <h1 class="text-2xl font-bold text-slate-900">Formulario de Monitoreo Diario de Actividades</h1>
                     </div>
                     
                     <div class="flex flex-wrap items-center gap-2 no-print">
@@ -490,7 +464,6 @@
                             </select>
                         </div>
 
-                        <!-- OPCIONES DE DESCARGA / IMPRESIÓN PARA EL PACIENTE -->
                         <button onclick="imprimirPlantillaLimpia()" title="Descargar plantilla vacía para imprimir y llenar a mano" class="text-xs bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 px-3 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shadow-sm">
                             <i class="fa-solid fa-file-arrow-down text-amber-600"></i> Descargar en Limpio (PDF)
                         </button>
@@ -663,8 +636,6 @@
         let chartHistogramaInstance = null;
         let chartHistoricoInstance = null;
         let modoPacienteGuardando = false;
-
-        // Cache local de pacientes para filtro en memoria (0 lecturas extra de Firebase)
         let pacientesCache = [];
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -691,6 +662,53 @@
             const elemFecha = document.getElementById('nuevaFechaInicio');
             if (elemFecha) elemFecha.valueAsDate = new Date();
         });
+
+        // FUNCIONES DE MANEJO SEGURO DE FECHAS EN ORDEN DE CALENDARIO
+        function parseFechaLocal(fechaStr) {
+            if (!fechaStr) return new Date();
+            if (typeof fechaStr === 'string' && fechaStr.length >= 10) {
+                const part = fechaStr.substring(0, 10);
+                if (part.includes('-')) {
+                    const [y, m, d] = part.split('-');
+                    return new Date(parseInt(y, 10), parseInt(m, 10) - 1, parseInt(d, 10));
+                }
+            }
+            return new Date(fechaStr);
+        }
+
+        function obtenerSemanasOrdenadas(pData) {
+            if (!pData || !pData.semanas) return [];
+            const keys = Object.keys(pData.semanas);
+            // Ordena estrictamente por fecha cronológica ascendente
+            keys.sort((a, b) => parseFechaLocal(a).getTime() - parseFechaLocal(b).getTime());
+            return keys;
+        }
+
+        function formatBloqueSemanal(fechaStr) {
+            const d1 = parseFechaLocal(fechaStr);
+            const d2 = new Date(d1);
+            d2.setDate(d2.getDate() + 6);
+            return `${d1.getDate()} ${d1.toLocaleDateString('es-ES',{month:'short'})} - ${d2.getDate()} ${d2.toLocaleDateString('es-ES',{month:'short', year:'numeric'})}`;
+        }
+
+        function calcularEdad(fechaStr) {
+            if (!fechaStr) return '';
+            const fechaNac = parseFechaLocal(fechaStr);
+            const hoy = new Date();
+            let edad = hoy.getFullYear() - fechaNac.getFullYear();
+            const mesDiff = hoy.getMonth() - fechaNac.getMonth();
+            if (mesDiff < 0 || (mesDiff === 0 && hoy.getDate() < fechaNac.getDate())) {
+                edad--;
+            }
+            return edad >= 0 ? edad : 0;
+        }
+
+        function actualizarEdadPorFechaNacimiento(fechaStr) {
+            const edadInput = document.getElementById('nuevaEdadPaciente');
+            if (edadInput && fechaStr) {
+                edadInput.value = calcularEdad(fechaStr);
+            }
+        }
 
         function mostrarLoginTerapeuta() {
             ocultarTodasLasSecciones();
@@ -807,28 +825,8 @@
 
         function copiarEnlace(url) {
             navigator.clipboard.writeText(url);
-            alert("¡Enlace del paciente copiado al portapapeles!\nPuedes enviárselo por WhatsApp.");
-        }
-
-        
-        function calcularEdad(fechaStr) {
-            if (!fechaStr) return '';
-            const fechaNac = new Date(fechaStr + 'T00:00:00');
-            const hoy = new Date();
-            let edad = hoy.getFullYear() - fechaNac.getFullYear();
-            const mesDiff = hoy.getMonth() - fechaNac.getMonth();
-            if (mesDiff < 0 || (mesDiff === 0 && hoy.getDate() < fechaNac.getDate())) {
-                edad--;
-            }
-            return edad >= 0 ? edad : 0;
-        }
-
-        function actualizarEdadPorFechaNacimiento(fechaStr) {
-            const edadInput = document.getElementById('nuevaEdadPaciente');
-            if (edadInput && fechaStr) {
-                const edadCalculada = calcularEdad(fechaStr);
-                edadInput.value = edadCalculada;
-            }
+            alert("¡Enlace del paciente copiado al portapapeles!
+Puedes enviárselo por WhatsApp.");
         }
 
         function abrirModalNuevoPaciente() { document.getElementById('modalNuevoPaciente').classList.remove('hidden'); }
@@ -902,19 +900,20 @@
             document.getElementById('detNotasClinicas').value = p.notasClinicas || "";
 
             const mods = p.modulosAsignados || ['monitoreo'];
-            document.getElementById('chkModMonitoreo').checked = mods.includes('monitoreo');
-            document.getElementById('chkModPensamientos').checked = mods.includes('pensamientos');
-            document.getElementById('chkModExposicion').checked = mods.includes('exposicion');
+            if (document.getElementById('chkModMonitoreo')) {
+                document.getElementById('chkModMonitoreo').checked = mods.includes('monitoreo');
+            }
 
             const selectSem = document.getElementById('selectSemanaTerapeuta');
             selectSem.innerHTML = '';
-            const semanasKeys = Object.keys(p.semanas || {});
-            if (semanasKeys.length === 0) {
-                p.semanas = { [p.fechaInicio || '2026-10-26']: crearSemanaVacia() };
+            let keysFinal = obtenerSemanasOrdenadas(p);
+            if (keysFinal.length === 0) {
+                const fIni = p.fechaInicio || '2026-10-26';
+                p.semanas = { [fIni]: crearSemanaVacia() };
+                keysFinal = [fIni];
             }
-            const keysFinal = Object.keys(p.semanas);
             if (!semanaSeleccionadaKey || !keysFinal.includes(semanaSeleccionadaKey)) {
-                semanaSeleccionadaKey = keysFinal[0];
+                semanaSeleccionadaKey = keysFinal[keysFinal.length - 1];
             }
 
             keysFinal.forEach((sk, idx) => {
@@ -940,10 +939,10 @@
             const semData = pacienteData.semanas[semanaSeleccionadaKey];
             if (semData && semData.bloqueada) {
                 btn.className = "text-xs bg-rose-50 text-rose-700 border border-rose-300 hover:bg-rose-100 px-3.5 py-2 rounded-xl font-semibold transition flex items-center gap-1.5 shadow-sm";
-                btn.innerHTML = `<i class="fa-solid fa-lock text-rose-600"></i> Semana Bloqueada (Clic para Desbloquear)`;
+                btn.innerHTML = `<i class="fa-solid fa-lock text-rose-600"></i> Semana Bloqueada`;
             } else {
                 btn.className = "text-xs bg-emerald-50 text-emerald-800 border border-emerald-300 hover:bg-emerald-100 px-3.5 py-2 rounded-xl font-semibold transition flex items-center gap-1.5 shadow-sm";
-                btn.innerHTML = `<i class="fa-solid fa-lock-open text-emerald-600"></i> Semana Abierta (Clic para Bloquear)`;
+                btn.innerHTML = `<i class="fa-solid fa-lock-open text-emerald-600"></i> Semana Abierta`;
             }
         }
 
@@ -974,17 +973,51 @@
         }
 
         async function crearNuevoBloqueSemanalTerapeuta() {
-            const semanasKeys = Object.keys(pacienteData.semanas || {});
-            const ultimaKey = semanasKeys[semanasKeys.length - 1] || pacienteData.fechaInicio || '2026-10-26';
-            const dUltima = new Date(ultimaKey);
+            const semanasKeys = obtenerSemanasOrdenadas(pacienteData);
+            const ultimaKey = semanasKeys.length > 0 ? semanasKeys[semanasKeys.length - 1] : (pacienteData.fechaInicio || '2026-10-26');
+            
+            const dUltima = parseFechaLocal(ultimaKey);
             dUltima.setDate(dUltima.getDate() + 7);
-            const nuevaKeyStr = dUltima.toISOString().split('T')[0];
+            
+            const year = dUltima.getFullYear();
+            const month = String(dUltima.getMonth() + 1).padStart(2, '0');
+            const day = String(dUltima.getDate()).padStart(2, '0');
+            const nuevaKeyStr = `${year}-${month}-${day}`;
 
+            if (!pacienteData.semanas) pacienteData.semanas = {};
             pacienteData.semanas[nuevaKeyStr] = crearSemanaVacia();
             semanaSeleccionadaKey = nuevaKeyStr;
             sincronizarGarantizado();
             renderizarFichaClinica();
-            alert(`¡Nuevo bloque semanal (${formatBloqueSemanal(nuevaKeyStr)}) creado con éxito!`);
+            alert(`¡Nuevo bloque semanal (${formatBloqueSemanal(nuevaKeyStr)}) habilitado en orden del calendario!`);
+        }
+
+        async function eliminarSemanaTerapeuta() {
+            const semKeys = obtenerSemanasOrdenadas(pacienteData);
+            if (semKeys.length === 0) return;
+
+            const idxSem = semKeys.indexOf(semanaSeleccionadaKey);
+            const numSem = idxSem >= 0 ? idxSem + 1 : 1;
+            const fechaTexto = formatBloqueSemanal(semanaSeleccionadaKey);
+
+            if (!confirm(`¿Estás seguro de eliminar permanentemente la Semana ${numSem} (${fechaTexto})?\n\nEsta acción borrará todas las actividades registradas en ese bloque.`)) {
+                return;
+            }
+
+            delete pacienteData.semanas[semanaSeleccionadaKey];
+
+            const semRestantes = obtenerSemanasOrdenadas(pacienteData);
+            if (semRestantes.length > 0) {
+                semanaSeleccionadaKey = semRestantes[semRestantes.length - 1];
+            } else {
+                const fIni = pacienteData.fechaInicio || '2026-10-26';
+                pacienteData.semanas = { [fIni]: crearSemanaVacia() };
+                semanaSeleccionadaKey = fIni;
+            }
+
+            sincronizarGarantizado();
+            renderizarFichaClinica();
+            alert("¡Semana eliminada correctamente!");
         }
 
         async function toggleModuloAsignado(modKey) {
@@ -1001,7 +1034,7 @@
 
             const headerRow = document.getElementById('headerFechasSupervision');
             headerRow.innerHTML = `<th class="p-2 border border-slate-700 bg-slate-800 text-cyan-300 min-w-[100px]">HORA (12h)</th>`;
-            const fechaInicio = new Date(semKey || new Date());
+            const fechaInicio = parseFechaLocal(semKey);
 
             DIAS_NOMBRE.forEach((dia, idx) => {
                 const f = new Date(fechaInicio);
@@ -1101,7 +1134,6 @@
             let sumTotalI = 0, cI = 0;
             let animos = [];
 
-            // Conteo para Histograma de rangos de ánimo
             const histogramaCounts = { '0 - 2 (Muy Bajo)': 0, '3 - 4 (Bajo)': 0, '5 - 6 (Neutral)': 0, '7 - 8 (Bueno)': 0, '9 - 10 (Excelente)': 0 };
 
             semanas.forEach(sem => {
@@ -1138,7 +1170,6 @@
             }
             document.getElementById('statTendenciaGlobal').innerText = tendenciaStr;
 
-            // Renderizar Histograma
             const ctxH = document.getElementById('chartHistogramaMensual').getContext('2d');
             if (chartHistogramaInstance) chartHistogramaInstance.destroy();
 
@@ -1169,14 +1200,15 @@
 
         function renderGraficoHistoricoTotal(p) {
             const ctx = document.getElementById('chartEvolucionHistorica').getContext('2d');
-            const semanasEntries = Object.entries(p.semanas || {});
+            const semanasKeys = obtenerSemanasOrdenadas(p);
 
             const labels = [];
             const histD = [];
             const histI = [];
             const histAnimo = [];
 
-            semanasEntries.forEach(([sk, sData], idx) => {
+            semanasKeys.forEach((sk, idx) => {
+                const sData = p.semanas[sk] || {};
                 labels.push(`Sem ${idx + 1}`);
                 let totalD = 0, cD = 0, totalI = 0, cI = 0, totalAnimo = 0;
                 (sData.dias || []).forEach(d => {
@@ -1286,36 +1318,41 @@ Esta acción liberará espacio y no se puede deshacer.`)) return;
 
             const mods = pacienteData.modulosAsignados || ['monitoreo'];
             document.getElementById('cardModMonitoreo').style.display = mods.includes('monitoreo') ? 'block' : 'none';
-            document.getElementById('cardModPensamientos').style.display = mods.includes('pensamientos') ? 'block' : 'none';
-            document.getElementById('cardModExposicion').style.display = mods.includes('exposicion') ? 'block' : 'none';
         }
 
         function poblarSelectoresSemanaPaciente() {
-            const semKeys = Object.keys(pacienteData.semanas || {});
+            const semKeys = obtenerSemanasOrdenadas(pacienteData);
+            if (semKeys.length === 0) {
+                const fIni = pacienteData.fechaInicio || '2026-10-26';
+                pacienteData.semanas = { [fIni]: crearSemanaVacia() };
+                semKeys.push(fIni);
+            }
             if (!semanaSeleccionadaKey || !semKeys.includes(semanaSeleccionadaKey)) {
-                semanaSeleccionadaKey = semKeys[0] || pacienteData.fechaInicio || '2026-10-26';
+                semanaSeleccionadaKey = semKeys[semKeys.length - 1];
             }
 
             const sel1 = document.getElementById('selectSemanaPacienteDash');
             const sel2 = document.getElementById('selectSemanaPacienteForm');
-            sel1.innerHTML = ''; sel2.innerHTML = '';
+            if (sel1) sel1.innerHTML = '';
+            if (sel2) sel2.innerHTML = '';
 
             semKeys.forEach((sk, idx) => {
                 const bloqueada = pacienteData.semanas[sk]?.bloqueada;
-                const optText = `Semana ${idx + 1} (${formatBloqueSemanal(sk)})${bloqueada ? ' 🔒 (Bloqueada)' : ''}`;
-                sel1.innerHTML += `<option value="${sk}" ${sk === semanaSeleccionadaKey ? 'selected' : ''}>${optText}</option>`;
-                sel2.innerHTML += `<option value="${sk}" ${sk === semanaSeleccionadaKey ? 'selected' : ''}>${optText}</option>`;
+                const optText = `Semana ${idx + 1} (${formatBloqueSemanal(sk)})${bloqueada ? ' 🔒 (Bloqueada)' : ' 🔓 (Abierta)'}`;
+                if (sel1) sel1.innerHTML += `<option value="${sk}" ${sk === semanaSeleccionadaKey ? 'selected' : ''}>${optText}</option>`;
+                if (sel2) sel2.innerHTML += `<option value="${sk}" ${sk === semanaSeleccionadaKey ? 'selected' : ''}>${optText}</option>`;
             });
 
-            // Actualizar badge en dashboard
             const esBloqueada = pacienteData.semanas[semanaSeleccionadaKey]?.bloqueada;
             const badge = document.getElementById('badgeEstadoBloqueoDash');
-            if (esBloqueada) {
-                badge.className = "text-xs px-2.5 py-1 rounded-full font-bold bg-amber-100 text-amber-800 border border-amber-300";
-                badge.innerText = "🔒 Semana Cerrada (Solo lectura)";
-            } else {
-                badge.className = "text-xs px-2.5 py-1 rounded-full font-bold bg-emerald-100 text-emerald-800 border border-emerald-300";
-                badge.innerText = "🔓 Semana Habilitada para Edición";
+            if (badge) {
+                if (esBloqueada) {
+                    badge.className = "text-xs px-2.5 py-1 rounded-full font-bold bg-amber-100 text-amber-800 border border-amber-300";
+                    badge.innerText = "🔒 Semana Cerrada (Solo lectura)";
+                } else {
+                    badge.className = "text-xs px-2.5 py-1 rounded-full font-bold bg-emerald-100 text-emerald-800 border border-emerald-300";
+                    badge.innerText = "🔓 Semana Habilitada para Edición";
+                }
             }
         }
 
@@ -1343,7 +1380,7 @@ Esta acción liberará espacio y no se puede deshacer.`)) return;
         function renderDiasTabs() {
             const container = document.getElementById('diasTabsContainer');
             container.innerHTML = '';
-            const fechaInicio = new Date(semanaSeleccionadaKey || pacienteData.fechaInicio || new Date());
+            const fechaInicio = parseFechaLocal(semanaSeleccionadaKey || pacienteData.fechaInicio);
 
             DIAS_NOMBRE.forEach((dia, idx) => {
                 const fechaDia = new Date(fechaInicio);
@@ -1365,7 +1402,7 @@ Esta acción liberará espacio y no se puede deshacer.`)) return;
             diaSeleccionadoIndex = diaIdx;
             renderDiasTabs();
 
-            const fechaInicio = new Date(semanaSeleccionadaKey || pacienteData.fechaInicio || new Date());
+            const fechaInicio = parseFechaLocal(semanaSeleccionadaKey || pacienteData.fechaInicio);
             const fechaDia = new Date(fechaInicio);
             fechaDia.setDate(fechaDia.getDate() + diaIdx);
             document.getElementById('diaActualNombre').innerText = `${DIAS_NOMBRE[diaIdx]} ${fechaDia.getDate()} de ${fechaDia.toLocaleDateString('es-ES', {month:'long'})}`;
@@ -1496,7 +1533,6 @@ Esta acción liberará espacio y no se puede deshacer.`)) return;
         function exportarPDF() { window.print(); }
 
         function imprimirPlantillaLimpia() {
-            // Limpia temporalmente inputs para impresión en limpio
             const inputs = document.querySelectorAll('#listaHorasPaciente input');
             const prevValues = [];
             inputs.forEach(i => {
@@ -1504,7 +1540,6 @@ Esta acción liberará espacio y no se puede deshacer.`)) return;
                 i.value = '';
             });
             window.print();
-            // Restaura valores
             inputs.forEach((i, idx) => {
                 i.value = prevValues[idx];
             });
@@ -1526,13 +1561,6 @@ Esta acción liberará espacio y no se puede deshacer.`)) return;
                 dias.push({ horas, animo: 5 });
             }
             return { dias, bloqueada: false };
-        }
-
-        function formatBloqueSemanal(fechaStr) {
-            const d1 = new Date(fechaStr || new Date());
-            const d2 = new Date(d1);
-            d2.setDate(d2.getDate() + 6);
-            return `${d1.getDate()} ${d1.toLocaleDateString('es-ES',{month:'short'})} - ${d2.getDate()} ${d2.toLocaleDateString('es-ES',{month:'short', year:'numeric'})}`;
         }
 
         function getPacientesEjemplo() {
