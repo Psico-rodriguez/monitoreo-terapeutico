@@ -19,7 +19,7 @@
                             700: '#0369a1',
                             800: '#075985',
                             900: '#0c4a6e',
-                            dark: '#0b1325',
+                            dark: '#090e1a',
                             nav: '#090e1a'
                         }
                     }
@@ -56,22 +56,22 @@
 
         .enso-ring {
             border: 3px solid transparent;
-            border-top-color: #38bdf8;
-            border-right-color: #0284c7;
-            border-bottom-color: #0369a1;
-            border-left-color: #7dd3fc;
+            border-top-color: #0284c7;
+            border-right-color: #0369a1;
+            border-bottom-color: #075985;
+            border-left-color: #38bdf8;
             border-radius: 50%;
         }
     </style>
 </head>
-<body class="bg-slate-900 text-slate-100 font-sans min-h-screen flex flex-col justify-between">
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col justify-between">
 
     <div>
-    <!-- BARRA SUPERIOR E IMPRESIÓN CON MEMBRETE OFICIAL -->
-    <nav class="bg-[#090e1a] text-white shadow-xl no-print sticky top-0 z-50 border-b border-cyan-950/80">
+    <!-- BARRA SUPERIOR E IMPRESIÓN CON MEMBRETE OFICIAL (FONDO NAVY PROFUNDO) -->
+    <nav class="bg-[#090e1a] text-white shadow-md no-print sticky top-0 z-50 border-b border-slate-800">
         <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-3 cursor-pointer" onclick="volverDashboardPaciente()">
-                <div class="relative w-10 h-10 flex items-center justify-center enso-ring bg-slate-950 shadow-inner shrink-0">
+                <div class="relative w-10 h-10 flex items-center justify-center enso-ring bg-slate-900 shadow-inner shrink-0">
                     <span class="text-cyan-400 font-extrabold text-2xl tracking-tighter" style="font-family: serif;">Ψ</span>
                 </div>
                 <div>
@@ -85,7 +85,7 @@
                     <span id="syncText">En línea</span>
                 </span>
                 
-                <button id="btnTerapeutaLogin" onclick="mostrarLoginTerapeuta()" class="text-xs bg-cyan-600 hover:bg-cyan-500 text-white font-semibold px-3.5 py-1.5 rounded-lg transition border border-cyan-400/50 flex items-center gap-1.5 shadow-sm">
+                <button id="btnTerapeutaLogin" onclick="mostrarLoginTerapeuta()" class="text-xs bg-cyan-600 hover:bg-cyan-700 text-white font-semibold px-3.5 py-1.5 rounded-lg transition border border-cyan-500/50 flex items-center gap-1.5 shadow-sm">
                     <i class="fa-solid fa-user-lock"></i> Acceso Terapeuta
                 </button>
                 
@@ -99,15 +99,15 @@
         </div>
     </nav>
 
-    <!-- MEMBRETE SOLO PARA IMPRESIÓN (PDF) -->
-    <div class="print-only p-4 border-b-2 border-slate-800 mb-4">
+    <!-- MEMBRETE SOLO PARA IMPRESIÓN / PDF -->
+    <div class="print-only p-4 border-b-2 border-slate-800 mb-4 bg-white">
         <div class="flex justify-between items-center">
             <div>
-                <h1 class="text-xl font-bold uppercase text-black">Oscar Steven Rodriguez Bustos</h1>
+                <h1 class="text-xl font-bold uppercase text-slate-900">Oscar Steven Rodriguez Bustos</h1>
                 <p class="text-xs font-semibold text-slate-700">PSICÓLOGO & PSICOTERAPEUTA · T.P. 320214 COLPSIC</p>
                 <p class="text-[10px] text-slate-500">Contacto: +57 322 852 9736 | psicologoorodriguez@gmail.com | Bogotá D.C., Colombia</p>
             </div>
-            <div class="text-3xl font-serif text-black font-extrabold">Ψ</div>
+            <div class="text-3xl font-serif text-slate-900 font-extrabold">Ψ</div>
         </div>
         <p class="text-center text-[9px] uppercase tracking-widest text-slate-600 font-bold mt-2">Plataforma Terapéutica — Equilibrio • Crecimiento • Conexión</p>
     </div>
@@ -115,9 +115,9 @@
     <main class="max-w-7xl mx-auto p-4 md:p-6 w-full">
 
         <!-- ALERTA FIREBASE -->
-        <div id="firebaseAlert" class="hidden mb-6 p-4 bg-amber-950/90 border-l-4 border-amber-500 text-amber-200 rounded-r shadow-lg text-sm">
+        <div id="firebaseAlert" class="hidden mb-6 p-4 bg-amber-50 border-l-4 border-amber-500 text-amber-900 rounded-r shadow-sm text-sm">
             <div class="flex items-start">
-                <i class="fa-solid fa-triangle-exclamation text-amber-400 text-xl mr-3 mt-0.5"></i>
+                <i class="fa-solid fa-triangle-exclamation text-amber-600 text-xl mr-3 mt-0.5"></i>
                 <div>
                     <h4 class="font-bold">Modo de Demostración Local (Sin conexión a Firebase)</h4>
                     <p class="mt-0.5 text-xs">No se pudo conectar a la base de datos de Firebase. Revisa la consola o las credenciales.</p>
@@ -126,25 +126,25 @@
         </div>
 
         <!-- VISTA 1: LOGIN TERAPEUTA -->
-        <section id="secLoginTerapeuta" class="max-w-md mx-auto my-12 bg-slate-800/90 p-8 rounded-2xl shadow-2xl border border-slate-700/80 backdrop-blur-sm">
+        <section id="secLoginTerapeuta" class="max-w-md mx-auto my-12 bg-white p-8 rounded-2xl shadow-xl border border-slate-200">
             <div class="text-center mb-6">
-                <div class="w-16 h-16 bg-cyan-950 text-cyan-400 border border-cyan-500/30 rounded-full flex items-center justify-center mx-auto mb-3 text-3xl font-serif">
+                <div class="w-16 h-16 bg-cyan-50 text-cyan-700 border border-cyan-200 rounded-full flex items-center justify-center mx-auto mb-3 text-3xl font-serif">
                     Ψ
                 </div>
-                <h2 class="text-2xl font-bold text-white">Acceso Profesional</h2>
-                <p class="text-slate-400 text-xs mt-1">Oscar Steven Rodriguez Bustos — Psicoterapeuta</p>
+                <h2 class="text-2xl font-bold text-slate-900">Acceso Profesional</h2>
+                <p class="text-slate-500 text-xs mt-1">Oscar Steven Rodriguez Bustos — Psicoterapeuta</p>
             </div>
             <form id="formLogin" onsubmit="loginTerapeuta(event)" class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-cyan-300 uppercase mb-1">Correo Electrónico</label>
-                    <input type="email" id="loginEmail" required placeholder="terapeuta@clinica.com" class="w-full px-4 py-2.5 bg-slate-900 text-white border border-slate-700 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:outline-none text-sm">
+                    <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Correo Electrónico</label>
+                    <input type="email" id="loginEmail" required placeholder="terapeuta@clinica.com" class="w-full px-4 py-2.5 bg-slate-50 text-slate-900 border border-slate-300 rounded-xl focus:ring-2 focus:ring-cyan-600 focus:outline-none text-sm">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-cyan-300 uppercase mb-1">Contraseña</label>
-                    <input type="password" id="loginPassword" required placeholder="••••••••" class="w-full px-4 py-2.5 bg-slate-900 text-white border border-slate-700 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:outline-none text-sm">
+                    <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Contraseña</label>
+                    <input type="password" id="loginPassword" required placeholder="••••••••" class="w-full px-4 py-2.5 bg-slate-50 text-slate-900 border border-slate-300 rounded-xl focus:ring-2 focus:ring-cyan-600 focus:outline-none text-sm">
                 </div>
-                <div id="loginError" class="hidden text-xs text-rose-300 bg-rose-950/80 p-2.5 rounded-lg border border-rose-800"></div>
-                <button type="submit" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-semibold py-2.5 rounded-xl transition shadow-lg text-sm">
+                <div id="loginError" class="hidden text-xs text-rose-700 bg-rose-50 p-2.5 rounded-lg border border-rose-200"></div>
+                <button type="submit" class="w-full bg-cyan-700 hover:bg-cyan-800 text-white font-semibold py-2.5 rounded-xl transition shadow-md text-sm">
                     Iniciar Sesión
                 </button>
             </form>
@@ -152,27 +152,40 @@
 
         <!-- VISTA 2: PANEL GENERAL DEL TERAPEUTA -->
         <section id="secPanelTerapeuta" class="hidden space-y-6">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-800/80 p-6 rounded-2xl shadow-lg border border-slate-700">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
                 <div>
-                    <h1 class="text-2xl font-bold text-white flex items-center gap-2">
-                        <i class="fa-solid fa-users text-cyan-400"></i> Directorio de Pacientes
+                    <h1 class="text-2xl font-bold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-users text-cyan-700"></i> Directorio de Pacientes
                     </h1>
-                    <p class="text-slate-400 text-sm mt-0.5">Selecciona un paciente para abrir su ficha clínica individual, gestionar tareas y evaluar su evolución.</p>
+                    <p class="text-slate-500 text-sm mt-0.5">Selecciona un paciente para abrir su ficha clínica individual, gestionar tareas y evaluar su evolución.</p>
                 </div>
-                <button onclick="abrirModalNuevoPaciente()" class="bg-cyan-600 hover:bg-cyan-500 text-white px-4 py-2.5 rounded-xl font-medium shadow-lg transition flex items-center gap-2 text-sm">
+                <button onclick="abrirModalNuevoPaciente()" class="bg-cyan-700 hover:bg-cyan-800 text-white px-4 py-2.5 rounded-xl font-medium shadow transition flex items-center gap-2 text-sm">
                     <i class="fa-solid fa-user-plus"></i> Registrar Nuevo Paciente
                 </button>
             </div>
 
-            <div class="bg-slate-800/80 rounded-2xl shadow-lg border border-slate-700 overflow-hidden">
-                <div class="px-6 py-4 border-b border-slate-700/80 bg-slate-900/60 flex justify-between items-center">
-                    <h3 class="font-bold text-cyan-300 text-sm">Pacientes Registrados</h3>
-                    <span id="cantPacientes" class="text-xs bg-cyan-950 text-cyan-300 border border-cyan-800 px-3 py-1 rounded-full font-bold">0 paciente(s)</span>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <!-- CABECERA DEL DIRECTORIO CON BÚSQUEDA OPTIMIZADA -->
+                <div class="px-6 py-4 border-b border-slate-200 bg-slate-50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                    <div class="flex items-center gap-2">
+                        <h3 class="font-bold text-slate-800 text-sm">Pacientes Registrados</h3>
+                        <span id="cantPacientes" class="text-xs bg-cyan-100 text-cyan-800 border border-cyan-200 px-3 py-0.5 rounded-full font-bold">0 paciente(s)</span>
+                    </div>
+
+                    <!-- BUSCADOR CON COINCIDENCIAS EN TIEMPO REAL (0 READS ADICIONALES DE FIREBASE) -->
+                    <div class="relative w-full sm:w-72">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-400 text-xs"></i>
+                        <input type="text" id="inputBuscarPaciente" oninput="filtrarPacientesEnMemoria(this.value)" placeholder="Buscar por nombre..." class="w-full pl-9 pr-8 py-1.5 bg-white text-slate-800 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-cyan-600 focus:outline-none">
+                        <button onclick="limpiarBuscador()" id="btnLimpiarBuscar" class="hidden absolute right-2.5 top-2 text-slate-400 hover:text-slate-600 text-xs">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
                 </div>
+
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
-                            <tr class="bg-slate-900/90 text-cyan-400 text-xs uppercase tracking-wider border-b border-slate-700">
+                            <tr class="bg-slate-100 text-slate-700 text-xs uppercase tracking-wider border-b border-slate-200">
                                 <th class="p-4">Paciente (Nombres y Apellidos)</th>
                                 <th class="p-4">Edad</th>
                                 <th class="p-4">Fecha Nacimiento</th>
@@ -180,7 +193,7 @@
                                 <th class="p-4 text-center">Acción</th>
                             </tr>
                         </thead>
-                        <tbody id="tablaPacientesBody" class="divide-y divide-slate-700/60 text-sm text-slate-200">
+                        <tbody id="tablaPacientesBody" class="divide-y divide-slate-200 text-sm text-slate-700">
                         </tbody>
                     </table>
                 </div>
@@ -189,94 +202,94 @@
 
         <!-- VISTA DETALLE DEL PACIENTE (PANEL TERAPEUTA) -->
         <section id="secDetallePacienteTerapeuta" class="hidden space-y-6">
-            <button onclick="volverListaPacientes()" class="inline-flex items-center gap-2 text-xs font-bold text-cyan-300 hover:text-cyan-100 bg-cyan-950/80 hover:bg-cyan-900 border border-cyan-800 px-3.5 py-2 rounded-xl transition no-print">
+            <button onclick="volverListaPacientes()" class="inline-flex items-center gap-2 text-xs font-bold text-slate-700 hover:text-slate-900 bg-white border border-slate-300 px-3.5 py-2 rounded-xl transition shadow-sm no-print">
                 <i class="fa-solid fa-arrow-left"></i> Volver a la Lista de Pacientes
             </button>
 
-            <div class="bg-slate-800/90 p-6 rounded-2xl shadow-xl border border-slate-700 space-y-6">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-700 pb-4 gap-4">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-200 pb-4 gap-4">
                     <div>
                         <div class="flex items-center gap-2 mb-1">
-                            <span class="text-xs uppercase font-bold text-cyan-300 bg-cyan-950 px-2.5 py-0.5 rounded border border-cyan-800">Ficha Clínica Individual</span>
-                            <span class="text-xs bg-emerald-950 text-emerald-400 border border-emerald-800 px-2 py-0.5 rounded-full font-bold animate-pulse"><i class="fa-solid fa-signal mr-1"></i>Tiempo Real</span>
+                            <span class="text-xs uppercase font-bold text-cyan-800 bg-cyan-100 px-2.5 py-0.5 rounded border border-cyan-200">Ficha Clínica Individual</span>
+                            <span class="text-xs bg-emerald-100 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-full font-bold"><i class="fa-solid fa-signal mr-1"></i>Tiempo Real</span>
                         </div>
-                        <h2 id="detNombrePaciente" class="text-2xl font-bold text-white">Nombre Completo</h2>
-                        <div class="flex flex-wrap items-center gap-4 text-xs text-slate-400 mt-2">
-                            <span><i class="fa-solid fa-cake-candles text-cyan-400 mr-1"></i> <strong id="detEdadPaciente" class="text-slate-200">0</strong> años</span>
-                            <span><i class="fa-regular fa-calendar-days text-cyan-400 mr-1"></i> Nacimiento: <span id="detFechaNacPaciente" class="text-slate-200">--/--/----</span></span>
-                            <span><i class="fa-solid fa-link text-cyan-400 mr-1"></i> ID Enlace: <code id="detIdPaciente" class="bg-slate-900 text-cyan-300 px-1.5 py-0.5 rounded border border-slate-700">---</code></span>
+                        <h2 id="detNombrePaciente" class="text-2xl font-bold text-slate-900">Nombre Completo</h2>
+                        <div class="flex flex-wrap items-center gap-4 text-xs text-slate-500 mt-2">
+                            <span><i class="fa-solid fa-cake-candles text-cyan-700 mr-1"></i> <strong id="detEdadPaciente" class="text-slate-800">0</strong> años</span>
+                            <span><i class="fa-regular fa-calendar-days text-cyan-700 mr-1"></i> Nacimiento: <span id="detFechaNacPaciente" class="text-slate-800">--/--/----</span></span>
+                            <span><i class="fa-solid fa-link text-cyan-700 mr-1"></i> ID Enlace: <code id="detIdPaciente" class="bg-slate-100 text-cyan-800 px-1.5 py-0.5 rounded border border-slate-200">---</code></span>
                         </div>
                     </div>
                     <div class="flex flex-wrap gap-2 no-print">
-                        <button onclick="exportarPDF()" class="bg-slate-700 hover:bg-slate-600 text-slate-100 border border-slate-600 px-3.5 py-2 rounded-xl text-sm font-medium transition flex items-center gap-1.5 shadow">
+                        <button onclick="exportarPDF()" class="bg-slate-800 hover:bg-slate-900 text-white border border-slate-800 px-3.5 py-2 rounded-xl text-sm font-medium transition flex items-center gap-1.5 shadow-sm">
                             <i class="fa-solid fa-file-pdf text-rose-400"></i> Descargar Reporte PDF
                         </button>
-                        <button onclick="liberarEspacioPaciente()" class="bg-rose-950/80 hover:bg-rose-900 text-rose-200 border border-rose-800 px-3.5 py-2 rounded-xl text-sm font-medium transition flex items-center gap-1.5 shadow">
+                        <button onclick="liberarEspacioPaciente()" class="bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 px-3.5 py-2 rounded-xl text-sm font-medium transition flex items-center gap-1.5 shadow-sm">
                             <i class="fa-solid fa-trash-can"></i> Eliminar Paciente
                         </button>
                     </div>
                 </div>
 
                 <!-- BLOQUE DE CONTROL DE EDICIÓN Y BLOQUEO DE SEMANAS POR EL TERAPEUTA -->
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-900/80 p-4 rounded-xl border border-slate-700 no-print">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200 no-print">
                     <div class="flex items-center gap-3">
-                        <i class="fa-regular fa-calendar-check text-cyan-400 text-xl"></i>
+                        <i class="fa-regular fa-calendar-check text-cyan-700 text-xl"></i>
                         <div>
-                            <span class="text-xs font-semibold text-slate-400 uppercase">Seleccionar Bloque Semanal</span>
-                            <select id="selectSemanaTerapeuta" onchange="cambiarSemanaTerapeuta(this.value)" class="block text-sm font-bold text-cyan-200 bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 focus:ring-2 focus:ring-cyan-500 focus:outline-none mt-0.5">
+                            <span class="text-xs font-semibold text-slate-500 uppercase">Seleccionar Bloque Semanal</span>
+                            <select id="selectSemanaTerapeuta" onchange="cambiarSemanaTerapeuta(this.value)" class="block text-sm font-bold text-slate-800 bg-white border border-slate-300 rounded-lg px-3 py-1.5 focus:ring-2 focus:ring-cyan-600 focus:outline-none mt-0.5">
                             </select>
                         </div>
                     </div>
                     
                     <div class="flex flex-wrap items-center gap-2">
-                        <button id="btnToggleBloqueoSemana" onclick="toggleBloqueoSemana()" class="text-xs px-3.5 py-2 rounded-xl font-semibold transition border flex items-center gap-1.5 shadow">
+                        <button id="btnToggleBloqueoSemana" onclick="toggleBloqueoSemana()" class="text-xs px-3.5 py-2 rounded-xl font-semibold transition border flex items-center gap-1.5 shadow-sm">
                             <i class="fa-solid fa-lock"></i> Bloquear/Desbloquear Edición
                         </button>
-                        <button onclick="crearNuevoBloqueSemanalTerapeuta()" class="text-xs bg-cyan-600 hover:bg-cyan-500 text-white font-semibold px-3.5 py-2 rounded-xl transition shadow-md flex items-center gap-1.5">
+                        <button onclick="crearNuevoBloqueSemanalTerapeuta()" class="text-xs bg-cyan-700 hover:bg-cyan-800 text-white font-semibold px-3.5 py-2 rounded-xl transition shadow-sm flex items-center gap-1.5">
                             <i class="fa-solid fa-plus"></i> Habilitar Nueva Semana
                         </button>
                     </div>
                 </div>
 
                 <!-- SELECTOR DE VISTAS DE EVOLUCIÓN PARA EL TERAPEUTA -->
-                <div class="bg-slate-900/90 border border-slate-700 p-4 rounded-xl space-y-3 no-print">
-                    <h3 class="font-bold text-white text-xs uppercase tracking-wider flex items-center gap-2">
-                        <i class="fa-solid fa-eye text-cyan-400"></i> Seleccionar Vistas de Evolución a Mostrar
+                <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-3 no-print">
+                    <h3 class="font-bold text-slate-800 text-xs uppercase tracking-wider flex items-center gap-2">
+                        <i class="fa-solid fa-eye text-cyan-700"></i> Seleccionar Vistas de Evolución a Mostrar
                     </h3>
                     <div class="flex flex-wrap gap-4 text-xs font-medium">
-                        <label class="flex items-center space-x-2 cursor-pointer bg-slate-800 px-3 py-2 rounded-lg border border-slate-700 hover:border-cyan-500">
-                            <input type="checkbox" id="chkVerSemanal" checked onchange="actualizarVistasTerapeuta()" class="w-4 h-4 text-cyan-500 rounded bg-slate-900">
-                            <span class="text-slate-200 font-bold">Evolución Semanal (Gráficos + Matriz)</span>
+                        <label class="flex items-center space-x-2 cursor-pointer bg-white px-3 py-2 rounded-lg border border-slate-200 hover:border-cyan-600 shadow-sm">
+                            <input type="checkbox" id="chkVerSemanal" checked onchange="actualizarVistasTerapeuta()" class="w-4 h-4 text-cyan-600 rounded bg-slate-50">
+                            <span class="text-slate-800 font-bold">Evolución Semanal (Gráficos + Matriz)</span>
                         </label>
-                        <label class="flex items-center space-x-2 cursor-pointer bg-slate-800 px-3 py-2 rounded-lg border border-slate-700 hover:border-cyan-500">
-                            <input type="checkbox" id="chkVerMensual" checked onchange="actualizarVistasTerapeuta()" class="w-4 h-4 text-cyan-500 rounded bg-slate-900">
-                            <span class="text-slate-200 font-bold">Análisis Clínico Mensual</span>
+                        <label class="flex items-center space-x-2 cursor-pointer bg-white px-3 py-2 rounded-lg border border-slate-200 hover:border-cyan-600 shadow-sm">
+                            <input type="checkbox" id="chkVerMensual" checked onchange="actualizarVistasTerapeuta()" class="w-4 h-4 text-cyan-600 rounded bg-slate-50">
+                            <span class="text-slate-800 font-bold">Análisis Clínico Mensual (Histograma)</span>
                         </label>
-                        <label class="flex items-center space-x-2 cursor-pointer bg-slate-800 px-3 py-2 rounded-lg border border-slate-700 hover:border-cyan-500">
-                            <input type="checkbox" id="chkVerHistorico" checked onchange="actualizarVistasTerapeuta()" class="w-4 h-4 text-cyan-500 rounded bg-slate-900">
-                            <span class="text-slate-200 font-bold">Evolución Total / Histórica</span>
+                        <label class="flex items-center space-x-2 cursor-pointer bg-white px-3 py-2 rounded-lg border border-slate-200 hover:border-cyan-600 shadow-sm">
+                            <input type="checkbox" id="chkVerHistorico" checked onchange="actualizarVistasTerapeuta()" class="w-4 h-4 text-cyan-600 rounded bg-slate-50">
+                            <span class="text-slate-800 font-bold">Evolución Total / Histórica</span>
                         </label>
                     </div>
                 </div>
 
                 <!-- CONTROL DE ASIGNACIÓN DE TAREAS Y LIBERACIÓN DE INFORMACIÓN -->
-                <div class="bg-slate-900/90 border border-cyan-900/50 p-5 rounded-2xl space-y-3 no-print">
-                    <h3 class="font-bold text-white text-sm flex items-center gap-2">
-                        <i class="fa-solid fa-sliders text-cyan-400"></i> Tareas Asignadas y Liberación de Información
+                <div class="bg-cyan-50/60 border border-cyan-200 p-5 rounded-2xl space-y-3 no-print">
+                    <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-sliders text-cyan-700"></i> Tareas Asignadas y Liberación de Información
                     </h3>
-                    <p class="text-xs text-slate-400">Marca las tareas que deseas liberar o visibilizar para el paciente en su portal personal:</p>
+                    <p class="text-xs text-slate-600">Marca las tareas que deseas liberar o visibilizar para el paciente en su portal personal:</p>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
-                        <label class="flex items-center p-3 bg-slate-800 border border-slate-700 rounded-xl cursor-pointer hover:border-cyan-500 transition">
-                            <input type="checkbox" id="chkModMonitoreo" onchange="toggleModuloAsignado('monitoreo')" class="w-4 h-4 text-cyan-500 rounded bg-slate-900 border-slate-700">
-                            <span class="ml-3 text-xs font-bold text-slate-200">1. Monitoreo Diario de Actividades</span>
+                        <label class="flex items-center p-3 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-cyan-600 transition shadow-sm">
+                            <input type="checkbox" id="chkModMonitoreo" onchange="toggleModuloAsignado('monitoreo')" class="w-4 h-4 text-cyan-600 rounded bg-slate-50 border-slate-300">
+                            <span class="ml-3 text-xs font-bold text-slate-800">1. Monitoreo Diario de Actividades</span>
                         </label>
-                        <label class="flex items-center p-3 bg-slate-800 border border-slate-700 rounded-xl cursor-pointer hover:border-cyan-500 transition">
-                            <input type="checkbox" id="chkModPensamientos" onchange="toggleModuloAsignado('pensamientos')" class="w-4 h-4 text-cyan-500 rounded bg-slate-900 border-slate-700">
-                            <span class="ml-3 text-xs font-bold text-slate-200">2. Registro de Pensamientos (RPA)</span>
+                        <label class="flex items-center p-3 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-cyan-600 transition shadow-sm">
+                            <input type="checkbox" id="chkModPensamientos" onchange="toggleModuloAsignado('pensamientos')" class="w-4 h-4 text-cyan-600 rounded bg-slate-50 border-slate-300">
+                            <span class="ml-3 text-xs font-bold text-slate-800">2. Registro de Pensamientos (RPA)</span>
                         </label>
-                        <label class="flex items-center p-3 bg-slate-800 border border-slate-700 rounded-xl cursor-pointer hover:border-cyan-500 transition">
-                            <input type="checkbox" id="chkModExposicion" onchange="toggleModuloAsignado('exposicion')" class="w-4 h-4 text-cyan-500 rounded bg-slate-900 border-slate-700">
-                            <span class="ml-3 text-xs font-bold text-slate-200">3. Jerarquía de Exposición (SUDs)</span>
+                        <label class="flex items-center p-3 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-cyan-600 transition shadow-sm">
+                            <input type="checkbox" id="chkModExposicion" onchange="toggleModuloAsignado('exposicion')" class="w-4 h-4 text-cyan-600 rounded bg-slate-50 border-slate-300">
+                            <span class="ml-3 text-xs font-bold text-slate-800">3. Jerarquía de Exposición (SUDs)</span>
                         </label>
                     </div>
                 </div>
@@ -284,27 +297,27 @@
                 <!-- CONTENEDOR VISTA SEMANAL -->
                 <div id="containerVerSemanal" class="space-y-6">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div class="bg-slate-900/70 p-4 rounded-xl border border-slate-700">
-                            <span class="text-xs text-slate-400 font-semibold uppercase">Promedio Disfrute (D) - Semanal</span>
-                            <div class="text-3xl font-extrabold text-cyan-400 mt-1" id="statAvgD">0.0 / 10</div>
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <span class="text-xs text-slate-500 font-semibold uppercase">Promedio Disfrute (D) - Semanal</span>
+                            <div class="text-3xl font-extrabold text-cyan-700 mt-1" id="statAvgD">0.0 / 10</div>
                             <p class="text-xs text-slate-500 mt-1">Placer / Gozo (0 a 10)</p>
                         </div>
-                        <div class="bg-slate-900/70 p-4 rounded-xl border border-slate-700">
-                            <span class="text-xs text-slate-400 font-semibold uppercase">Promedio Importancia (I) - Semanal</span>
-                            <div class="text-3xl font-extrabold text-emerald-400 mt-1" id="statAvgI">0.0 / 10</div>
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <span class="text-xs text-slate-500 font-semibold uppercase">Promedio Importancia (I) - Semanal</span>
+                            <div class="text-3xl font-extrabold text-emerald-700 mt-1" id="statAvgI">0.0 / 10</div>
                             <p class="text-xs text-slate-500 mt-1">Valor / Logro (0 a 10)</p>
                         </div>
-                        <div class="bg-slate-900/70 p-4 rounded-xl border border-slate-700">
-                            <span class="text-xs text-slate-400 font-semibold uppercase">Ánimo General Promedio</span>
-                            <div class="text-3xl font-extrabold text-amber-400 mt-1" id="statAvgAnimo">0.0 / 10</div>
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <span class="text-xs text-slate-500 font-semibold uppercase">Ánimo General Promedio</span>
+                            <div class="text-3xl font-extrabold text-amber-600 mt-1" id="statAvgAnimo">0.0 / 10</div>
                             <p class="text-xs text-slate-500 mt-1">Evaluación global percibida</p>
                         </div>
                     </div>
 
                     <!-- GRÁFICO SEMANAL -->
-                    <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-700">
-                        <h4 class="font-bold text-slate-200 text-sm mb-3 flex items-center gap-2">
-                            <i class="fa-solid fa-chart-line text-cyan-400"></i> Evolución en la Semana Seleccionada
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-slate-900 text-sm mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-chart-line text-cyan-700"></i> Evolución en la Semana Seleccionada
                         </h4>
                         <div class="h-64">
                             <canvas id="chartEvolucion"></canvas>
@@ -312,49 +325,61 @@
                     </div>
 
                     <!-- MATRIZ HORA POR HORA -->
-                    <div class="overflow-x-auto border border-slate-700 rounded-xl bg-slate-900/90">
+                    <div class="overflow-x-auto border border-slate-200 rounded-xl bg-white shadow-sm">
                         <table class="w-full text-xs text-center border-collapse" id="tablaSupervision">
-                            <thead class="bg-slate-800 text-cyan-300 font-bold">
+                            <thead class="bg-slate-800 text-white font-bold">
                                 <tr id="headerFechasSupervision">
                                     <th class="p-2 border border-slate-700 min-w-[100px]">HORA (12h)</th>
                                 </tr>
                             </thead>
-                            <tbody id="bodySupervision" class="divide-y divide-slate-800 text-slate-200">
+                            <tbody id="bodySupervision" class="divide-y divide-slate-200 text-slate-800">
                             </tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- CONTENEDOR ANÁLISIS MENSUAL -->
-                <div id="containerVerMensual" class="bg-slate-950 text-white p-6 rounded-2xl border border-cyan-900/60 space-y-4 shadow-2xl">
-                    <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                        <h3 class="font-bold text-lg text-cyan-300 flex items-center gap-2">
-                            <i class="fa-solid fa-chart-pie text-cyan-400"></i> Análisis Clínico Mensual
-                        </h3>
-                        <span class="text-xs bg-cyan-950 text-cyan-300 border border-cyan-800 px-3 py-1 rounded-full font-semibold">Resumen Integrado</span>
+                <!-- CONTENEDOR ANÁLISIS MENSUAL EN MODO HISTOGRAMA -->
+                <div id="containerVerMensual" class="bg-white p-6 rounded-2xl border border-slate-200 space-y-5 shadow-sm">
+                    <div class="flex justify-between items-center border-b border-slate-200 pb-3">
+                        <div>
+                            <h3 class="font-bold text-lg text-slate-900 flex items-center gap-2">
+                                <i class="fa-solid fa-chart-column text-cyan-700"></i> Análisis Clínico Mensual (Histograma de Frecuencia de Ánimo)
+                            </h3>
+                            <p class="text-xs text-slate-500 mt-0.5">Distribución en histograma del nivel de ánimo durante el último período de 30 días.</p>
+                        </div>
+                        <span class="text-xs bg-cyan-100 text-cyan-800 border border-cyan-200 px-3 py-1 rounded-full font-semibold">Modo Histograma</span>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-slate-300 text-xs">
-                        <div class="bg-slate-900 p-4 rounded-xl border border-slate-800">
-                            <span class="text-slate-400 uppercase font-semibold">Semanas Registradas</span>
-                            <div class="text-2xl font-bold text-white mt-1" id="statCantSemanasGlobal">0 semanas</div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-slate-800 text-xs">
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <span class="text-slate-500 uppercase font-semibold">Semanas Registradas</span>
+                            <div class="text-2xl font-bold text-slate-900 mt-1" id="statCantSemanasGlobal">0 semanas</div>
                         </div>
-                        <div class="bg-slate-900 p-4 rounded-xl border border-slate-800">
-                            <span class="text-slate-400 uppercase font-semibold">Tendencia de Ánimo Mensual</span>
-                            <div class="text-2xl font-bold text-emerald-400 mt-1" id="statTendenciaGlobal">Estable</div>
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <span class="text-slate-500 uppercase font-semibold">Tendencia de Ánimo Mensual</span>
+                            <div class="text-2xl font-bold text-emerald-700 mt-1" id="statTendenciaGlobal">Estable</div>
                         </div>
-                        <div class="bg-slate-900 p-4 rounded-xl border border-slate-800">
-                            <span class="text-slate-400 uppercase font-semibold">Puntuación Media Mensual</span>
-                            <div class="text-2xl font-bold text-amber-400 mt-1" id="statMediaGlobal">D: 0.0 | I: 0.0</div>
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <span class="text-slate-500 uppercase font-semibold">Puntuación Media Mensual</span>
+                            <div class="text-2xl font-bold text-amber-600 mt-1" id="statMediaGlobal">D: 0.0 | I: 0.0</div>
+                        </div>
+                    </div>
+
+                    <!-- HISTOGRAMA GRÁFICO -->
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                        <h4 class="font-bold text-slate-800 text-xs uppercase tracking-wider mb-2">Histograma: Frecuencia de Días por Rango de Ánimo (0-10)</h4>
+                        <div class="h-64">
+                            <canvas id="chartHistogramaMensual"></canvas>
                         </div>
                     </div>
                 </div>
 
                 <!-- CONTENEDOR EVOLUCIÓN HISTÓRICA / TOTAL -->
-                <div id="containerVerHistorico" class="bg-slate-900/90 p-6 rounded-2xl border border-slate-700 space-y-4 shadow-xl">
-                    <h3 class="font-bold text-lg text-white flex items-center gap-2">
-                        <i class="fa-solid fa-chart-column text-cyan-400"></i> Evolución Total / Histórica (Todas las Semanas)
+                <div id="containerVerHistorico" class="bg-white p-6 rounded-2xl border border-slate-200 space-y-4 shadow-sm">
+                    <h3 class="font-bold text-lg text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-chart-simple text-cyan-700"></i> Evolución Total / Histórica (Todas las Semanas)
                     </h3>
-                    <p class="text-xs text-slate-400">Curva de avance histórico comparando los promedios de Disfrute, Importancia y Ánimo acumulados semana a semana.</p>
+                    <p class="text-xs text-slate-500">Curva de avance histórico comparando los promedios de Disfrute, Importancia y Ánimo acumulados semana a semana.</p>
                     <div class="h-64">
                         <canvas id="chartEvolucionHistorica"></canvas>
                     </div>
@@ -362,26 +387,26 @@
 
                 <!-- NOTAS CLINICAS -->
                 <div class="space-y-2">
-                    <label class="block text-sm font-bold text-slate-200"><i class="fa-solid fa-user-pen text-cyan-400 mr-1"></i> Observaciones Clínicas y Acuerdos Terapéuticos</label>
-                    <textarea id="detNotasClinicas" rows="3" placeholder="Anota tus observaciones clínicas o acuerdos aquí..." class="w-full p-3 bg-slate-900 text-slate-100 border border-slate-700 rounded-xl focus:ring-2 focus:ring-cyan-500 text-sm" onchange="guardarNotasClinicas()"></textarea>
+                    <label class="block text-sm font-bold text-slate-800"><i class="fa-solid fa-user-pen text-cyan-700 mr-1"></i> Observaciones Clínicas y Acuerdos Terapéuticos</label>
+                    <textarea id="detNotasClinicas" rows="3" placeholder="Anota tus observaciones clínicas o acuerdos aquí..." class="w-full p-3 bg-slate-50 text-slate-900 border border-slate-300 rounded-xl focus:ring-2 focus:ring-cyan-600 text-sm" onchange="guardarNotasClinicas()"></textarea>
                 </div>
             </div>
         </section>
 
         <!-- VISTA 3: PORTAL DEL PACIENTE (DASHBOARD) -->
         <section id="secPacienteDashboard" class="hidden space-y-6">
-            <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-cyan-950 text-white p-6 sm:p-8 rounded-2xl shadow-xl border border-cyan-900/40">
+            <div class="bg-white text-slate-900 p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200">
                 <div class="flex items-center gap-2 mb-2">
-                    <div class="w-6 h-6 enso-ring rounded-full flex items-center justify-center bg-slate-950 text-cyan-400 font-serif text-xs">Ψ</div>
-                    <span class="text-xs uppercase font-bold tracking-wider text-cyan-300">Portal del Paciente</span>
+                    <div class="w-6 h-6 enso-ring rounded-full flex items-center justify-center bg-slate-900 text-cyan-400 font-serif text-xs">Ψ</div>
+                    <span class="text-xs uppercase font-bold tracking-wider text-cyan-800">Portal del Paciente</span>
                 </div>
-                <h1 class="text-2xl sm:text-3xl font-extrabold" id="pacienteBienvenidaNombre">¡Hola, Paciente! 👋</h1>
-                <p class="text-slate-300 text-sm mt-1">Selecciona cualquier semana para consultar o registrar tus actividades.</p>
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900" id="pacienteBienvenidaNombre">¡Hola, Paciente! 👋</h1>
+                <p class="text-slate-600 text-sm mt-1">Selecciona cualquier semana para consultar o registrar tus actividades.</p>
                 
                 <!-- SELECTOR DE SEMANA LIBRE PARA PACIENTE Y ESTADO DE BLOQUEO -->
                 <div class="mt-4 flex flex-wrap items-center gap-3">
-                    <span class="text-xs text-cyan-300 font-semibold"><i class="fa-regular fa-calendar-days mr-1"></i> Seleccionar Semana:</span>
-                    <select id="selectSemanaPacienteDash" onchange="cambiarSemanaPaciente(this.value)" class="text-xs font-bold bg-slate-900 text-cyan-200 border border-slate-700 rounded-lg px-3 py-1.5 focus:outline-none">
+                    <span class="text-xs text-slate-700 font-semibold"><i class="fa-regular fa-calendar-days mr-1 text-cyan-700"></i> Seleccionar Semana:</span>
+                    <select id="selectSemanaPacienteDash" onchange="cambiarSemanaPaciente(this.value)" class="text-xs font-bold bg-slate-50 text-slate-800 border border-slate-300 rounded-lg px-3 py-1.5 focus:outline-none">
                     </select>
                     <span id="badgeEstadoBloqueoDash" class="text-xs px-2.5 py-1 rounded-full font-bold"></span>
                 </div>
@@ -389,57 +414,57 @@
 
             <div class="space-y-4">
                 <div class="flex justify-between items-center">
-                    <h2 class="font-bold text-white text-lg flex items-center gap-2">
-                        <i class="fa-solid fa-clipboard-check text-cyan-400"></i> Tareas Asignadas
+                    <h2 class="font-bold text-slate-900 text-lg flex items-center gap-2">
+                        <i class="fa-solid fa-clipboard-check text-cyan-700"></i> Tareas Asignadas
                     </h2>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div id="cardModMonitoreo" class="bg-slate-800/90 p-6 rounded-2xl border border-slate-700 shadow-lg hover:border-cyan-500 transition space-y-4">
+                    <div id="cardModMonitoreo" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:border-cyan-600 transition space-y-4">
                         <div class="flex justify-between items-start">
-                            <div class="w-12 h-12 bg-cyan-950 text-cyan-400 border border-cyan-800 rounded-xl flex items-center justify-center text-xl font-bold">
+                            <div class="w-12 h-12 bg-cyan-50 text-cyan-700 border border-cyan-200 rounded-xl flex items-center justify-center text-xl font-bold">
                                 <i class="fa-regular fa-calendar-check"></i>
                             </div>
-                            <span class="text-xs bg-emerald-950 text-emerald-300 border border-emerald-800 px-2.5 py-1 rounded-full font-bold">Asignado</span>
+                            <span class="text-xs bg-emerald-100 text-emerald-800 border border-emerald-200 px-2.5 py-1 rounded-full font-bold">Asignado</span>
                         </div>
                         <div>
-                            <h3 class="font-bold text-white text-base">1. Monitoreo Diario de Actividades</h3>
-                            <p class="text-xs text-slate-400 mt-1">Registra tus actividades hora a hora (formato 12h) evaluando Disfrute (D) e Importancia (I).</p>
+                            <h3 class="font-bold text-slate-900 text-base">1. Monitoreo Diario de Actividades</h3>
+                            <p class="text-xs text-slate-500 mt-1">Registra tus actividades hora a hora (formato 12h) evaluando Disfrute (D) e Importancia (I).</p>
                         </div>
-                        <button onclick="abrirModuloMonitoreo()" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-semibold py-2.5 rounded-xl text-sm transition flex items-center justify-center gap-2 shadow-md">
+                        <button onclick="abrirModuloMonitoreo()" class="w-full bg-cyan-700 hover:bg-cyan-800 text-white font-semibold py-2.5 rounded-xl text-sm transition flex items-center justify-center gap-2 shadow-sm">
                             <span>Ingresar y Diligenciar</span>
                             <i class="fa-solid fa-arrow-right"></i>
                         </button>
                     </div>
 
-                    <div id="cardModPensamientos" class="bg-slate-800/90 p-6 rounded-2xl border border-slate-700 shadow-lg hover:border-cyan-500 transition space-y-4">
+                    <div id="cardModPensamientos" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:border-cyan-600 transition space-y-4">
                         <div class="flex justify-between items-start">
-                            <div class="w-12 h-12 bg-amber-950 text-amber-400 border border-amber-800 rounded-xl flex items-center justify-center text-xl font-bold">
+                            <div class="w-12 h-12 bg-amber-50 text-amber-700 border border-amber-200 rounded-xl flex items-center justify-center text-xl font-bold">
                                 <i class="fa-solid fa-brain"></i>
                             </div>
-                            <span class="text-xs bg-emerald-950 text-emerald-300 border border-emerald-800 px-2.5 py-1 rounded-full font-bold">Asignado</span>
+                            <span class="text-xs bg-emerald-100 text-emerald-800 border border-emerald-200 px-2.5 py-1 rounded-full font-bold">Asignado</span>
                         </div>
                         <div>
-                            <h3 class="font-bold text-white text-base">2. Registro de Pensamientos (RPA)</h3>
-                            <p class="text-xs text-slate-400 mt-1">Anota situaciones, emociones y respuestas alternativas acordadas en consulta.</p>
+                            <h3 class="font-bold text-slate-900 text-base">2. Registro de Pensamientos (RPA)</h3>
+                            <p class="text-xs text-slate-500 mt-1">Anota situaciones, emociones y respuestas alternativas acordadas en consulta.</p>
                         </div>
-                        <button onclick="alert('Esta tarea está asignada. Sigue las indicaciones dadas por tu terapeuta en la sesión.')" class="w-full bg-slate-700 hover:bg-slate-600 text-slate-200 font-semibold py-2.5 rounded-xl text-sm transition">
+                        <button onclick="alert('Esta tarea está asignada. Sigue las indicaciones dadas por tu terapeuta en la sesión.')" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2.5 rounded-xl text-sm transition">
                             <span>Ver Indicaciones</span>
                         </button>
                     </div>
 
-                    <div id="cardModExposicion" class="bg-slate-800/90 p-6 rounded-2xl border border-slate-700 shadow-lg hover:border-cyan-500 transition space-y-4">
+                    <div id="cardModExposicion" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:border-cyan-600 transition space-y-4">
                         <div class="flex justify-between items-start">
-                            <div class="w-12 h-12 bg-emerald-950 text-emerald-400 border border-emerald-800 rounded-xl flex items-center justify-center text-xl font-bold">
+                            <div class="w-12 h-12 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-xl flex items-center justify-center text-xl font-bold">
                                 <i class="fa-solid fa-stairs"></i>
                             </div>
-                            <span class="text-xs bg-emerald-950 text-emerald-300 border border-emerald-800 px-2.5 py-1 rounded-full font-bold">Asignado</span>
+                            <span class="text-xs bg-emerald-100 text-emerald-800 border border-emerald-200 px-2.5 py-1 rounded-full font-bold">Asignado</span>
                         </div>
                         <div>
-                            <h3 class="font-bold text-white text-base">3. Jerarquía de Exposición (SUDs)</h3>
-                            <p class="text-xs text-slate-400 mt-1">Registra la escala de malestar antes y después de cada ejercicio conductual.</p>
+                            <h3 class="font-bold text-slate-900 text-base">3. Jerarquía de Exposición (SUDs)</h3>
+                            <p class="text-xs text-slate-500 mt-1">Registra la escala de malestar antes y después de cada ejercicio conductual.</p>
                         </div>
-                        <button onclick="alert('Esta tarea está asignada. Sigue las indicaciones dadas por tu terapeuta en la sesión.')" class="w-full bg-slate-700 hover:bg-slate-600 text-slate-200 font-semibold py-2.5 rounded-xl text-sm transition">
+                        <button onclick="alert('Esta tarea está asignada. Sigue las indicaciones dadas por tu terapeuta en la sesión.')" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2.5 rounded-xl text-sm transition">
                             <span>Ver Indicaciones</span>
                         </button>
                     </div>
@@ -449,53 +474,53 @@
 
         <!-- VISTA 4: FORMULARIO PACIENTE MONITOREO CON DESCARGAS EN LIMPIO / DILIGENCIADO Y CONTROL DE EDICIÓN -->
         <section id="secPacienteFormMonitoreo" class="hidden space-y-6">
-            <div class="bg-slate-800/90 p-6 rounded-2xl shadow-lg border border-slate-700 space-y-4">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div>
-                        <button onclick="volverDashboardPaciente()" class="text-xs text-cyan-400 font-bold hover:underline mb-2 inline-flex items-center gap-1 no-print">
+                        <button onclick="volverDashboardPaciente()" class="text-xs text-cyan-700 font-bold hover:underline mb-2 inline-flex items-center gap-1 no-print">
                             <i class="fa-solid fa-arrow-left"></i> Volver a mis Tareas
                         </button>
-                        <h1 class="text-2xl font-bold text-white">Formulario de Monitoreo Diario</h1>
+                        <h1 class="text-2xl font-bold text-slate-900">Formulario de Monitoreo Diario</h1>
                     </div>
                     
                     <div class="flex flex-wrap items-center gap-2 no-print">
-                        <div class="flex items-center space-x-2 bg-slate-900 p-2 rounded-xl border border-slate-700">
-                            <span class="text-xs font-bold text-slate-300">Semana:</span>
-                            <select id="selectSemanaPacienteForm" onchange="cambiarSemanaPaciente(this.value)" class="text-xs font-bold bg-slate-800 text-cyan-200 border border-slate-700 rounded-lg px-2.5 py-1 focus:outline-none">
+                        <div class="flex items-center space-x-2 bg-slate-50 p-2 rounded-xl border border-slate-200">
+                            <span class="text-xs font-bold text-slate-700">Semana:</span>
+                            <select id="selectSemanaPacienteForm" onchange="cambiarSemanaPaciente(this.value)" class="text-xs font-bold bg-white text-slate-800 border border-slate-300 rounded-lg px-2.5 py-1 focus:outline-none">
                             </select>
                         </div>
 
                         <!-- OPCIONES DE DESCARGA / IMPRESIÓN PARA EL PACIENTE -->
-                        <button onclick="imprimirPlantillaLimpia()" title="Descargar plantilla vacía para imprimir y llenar a mano" class="text-xs bg-amber-950/80 hover:bg-amber-900 text-amber-300 border border-amber-800 px-3 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shadow">
-                            <i class="fa-solid fa-file-arrow-down text-amber-400"></i> Descargar en Limpio (PDF)
+                        <button onclick="imprimirPlantillaLimpia()" title="Descargar plantilla vacía para imprimir y llenar a mano" class="text-xs bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 px-3 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shadow-sm">
+                            <i class="fa-solid fa-file-arrow-down text-amber-600"></i> Descargar en Limpio (PDF)
                         </button>
 
-                        <button onclick="exportarPDF()" title="Descargar o guardar como PDF lo que has diligenciado" class="text-xs bg-cyan-950/80 hover:bg-cyan-900 text-cyan-300 border border-cyan-800 px-3 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shadow">
-                            <i class="fa-solid fa-file-pdf text-cyan-400"></i> Descargar Diligenciado (PDF)
+                        <button onclick="exportarPDF()" title="Descargar o guardar como PDF lo que has diligenciado" class="text-xs bg-cyan-700 hover:bg-cyan-800 text-white px-3 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shadow-sm">
+                            <i class="fa-solid fa-file-pdf"></i> Descargar Diligenciado (PDF)
                         </button>
                     </div>
                 </div>
 
                 <!-- ALERTA DE BLOQUEO DE EDICIÓN -->
-                <div id="bannerSemanaBloqueada" class="hidden p-3 bg-amber-950/90 border-l-4 border-amber-500 text-amber-200 rounded-r text-xs flex items-center gap-2">
-                    <i class="fa-solid fa-lock text-amber-400 text-base"></i>
+                <div id="bannerSemanaBloqueada" class="hidden p-3 bg-amber-50 border-l-4 border-amber-500 text-amber-900 rounded-r text-xs flex items-center gap-2">
+                    <i class="fa-solid fa-lock text-amber-600 text-base"></i>
                     <span><strong>Semana Bloqueada:</strong> Tu terapeuta ha cerrado la edición para esta semana. Puedes consultar tus datos pero los campos están deshabilitados.</span>
                 </div>
 
                 <!-- GUÍA CLÍNICA DE SIGLAS -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2 text-xs">
-                    <div class="bg-slate-900/80 border border-cyan-900/50 p-3 rounded-xl flex items-start gap-3">
-                        <div class="bg-cyan-600 text-white font-black rounded-lg w-7 h-7 flex items-center justify-center text-sm shrink-0">D</div>
+                    <div class="bg-cyan-50/50 border border-cyan-200 p-3 rounded-xl flex items-start gap-3">
+                        <div class="bg-cyan-700 text-white font-black rounded-lg w-7 h-7 flex items-center justify-center text-sm shrink-0">D</div>
                         <div>
-                            <span class="font-bold text-cyan-300">D = Disfrute (0 a 10)</span>
-                            <p class="text-slate-400 mt-0.5">Grado de placer, gusto o satisfacción al realizar la actividad.</p>
+                            <span class="font-bold text-cyan-900">D = Disfrute (0 a 10)</span>
+                            <p class="text-slate-600 mt-0.5">Grado de placer, gusto o satisfacción al realizar la actividad.</p>
                         </div>
                     </div>
-                    <div class="bg-slate-900/80 border border-emerald-900/50 p-3 rounded-xl flex items-start gap-3">
-                        <div class="bg-emerald-600 text-white font-black rounded-lg w-7 h-7 flex items-center justify-center text-sm shrink-0">I</div>
+                    <div class="bg-emerald-50/50 border border-emerald-200 p-3 rounded-xl flex items-start gap-3">
+                        <div class="bg-emerald-700 text-white font-black rounded-lg w-7 h-7 flex items-center justify-center text-sm shrink-0">I</div>
                         <div>
-                            <span class="font-bold text-emerald-300">I = Importante (0 a 10)</span>
-                            <p class="text-slate-400 mt-0.5">Grado de valor, logro, utilidad o importancia percibida en la actividad.</p>
+                            <span class="font-bold text-emerald-900">I = Importante (0 a 10)</span>
+                            <p class="text-slate-600 mt-0.5">Grado de valor, logro, utilidad o importancia percibida en la actividad.</p>
                         </div>
                     </div>
                 </div>
@@ -506,34 +531,34 @@
             </div>
 
             <!-- MATRIZ HORA POR HORA -->
-            <div class="bg-slate-800/90 rounded-2xl shadow-lg border border-slate-700 overflow-hidden">
-                <div class="p-4 bg-slate-900 border-b border-slate-700 flex justify-between items-center">
-                    <h3 class="font-bold text-slate-200 text-sm flex items-center gap-2">
-                        <i class="fa-regular fa-clock text-cyan-400"></i>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="p-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                        <i class="fa-regular fa-clock text-cyan-700"></i>
                         <span id="diaActualNombre">Día de la semana</span>
                     </h3>
-                    <span class="text-xs text-slate-400 font-medium no-print" id="statusGuardadoText">Autoguardado continuo</span>
+                    <span class="text-xs text-slate-500 font-medium no-print" id="statusGuardadoText">Autoguardado continuo</span>
                 </div>
 
-                <div class="divide-y divide-slate-700/60" id="listaHorasPaciente">
+                <div class="divide-y divide-slate-200" id="listaHorasPaciente">
                 </div>
 
                 <!-- ÁNIMO GENERAL DEL DÍA -->
-                <div class="p-6 bg-slate-900/90 border-t border-slate-700 space-y-3">
+                <div class="p-6 bg-slate-50 border-t border-slate-200 space-y-3">
                     <div class="flex justify-between items-center">
-                        <label class="text-sm font-bold text-slate-200 flex items-center gap-2">
-                            <i class="fa-solid fa-face-smile text-amber-400 text-base"></i> Ánimo General del Día
+                        <label class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-face-smile text-amber-500 text-base"></i> Ánimo General del Día
                         </label>
-                        <span id="animoValueDisplay" class="font-extrabold text-cyan-400 text-base">5 / 10</span>
+                        <span id="animoValueDisplay" class="font-extrabold text-cyan-700 text-base">5 / 10</span>
                     </div>
 
-                    <div class="p-3 bg-amber-950/70 border border-amber-800/80 rounded-xl text-xs text-amber-200 flex items-start gap-2">
-                        <i class="fa-solid fa-circle-info text-amber-400 mt-0.5 text-sm shrink-0"></i>
+                    <div class="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-900 flex items-start gap-2">
+                        <i class="fa-solid fa-circle-info text-amber-600 mt-0.5 text-sm shrink-0"></i>
                         <span><strong>Nota importante:</strong> Esta calificación no se calcula matemáticamente a partir de las actividades. Está enfocada en que indiques subjetivamente <strong>cómo te sentiste en el día en su conjunto</strong>.</span>
                     </div>
 
-                    <input type="range" id="inputAnimoDia" min="0" max="10" step="1" value="5" class="w-full accent-cyan-500 cursor-pointer" oninput="actualizarAnimoDia(this.value)">
-                    <div class="flex justify-between text-xs text-slate-400 font-semibold px-1">
+                    <input type="range" id="inputAnimoDia" min="0" max="10" step="1" value="5" class="w-full accent-cyan-700 cursor-pointer" oninput="actualizarAnimoDia(this.value)">
+                    <div class="flex justify-between text-xs text-slate-500 font-semibold px-1">
                         <span>0 (Muy Bajo)</span>
                         <span>5 (Neutral)</span>
                         <span>10 (Excelente)</span>
@@ -545,7 +570,7 @@
     </main>
     </div>
 
-    <!-- FOOTER CON MEMBRETE Y DATOS DE CONTACTO OFICIALES DEL PDF -->
+    <!-- FOOTER CON MEMBRETE Y DATOS DE CONTACTO OFICIALES (FONDO NAVY PROFUNDO) -->
     <footer class="mt-12 py-6 border-t border-slate-800 text-center text-slate-400 text-xs no-print bg-[#090e1a]">
         <div class="max-w-7xl mx-auto px-4 space-y-2">
             <div class="flex justify-center items-center space-x-2">
@@ -559,31 +584,31 @@
     </footer>
 
     <!-- MODAL REGISTRO NUEVO PACIENTE -->
-    <div id="modalNuevoPaciente" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-slate-800 rounded-2xl shadow-2xl border border-slate-700 max-w-md w-full p-6 space-y-4 text-slate-100">
-            <h3 class="text-lg font-bold text-white">Registrar Nuevo Paciente</h3>
+    <div id="modalNuevoPaciente" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-md w-full p-6 space-y-4 text-slate-800">
+            <h3 class="text-lg font-bold text-slate-900">Registrar Nuevo Paciente</h3>
             <form onsubmit="crearPaciente(event)" class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-cyan-300 uppercase mb-1">Nombres y Apellidos</label>
-                    <input type="text" id="nuevoNombrePaciente" required placeholder="Ej. Ana María Gómez Pérez" class="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:outline-none text-sm text-white">
+                    <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Nombres y Apellidos</label>
+                    <input type="text" id="nuevoNombrePaciente" required placeholder="Ej. Ana María Gómez Pérez" class="w-full px-4 py-2 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-cyan-600 focus:outline-none text-sm text-slate-900">
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-xs font-semibold text-cyan-300 uppercase mb-1">Edad</label>
-                        <input type="number" min="1" max="120" id="nuevaEdadPaciente" required placeholder="Ej. 28" class="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:outline-none text-sm text-white">
+                        <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Edad</label>
+                        <input type="number" min="1" max="120" id="nuevaEdadPaciente" required placeholder="Ej. 28" class="w-full px-4 py-2 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-cyan-600 focus:outline-none text-sm text-slate-900">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-cyan-300 uppercase mb-1">Fecha Nacimiento</label>
-                        <input type="date" id="nuevaFechaNacimiento" required class="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:outline-none text-sm text-white">
+                        <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Fecha Nacimiento</label>
+                        <input type="date" id="nuevaFechaNacimiento" required class="w-full px-4 py-2 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-cyan-600 focus:outline-none text-sm text-slate-900">
                     </div>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-cyan-300 uppercase mb-1">Fecha de Inicio de Monitoreo</label>
-                    <input type="date" id="nuevaFechaInicio" required class="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:outline-none text-sm text-white">
+                    <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Fecha de Inicio de Monitoreo</label>
+                    <input type="date" id="nuevaFechaInicio" required class="w-full px-4 py-2 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-cyan-600 focus:outline-none text-sm text-slate-900">
                 </div>
                 <div class="flex justify-end space-x-3 pt-2">
-                    <button type="button" onclick="cerrarModalNuevoPaciente()" class="px-4 py-2 text-slate-400 text-sm font-medium hover:bg-slate-700 rounded-xl">Cancelar</button>
-                    <button type="submit" class="px-4 py-2 bg-cyan-600 text-white text-sm font-semibold rounded-xl hover:bg-cyan-500 shadow-lg">Crear Paciente</button>
+                    <button type="button" onclick="cerrarModalNuevoPaciente()" class="px-4 py-2 text-slate-500 text-sm font-medium hover:bg-slate-100 rounded-xl">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 bg-cyan-700 text-white text-sm font-semibold rounded-xl hover:bg-cyan-800 shadow">Crear Paciente</button>
                 </div>
             </form>
         </div>
@@ -635,8 +660,12 @@
         let diaSeleccionadoIndex = 0;
         let saveTimeout = null;
         let chartInstance = null;
+        let chartHistogramaInstance = null;
         let chartHistoricoInstance = null;
         let modoPacienteGuardando = false;
+
+        // Cache local de pacientes para filtro en memoria (0 lecturas extra de Firebase)
+        let pacientesCache = [];
 
         window.addEventListener('DOMContentLoaded', () => {
             const params = new URLSearchParams(window.location.search);
@@ -705,18 +734,37 @@
             document.getElementById('terapeutaHeaderInfo').classList.remove('hidden');
             document.getElementById('userEmailDisplay').innerText = user.email;
 
-            let pacientes = [];
+            pacientesCache = [];
             if (firebaseActivo) {
                 try {
                     const snapshot = await db.collection('pacientes').get();
-                    snapshot.forEach(doc => pacientes.push({ id: doc.id, ...doc.data() }));
+                    snapshot.forEach(doc => pacientesCache.push({ id: doc.id, ...doc.data() }));
                 } catch(e) { console.error("Error al cargar pacientes:", e); }
             } else {
                 const localData = localStorage.getItem('demo_pacientes');
-                pacientes = localData ? JSON.parse(localData) : getPacientesEjemplo();
+                pacientesCache = localData ? JSON.parse(localData) : getPacientesEjemplo();
             }
 
-            renderTablaPacientes(pacientes);
+            renderTablaPacientes(pacientesCache);
+        }
+
+        function filtrarPacientesEnMemoria(query) {
+            const btnLimpiar = document.getElementById('btnLimpiarBuscar');
+            if (query.trim().length > 0) {
+                btnLimpiar.classList.remove('hidden');
+            } else {
+                btnLimpiar.classList.add('hidden');
+            }
+
+            const q = query.toLowerCase().trim();
+            const filtrados = pacientesCache.filter(p => (p.nombre || '').toLowerCase().includes(q));
+            renderTablaPacientes(filtrados);
+        }
+
+        function limpiarBuscador() {
+            const input = document.getElementById('inputBuscarPaciente');
+            input.value = '';
+            filtrarPacientesEnMemoria('');
         }
 
         function renderTablaPacientes(pacientes) {
@@ -725,7 +773,7 @@
             tbody.innerHTML = '';
 
             if (pacientes.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-400">No hay pacientes registrados aún. Haz clic en "Registrar Nuevo Paciente".</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-500">No se encontraron pacientes registrados con esa búsqueda.</td></tr>`;
                 return;
             }
 
@@ -734,21 +782,21 @@
                 const enlacePaciente = `${baseUrl}?p=${p.id}`;
 
                 const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-700/40 transition";
+                tr.className = "hover:bg-slate-50 transition";
                 tr.innerHTML = `
-                    <td class="p-4 font-bold text-white">${escapeHtml(p.nombre)}</td>
-                    <td class="p-4 text-xs text-slate-300">${p.edad || '--'} años</td>
-                    <td class="p-4 text-xs text-slate-300">${p.fechaNacimiento || '--'}</td>
+                    <td class="p-4 font-bold text-slate-900">${escapeHtml(p.nombre)}</td>
+                    <td class="p-4 text-xs text-slate-600">${p.edad || '--'} años</td>
+                    <td class="p-4 text-xs text-slate-600">${p.fechaNacimiento || '--'}</td>
                     <td class="p-4">
                         <div class="flex items-center space-x-2">
-                            <input type="text" readonly value="${enlacePaciente}" class="text-xs bg-slate-900 border border-slate-700 p-1.5 rounded w-48 text-cyan-300 truncate">
-                            <button onclick="copiarEnlace('${enlacePaciente}')" class="text-xs bg-cyan-950 text-cyan-300 border border-cyan-800 hover:bg-cyan-900 px-2.5 py-1 rounded font-medium flex items-center gap-1">
-                                <i class="fa-regular fa-copy"></i> Copiar
+                            <input type="text" readonly value="${enlacePaciente}" class="text-xs bg-slate-50 border border-slate-300 p-1.5 rounded w-48 text-cyan-800 truncate font-mono">
+                            <button onclick="copiarEnlace('${enlacePaciente}')" class="text-xs bg-slate-100 text-slate-700 border border-slate-300 hover:bg-slate-200 px-2.5 py-1 rounded font-medium flex items-center gap-1 shadow-sm">
+                                <i class="fa-regular fa-copy text-cyan-700"></i> Copiar
                             </button>
                         </div>
                     </td>
                     <td class="p-4 text-center">
-                        <button onclick="verDetalleClinico('${p.id}')" class="bg-cyan-600 hover:bg-cyan-500 text-white text-xs px-3.5 py-1.5 rounded-lg font-semibold shadow-md">
+                        <button onclick="verDetalleClinico('${p.id}')" class="bg-cyan-700 hover:bg-cyan-800 text-white text-xs px-3.5 py-1.5 rounded-lg font-semibold shadow-sm">
                             <i class="fa-solid fa-folder-open mr-1"></i> Abrir Ficha
                         </button>
                     </td>
@@ -862,7 +910,7 @@
 
             renderSupervisionTabla(p, semanaSeleccionadaKey);
             renderGraficoEvolucion(p, semanaSeleccionadaKey);
-            renderAnalisisGlobalMensual(p);
+            renderAnalisisGlobalHistograma(p);
             renderGraficoHistoricoTotal(p);
         }
 
@@ -870,11 +918,11 @@
             const btn = document.getElementById('btnToggleBloqueoSemana');
             const semData = pacienteData.semanas[semanaSeleccionadaKey];
             if (semData && semData.bloqueada) {
-                btn.className = "text-xs bg-rose-950 text-rose-300 border border-rose-800 hover:bg-rose-900 px-3.5 py-2 rounded-xl font-semibold transition flex items-center gap-1.5 shadow";
-                btn.innerHTML = `<i class="fa-solid fa-lock text-rose-400"></i> Semana Bloqueada (Clic para Desbloquear)`;
+                btn.className = "text-xs bg-rose-50 text-rose-700 border border-rose-300 hover:bg-rose-100 px-3.5 py-2 rounded-xl font-semibold transition flex items-center gap-1.5 shadow-sm";
+                btn.innerHTML = `<i class="fa-solid fa-lock text-rose-600"></i> Semana Bloqueada (Clic para Desbloquear)`;
             } else {
-                btn.className = "text-xs bg-emerald-950 text-emerald-300 border border-emerald-800 hover:bg-emerald-900 px-3.5 py-2 rounded-xl font-semibold transition flex items-center gap-1.5 shadow";
-                btn.innerHTML = `<i class="fa-solid fa-lock-open text-emerald-400"></i> Semana Abierta (Clic para Bloquear)`;
+                btn.className = "text-xs bg-emerald-50 text-emerald-800 border border-emerald-300 hover:bg-emerald-100 px-3.5 py-2 rounded-xl font-semibold transition flex items-center gap-1.5 shadow-sm";
+                btn.innerHTML = `<i class="fa-solid fa-lock-open text-emerald-600"></i> Semana Abierta (Clic para Bloquear)`;
             }
         }
 
@@ -937,7 +985,7 @@
             DIAS_NOMBRE.forEach((dia, idx) => {
                 const f = new Date(fechaInicio);
                 f.setDate(f.getDate() + idx);
-                headerRow.innerHTML += `<th class="p-2 border border-slate-700 bg-slate-800">${dia}<br><span class="text-[10px] font-normal text-slate-400">${f.getDate()}/${f.getMonth()+1}</span></th>`;
+                headerRow.innerHTML += `<th class="p-2 border border-slate-700 bg-slate-800">${dia}<br><span class="text-[10px] font-normal text-slate-300">${f.getDate()}/${f.getMonth()+1}</span></th>`;
             });
 
             const tbody = document.getElementById('bodySupervision');
@@ -948,7 +996,7 @@
 
             HORAS_12H.forEach(h => {
                 const tr = document.createElement('tr');
-                tr.innerHTML = `<td class="p-1.5 font-bold border border-slate-700 bg-slate-900 text-[11px] text-cyan-200">${h}</td>`;
+                tr.innerHTML = `<td class="p-1.5 font-bold border border-slate-200 bg-slate-100 text-[11px] text-slate-800">${h}</td>`;
 
                 for (let i = 0; i < 7; i++) {
                     const hData = semanaData.dias[i]?.horas[h] || { act: '', d: '', i: '' };
@@ -956,12 +1004,12 @@
                     if (hData.i !== '') { totalI += parseFloat(hData.i); countI++; }
 
                     tr.innerHTML += `
-                        <td class="p-1.5 border border-slate-700 text-left align-top hover:bg-slate-800/80 transition">
-                            <div class="font-medium text-slate-200 text-[11px]">${escapeHtml(hData.act || '-')}</div>
+                        <td class="p-1.5 border border-slate-200 text-left align-top hover:bg-slate-50 transition">
+                            <div class="font-medium text-slate-800 text-[11px]">${escapeHtml(hData.act || '-')}</div>
                             ${(hData.d || hData.i) ? `
                                 <div class="mt-1 flex space-x-1 text-[10px]">
-                                    <span class="bg-cyan-950 border border-cyan-800 text-cyan-300 px-1 rounded font-bold">D:${hData.d || 0}</span>
-                                    <span class="bg-emerald-950 border border-emerald-800 text-emerald-300 px-1 rounded font-bold">I:${hData.i || 0}</span>
+                                    <span class="bg-cyan-100 border border-cyan-300 text-cyan-900 px-1 rounded font-bold">D:${hData.d || 0}</span>
+                                    <span class="bg-emerald-100 border border-emerald-300 text-emerald-900 px-1 rounded font-bold">I:${hData.i || 0}</span>
                                 </div>
                             ` : ''}
                         </td>
@@ -1005,20 +1053,94 @@
                 data: {
                     labels: DIAS_NOMBRE,
                     datasets: [
-                        { label: 'Disfrute Promedio (D)', data: dataD, borderColor: '#38bdf8', backgroundColor: '#38bdf820', tension: 0.3, fill: true },
-                        { label: 'Importancia Promedio (I)', data: dataI, borderColor: '#34d399', backgroundColor: '#34d39920', tension: 0.3, fill: true },
-                        { label: 'Ánimo General del Día', data: dataAnimo, borderColor: '#fbbf24', borderDash: [5, 5], tension: 0.2, fill: false }
+                        { label: 'Disfrute Promedio (D)', data: dataD, borderColor: '#0284c7', backgroundColor: '#0284c720', tension: 0.3, fill: true },
+                        { label: 'Importancia Promedio (I)', data: dataI, borderColor: '#059669', backgroundColor: '#05966920', tension: 0.3, fill: true },
+                        { label: 'Ánimo General del Día', data: dataAnimo, borderColor: '#d97706', borderDash: [5, 5], tension: 0.2, fill: false }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
-                        x: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } },
-                        y: { min: 0, max: 10, ticks: { color: '#94a3b8' }, grid: { color: '#334155' } }
+                        x: { ticks: { color: '#334155' }, grid: { color: '#e2e8f0' } },
+                        y: { min: 0, max: 10, ticks: { color: '#334155' }, grid: { color: '#e2e8f0' } }
                     },
                     plugins: {
-                        legend: { labels: { color: '#e2e8f0' } }
+                        legend: { labels: { color: '#0f172a' } }
+                    }
+                }
+            });
+        }
+
+        function renderAnalisisGlobalHistograma(p) {
+            const semanas = Object.values(p.semanas || {});
+            document.getElementById('statCantSemanasGlobal').innerText = `${semanas.length} semana(s)`;
+
+            let sumTotalD = 0, cD = 0;
+            let sumTotalI = 0, cI = 0;
+            let animos = [];
+
+            // Conteo para Histograma de rangos de ánimo
+            const histogramaCounts = { '0 - 2 (Muy Bajo)': 0, '3 - 4 (Bajo)': 0, '5 - 6 (Neutral)': 0, '7 - 8 (Bueno)': 0, '9 - 10 (Excelente)': 0 };
+
+            semanas.forEach(sem => {
+                (sem.dias || []).forEach(dia => {
+                    const aVal = dia.animo !== undefined ? dia.animo : 5;
+                    animos.push(aVal);
+
+                    if (aVal <= 2) histogramaCounts['0 - 2 (Muy Bajo)']++;
+                    else if (aVal <= 4) histogramaCounts['3 - 4 (Bajo)']++;
+                    else if (aVal <= 6) histogramaCounts['5 - 6 (Neutral)']++;
+                    else if (aVal <= 8) histogramaCounts['7 - 8 (Bueno)']++;
+                    else histogramaCounts['9 - 10 (Excelente)']++;
+
+                    Object.values(dia.horas || {}).forEach(h => {
+                        if (h.d !== '') { sumTotalD += parseFloat(h.d); cD++; }
+                        if (h.i !== '') { sumTotalI += parseFloat(h.i); cI++; }
+                    });
+                });
+            });
+
+            const avgGlobalD = cD > 0 ? (sumTotalD / cD).toFixed(1) : "0.0";
+            const avgGlobalI = cI > 0 ? (sumTotalI / cI).toFixed(1) : "0.0";
+            document.getElementById('statMediaGlobal').innerText = `D: ${avgGlobalD} | I: ${avgGlobalI}`;
+
+            let tendenciaStr = "Estable";
+            if (animos.length >= 7) {
+                const primMitad = animos.slice(0, Math.floor(animos.length/2));
+                const segMitad = animos.slice(Math.floor(animos.length/2));
+                const avg1 = primMitad.reduce((a,b)=>a+b,0)/primMitad.length;
+                const avg2 = segMitad.reduce((a,b)=>a+b,0)/segMitad.length;
+                if (avg2 - avg1 > 0.5) tendenciaStr = "📈 En Ascenso (Mejoría)";
+                else if (avg1 - avg2 > 0.5) tendenciaStr = "📉 En Descenso (Atención)";
+                else tendenciaStr = "➡️ Estable";
+            }
+            document.getElementById('statTendenciaGlobal').innerText = tendenciaStr;
+
+            // Renderizar Histograma
+            const ctxH = document.getElementById('chartHistogramaMensual').getContext('2d');
+            if (chartHistogramaInstance) chartHistogramaInstance.destroy();
+
+            chartHistogramaInstance = new Chart(ctxH, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(histogramaCounts),
+                    datasets: [{
+                        label: 'Número de Días',
+                        data: Object.values(histogramaCounts),
+                        backgroundColor: ['#ef4444', '#f97316', '#eab308', '#3b82f6', '#10b981'],
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { ticks: { color: '#334155' }, grid: { display: false } },
+                        y: { ticks: { color: '#334155', stepSize: 1 }, grid: { color: '#e2e8f0' } }
+                    },
+                    plugins: {
+                        legend: { display: false }
                     }
                 }
             });
@@ -1055,58 +1177,23 @@
                 data: {
                     labels: labels,
                     datasets: [
-                        { label: 'Promedio Disfrute (D)', data: histD, backgroundColor: '#38bdf8' },
-                        { label: 'Promedio Importancia (I)', data: histI, backgroundColor: '#34d399' },
-                        { label: 'Promedio Ánimo', data: histAnimo, backgroundColor: '#fbbf24' }
+                        { label: 'Promedio Disfrute (D)', data: histD, backgroundColor: '#0284c7', borderRadius: 4 },
+                        { label: 'Promedio Importancia (I)', data: histI, backgroundColor: '#059669', borderRadius: 4 },
+                        { label: 'Promedio Ánimo', data: histAnimo, backgroundColor: '#d97706', borderRadius: 4 }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
-                        x: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } },
-                        y: { min: 0, max: 10, ticks: { color: '#94a3b8' }, grid: { color: '#334155' } }
+                        x: { ticks: { color: '#334155' }, grid: { color: '#e2e8f0' } },
+                        y: { min: 0, max: 10, ticks: { color: '#334155' }, grid: { color: '#e2e8f0' } }
                     },
                     plugins: {
-                        legend: { labels: { color: '#e2e8f0' } }
+                        legend: { labels: { color: '#0f172a' } }
                     }
                 }
             });
-        }
-
-        function renderAnalisisGlobalMensual(p) {
-            const semanas = Object.values(p.semanas || {});
-            document.getElementById('statCantSemanasGlobal').innerText = `${semanas.length} semana(s)`;
-
-            let sumTotalD = 0, cD = 0;
-            let sumTotalI = 0, cI = 0;
-            let animos = [];
-
-            semanas.forEach(sem => {
-                (sem.dias || []).forEach(dia => {
-                    if (dia.animo !== undefined) animos.push(dia.animo);
-                    Object.values(dia.horas || {}).forEach(h => {
-                        if (h.d !== '') { sumTotalD += parseFloat(h.d); cD++; }
-                        if (h.i !== '') { sumTotalI += parseFloat(h.i); cI++; }
-                    });
-                });
-            });
-
-            const avgGlobalD = cD > 0 ? (sumTotalD / cD).toFixed(1) : "0.0";
-            const avgGlobalI = cI > 0 ? (sumTotalI / cI).toFixed(1) : "0.0";
-            document.getElementById('statMediaGlobal').innerText = `D: ${avgGlobalD} | I: ${avgGlobalI}`;
-
-            let tendenciaStr = "Estable";
-            if (animos.length >= 7) {
-                const primMitad = animos.slice(0, Math.floor(animos.length/2));
-                const segMitad = animos.slice(Math.floor(animos.length/2));
-                const avg1 = primMitad.reduce((a,b)=>a+b,0)/primMitad.length;
-                const avg2 = segMitad.reduce((a,b)=>a+b,0)/segMitad.length;
-                if (avg2 - avg1 > 0.5) tendenciaStr = "📈 En Ascenso (Mejoría)";
-                else if (avg1 - avg2 > 0.5) tendenciaStr = "📉 En Descenso (Atención)";
-                else tendenciaStr = "➡️ Estable";
-            }
-            document.getElementById('statTendenciaGlobal').innerText = tendenciaStr;
         }
 
         async function guardarNotasClinicas() {
@@ -1135,7 +1222,7 @@ Esta acción liberará espacio y no se puede deshacer.`)) return;
         }
 
         function iniciarModoPaciente(pId) {
-            actualizarStatusSync("En línea", "bg-cyan-400");
+            actualizarStatusSync("En línea", "bg-cyan-600");
             document.getElementById('syncBadge').classList.remove('hidden');
 
             if (firebaseActivo) {
@@ -1203,10 +1290,10 @@ Esta acción liberará espacio y no se puede deshacer.`)) return;
             const esBloqueada = pacienteData.semanas[semanaSeleccionadaKey]?.bloqueada;
             const badge = document.getElementById('badgeEstadoBloqueoDash');
             if (esBloqueada) {
-                badge.className = "text-xs px-2.5 py-1 rounded-full font-bold bg-amber-950 text-amber-300 border border-amber-800";
+                badge.className = "text-xs px-2.5 py-1 rounded-full font-bold bg-amber-100 text-amber-800 border border-amber-300";
                 badge.innerText = "🔒 Semana Cerrada (Solo lectura)";
             } else {
-                badge.className = "text-xs px-2.5 py-1 rounded-full font-bold bg-emerald-950 text-emerald-300 border border-emerald-800";
+                badge.className = "text-xs px-2.5 py-1 rounded-full font-bold bg-emerald-100 text-emerald-800 border border-emerald-300";
                 badge.innerText = "🔓 Semana Habilitada para Edición";
             }
         }
@@ -1243,7 +1330,7 @@ Esta acción liberará espacio y no se puede deshacer.`)) return;
                 const dateStr = fechaDia.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
 
                 const btn = document.createElement('button');
-                btn.className = `flex-1 min-w-[95px] py-2.5 px-3 rounded-xl border text-center transition ${idx === diaSeleccionadoIndex ? 'bg-cyan-600 text-white font-bold border-cyan-500 shadow-md' : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'}`;
+                btn.className = `flex-1 min-w-[95px] py-2.5 px-3 rounded-xl border text-center transition ${idx === diaSeleccionadoIndex ? 'bg-cyan-700 text-white font-bold border-cyan-800 shadow-sm' : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'}`;
                 btn.onclick = () => cargarDiaPaciente(idx);
                 btn.innerHTML = `
                     <div class="text-[11px] uppercase tracking-wider">${dia}</div>
@@ -1272,27 +1359,27 @@ Esta acción liberará espacio y no se puede deshacer.`)) return;
             HORAS_12H.forEach(h => {
                 const item = diaData.horas[h] || { act: '', d: '', i: '' };
                 const row = document.createElement('div');
-                row.className = "p-3 sm:p-4 hover:bg-slate-900/60 transition flex flex-col sm:flex-row items-start sm:items-center gap-3";
+                row.className = "p-3 sm:p-4 hover:bg-slate-50 transition flex flex-col sm:flex-row items-start sm:items-center gap-3";
                 row.innerHTML = `
-                    <div class="w-24 font-extrabold text-cyan-300 text-xs bg-slate-900 border border-slate-700 px-2 py-1.5 rounded-lg text-center shrink-0">
+                    <div class="w-24 font-extrabold text-slate-800 text-xs bg-slate-100 border border-slate-300 px-2 py-1.5 rounded-lg text-center shrink-0">
                         ${h}
                     </div>
                     <div class="flex-1 w-full">
                         <input type="text" value="${escapeHtml(item.act)}" ${esBloqueada ? 'disabled' : ''} placeholder="¿Qué actividad realizaste?" 
-                            class="w-full px-3 py-1.5 bg-slate-900 text-slate-100 border border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-cyan-500 focus:outline-none disabled:opacity-60 disabled:cursor-not-allowed"
+                            class="w-full px-3 py-1.5 bg-slate-50 text-slate-900 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-cyan-600 focus:outline-none disabled:opacity-60 disabled:cursor-not-allowed"
                             oninput="guardarEntradaHora('${h}', 'act', this.value)">
                     </div>
                     <div class="flex items-center space-x-3 w-full sm:w-auto shrink-0">
                         <div class="flex items-center space-x-1">
-                            <span class="text-xs font-bold text-cyan-300 bg-cyan-950 px-2 py-1 rounded border border-cyan-800">D</span>
+                            <span class="text-xs font-bold text-cyan-900 bg-cyan-100 px-2 py-1 rounded border border-cyan-300">D</span>
                             <input type="number" min="0" max="10" value="${item.d}" ${esBloqueada ? 'disabled' : ''} placeholder="0-10" 
-                                class="w-12 text-center py-1 bg-slate-900 border border-slate-700 rounded-lg text-sm font-bold text-cyan-400 focus:ring-2 focus:ring-cyan-500 disabled:opacity-60 disabled:cursor-not-allowed"
+                                class="w-12 text-center py-1 bg-slate-50 border border-slate-300 rounded-lg text-sm font-bold text-cyan-800 focus:ring-2 focus:ring-cyan-600 disabled:opacity-60 disabled:cursor-not-allowed"
                                 oninput="guardarEntradaHora('${h}', 'd', this.value)">
                         </div>
                         <div class="flex items-center space-x-1">
-                            <span class="text-xs font-bold text-emerald-300 bg-emerald-950 px-2 py-1 rounded border border-emerald-800">I</span>
+                            <span class="text-xs font-bold text-emerald-900 bg-emerald-100 px-2 py-1 rounded border border-emerald-300">I</span>
                             <input type="number" min="0" max="10" value="${item.i}" ${esBloqueada ? 'disabled' : ''} placeholder="0-10" 
-                                class="w-12 text-center py-1 bg-slate-900 border border-slate-700 rounded-lg text-sm font-bold text-emerald-400 focus:ring-2 focus:ring-cyan-500 disabled:opacity-60 disabled:cursor-not-allowed"
+                                class="w-12 text-center py-1 bg-slate-50 border border-slate-300 rounded-lg text-sm font-bold text-emerald-800 focus:ring-2 focus:ring-cyan-600 disabled:opacity-60 disabled:cursor-not-allowed"
                                 oninput="guardarEntradaHora('${h}', 'i', this.value)">
                         </div>
                     </div>
@@ -1356,20 +1443,20 @@ Esta acción liberará espacio y no se puede deshacer.`)) return;
             else local.push(pacienteData);
             localStorage.setItem('demo_pacientes', JSON.stringify(local));
 
-            actualizarStatusSync("Guardando...", "bg-amber-400");
+            actualizarStatusSync("Guardando...", "bg-amber-500");
 
             clearTimeout(saveTimeout);
             saveTimeout = setTimeout(async () => {
                 if (firebaseActivo) {
                     try {
                         await db.collection('pacientes').doc(pacienteActualId).set(pacienteData, { merge: true });
-                        actualizarStatusSync("Sincronizado", "bg-cyan-400");
+                        actualizarStatusSync("Sincronizado", "bg-cyan-500");
                     } catch (err) {
                         console.error("Error al sincronizar:", err);
-                        actualizarStatusSync("Guardado Local", "bg-amber-400");
+                        actualizarStatusSync("Guardado Local", "bg-amber-500");
                     }
                 } else {
-                    actualizarStatusSync("Guardado Local", "bg-cyan-400");
+                    actualizarStatusSync("Guardado Local", "bg-cyan-500");
                 }
                 modoPacienteGuardando = false;
             }, 1000);
