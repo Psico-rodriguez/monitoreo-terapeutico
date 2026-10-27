@@ -1312,7 +1312,7 @@
             if (elemFecha) elemFecha.valueAsDate = new Date();
         });
 
-        // MANEJO DE FECHAS
+        // MANEJO Y AJUSTE REAL DE FECHAS (CALENDARIO)
         function parseFechaLocal(fechaStr) {
             if (!fechaStr) return new Date();
             if (typeof fechaStr === 'string' && fechaStr.length >= 10) {
@@ -1325,15 +1325,27 @@
             return new Date(fechaStr);
         }
 
+        // Calcula dinámicamente el Lunes real de la semana a la que pertenece cualquier fecha
+        function obtenerLunes(fechaStr) {
+            const date = parseFechaLocal(fechaStr);
+            const day = date.getDay(); // 0: Dom, 1: Lun, 2: Mar, 3: Mié, 4: Jue, 5: Vie, 6: Sáb
+            const diff = date.getDate() - day + (day === 0 ? -6 : 1);
+            date.setDate(diff);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const dayNum = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${dayNum}`;
+        }
+
         function obtenerSemanasOrdenadas(pData) {
             if (!pData || !pData.semanas) return [];
             const keys = Object.keys(pData.semanas);
-            keys.sort((a, b) => parseFechaLocal(a).getTime() - parseFechaLocal(b).getTime());
+            keys.sort((a, b) => parseFechaLocal(obtenerLunes(a)).getTime() - parseFechaLocal(obtenerLunes(b)).getTime());
             return keys;
         }
 
         function formatBloqueSemanal(fechaStr) {
-            const d1 = parseFechaLocal(fechaStr);
+            const d1 = parseFechaLocal(obtenerLunes(fechaStr));
             const d2 = new Date(d1);
             d2.setDate(d2.getDate() + 6);
             return `${d1.getDate()} ${d1.toLocaleDateString('es-ES',{month:'short'})} - ${d2.getDate()} ${d2.toLocaleDateString('es-ES',{month:'short', year:'numeric'})}`;
@@ -1481,7 +1493,8 @@
             const nombre = document.getElementById('nuevoNombrePaciente').value.trim();
             const edad = document.getElementById('nuevaEdadPaciente').value;
             const fechaNac = document.getElementById('nuevaFechaNacimiento').value;
-            const fechaStr = document.getElementById('nuevaFechaInicio').value;
+            const fechaIngresada = document.getElementById('nuevaFechaInicio').value;
+            const fechaStr = obtenerLunes(fechaIngresada);
             const pId = 'p_' + Math.random().toString(36).substr(2, 9);
 
             const nuevoPaciente = {
@@ -1558,7 +1571,7 @@
             selectSem.innerHTML = '';
             let keysFinal = obtenerSemanasOrdenadas(p);
             if (keysFinal.length === 0) {
-                const fIni = p.fechaInicio || '2026-10-26';
+                const fIni = obtenerLunes(p.fechaInicio || '2026-10-26');
                 p.semanas = { [fIni]: crearSemanaVacia() };
                 keysFinal = [fIni];
             }
@@ -2208,7 +2221,7 @@
             const semanasKeys = obtenerSemanasOrdenadas(pacienteData);
             const ultimaKey = semanasKeys.length > 0 ? semanasKeys[semanasKeys.length - 1] : (pacienteData.fechaInicio || '2026-10-26');
             
-            const dUltima = parseFechaLocal(ultimaKey);
+            const dUltima = parseFechaLocal(obtenerLunes(ultimaKey));
             dUltima.setDate(dUltima.getDate() + 7);
             
             const year = dUltima.getFullYear();
@@ -2240,7 +2253,7 @@
             if (semRestantes.length > 0) {
                 semanaSeleccionadaKey = semRestantes[semRestantes.length - 1];
             } else {
-                const fIni = pacienteData.fechaInicio || '2026-10-26';
+                const fIni = obtenerLunes(pacienteData.fechaInicio || '2026-10-26');
                 pacienteData.semanas = { [fIni]: crearSemanaVacia() };
                 semanaSeleccionadaKey = fIni;
             }
@@ -2264,7 +2277,7 @@
 
             const headerRow = document.getElementById('headerFechasSupervision');
             headerRow.innerHTML = `<th class="p-2 border border-slate-700 bg-slate-800 text-cyan-300 min-w-[100px]">HORA (12h)</th>`;
-            const fechaInicio = parseFechaLocal(semKey);
+            const fechaInicio = parseFechaLocal(obtenerLunes(semKey));
 
             DIAS_NOMBRE.forEach((dia, idx) => {
                 const f = new Date(fechaInicio);
@@ -2554,7 +2567,7 @@
         function poblarSelectoresSemanaPaciente() {
             const semKeys = obtenerSemanasOrdenadas(pacienteData);
             if (semKeys.length === 0) {
-                const fIni = pacienteData.fechaInicio || '2026-10-26';
+                const fIni = obtenerLunes(pacienteData.fechaInicio || '2026-10-26');
                 pacienteData.semanas = { [fIni]: crearSemanaVacia() };
                 semKeys.push(fIni);
             }
@@ -2910,11 +2923,11 @@
             });
         }
 
-        // LÓGICA DE PACIENTE PARA MONITOREO DIARIO
+        // LÓGICA DE PACIENTE PARA MONITOREO DIARIO (CON DÍAS REALES)
         function renderDiasTabs() {
             const container = document.getElementById('diasTabsContainer');
             container.innerHTML = '';
-            const fechaInicio = parseFechaLocal(semanaSeleccionadaKey || pacienteData.fechaInicio);
+            const fechaInicio = parseFechaLocal(obtenerLunes(semanaSeleccionadaKey || pacienteData.fechaInicio));
 
             DIAS_NOMBRE.forEach((dia, idx) => {
                 const fechaDia = new Date(fechaInicio);
@@ -2936,7 +2949,7 @@
             diaSeleccionadoIndex = diaIdx;
             renderDiasTabs();
 
-            const fechaInicio = parseFechaLocal(semanaSeleccionadaKey || pacienteData.fechaInicio);
+            const fechaInicio = parseFechaLocal(obtenerLunes(semanaSeleccionadaKey || pacienteData.fechaInicio));
             const fechaDia = new Date(fechaInicio);
             fechaDia.setDate(fechaDia.getDate() + diaIdx);
             document.getElementById('diaActualNombre').innerText = `${DIAS_NOMBRE[diaIdx]} ${fechaDia.getDate()} de ${fechaDia.toLocaleDateString('es-ES', {month:'long'})}`;
