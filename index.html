@@ -257,7 +257,7 @@
                                     </div>
                                     <div>
                                         <h4 class="font-bold text-xs text-slate-900">Terapia de Activación Conductual</h4>
-                                        <span class="text-[10px] text-cyan-700 font-semibold">4 Tareas disponibles</span>
+                                        <span class="text-[10px] text-cyan-700 font-semibold">5 Tareas disponibles</span>
                                     </div>
                                 </div>
                                 <i id="iconCheckAC" class="fa-solid fa-circle-check text-cyan-600 text-lg"></i>
@@ -268,7 +268,7 @@
                     <!-- PASO 2: TAREAS SELECCIONABLES -->
                     <div id="containerTareasDisponibles" class="space-y-2 pt-2 border-t border-slate-200">
                         <span class="text-xs font-bold text-slate-500 uppercase tracking-wider block">2. Seleccionar Tarea a Observar y Gestionar Asignación:</span>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3">
                             <!-- Tarea 1: Monitoreo Diario -->
                             <div id="cardTareaMonitoreo" onclick="seleccionarTarea('monitoreo')" class="cursor-pointer p-3 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-slate-200 hover:border-cyan-400">
                                 <div class="flex items-center space-x-2.5">
@@ -346,6 +346,26 @@
                                         <span class="text-[10px] font-bold text-slate-700">Asignada</span>
                                     </label>
                                     <i id="iconCheckTareaProgramacion" class="fa-regular fa-circle text-slate-300 text-sm"></i>
+                                </div>
+                            </div>
+
+                            <!-- Tarea 5: Notas del Paciente -->
+                            <div id="cardTareaNotas" onclick="seleccionarTarea('notas_paciente')" class="cursor-pointer p-3 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-slate-200 hover:border-cyan-400">
+                                <div class="flex items-center space-x-2.5">
+                                    <div class="w-8 h-8 bg-cyan-50 text-cyan-700 border border-cyan-200 rounded-lg flex items-center justify-center text-sm font-bold shrink-0">
+                                        <i class="fa-solid fa-note-sticky"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="font-bold text-xs text-slate-900">Notas del Paciente</h5>
+                                        <p class="text-[10px] text-slate-500">Apuntes y Reflexiones</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-1.5" onclick="event.stopPropagation()">
+                                    <label class="flex items-center space-x-1 cursor-pointer bg-slate-50 hover:bg-slate-100 px-1.5 py-1 rounded border border-slate-200 transition" title="Activa o desactiva la tarea en el portal del paciente">
+                                        <input type="checkbox" id="chkModNotas" onchange="toggleModuloAsignado('notas_paciente')" class="w-3.5 h-3.5 text-cyan-600 rounded bg-white">
+                                        <span class="text-[10px] font-bold text-slate-700">Asignada</span>
+                                    </label>
+                                    <i id="iconCheckTareaNotas" class="fa-regular fa-circle text-slate-300 text-sm"></i>
                                 </div>
                             </div>
                         </div>
@@ -768,7 +788,41 @@
                     </div>
                 </div>
 
-                <!-- NOTAS CLINICAS -->
+                <!-- CONTENEDOR DESGLOSE TAREA 5: NOTAS Y REFLEXIONES DEL PACIENTE -->
+                <div id="secDesgloseNotas" class="hidden space-y-6">
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-200 pb-4">
+                            <div>
+                                <h3 class="font-bold text-lg text-slate-900 flex items-center gap-2">
+                                    <i class="fa-solid fa-note-sticky text-cyan-700"></i> Notas y Reflexiones Redactadas por el Paciente
+                                </h3>
+                                <p class="text-xs text-slate-500 mt-0.5">Revisa los apuntes guardados por el paciente entre sesiones. Puedes revisarlos, trabajarlos en consulta y eliminarlos al finalizar.</p>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-2 no-print">
+                                <button onclick="eliminarTodasLasNotasTerapeuta()" class="text-xs bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 px-3 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shadow-sm">
+                                    <i class="fa-solid fa-trash-can"></i> Limpiar Todas las Notas en Sesión
+                                </button>
+                                <button onclick="exportarPDF()" class="text-xs bg-cyan-700 hover:bg-cyan-800 text-white px-3 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shadow-sm">
+                                    <i class="fa-solid fa-file-pdf"></i> Descargar (PDF)
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center">
+                                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-700">
+                                    <i class="fa-solid fa-list-ul text-cyan-700 mr-1"></i> Listado de Notas Activas
+                                </h4>
+                                <span id="cantNotasTerapeuta" class="text-[11px] font-bold bg-cyan-100 text-cyan-800 border border-cyan-200 px-2.5 py-0.5 rounded-full">0 notas</span>
+                            </div>
+
+                            <div id="containerNotasTerapeuta" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- NOTAS CLINICAS DEL TERAPEUTA -->
                 <div class="space-y-2 pt-2 border-t border-slate-200">
                     <label class="block text-sm font-bold text-slate-800"><i class="fa-solid fa-user-pen text-cyan-700 mr-1"></i> Observaciones Clínicas y Acuerdos Terapéuticos</label>
                     <textarea id="detNotasClinicas" rows="3" placeholder="Anota tus observaciones clínicas o acuerdos aquí..." class="w-full p-3 bg-slate-50 text-slate-900 border border-slate-300 rounded-xl focus:ring-2 focus:ring-cyan-600 text-sm" onchange="guardarNotasClinicas()"></textarea>
@@ -793,7 +847,7 @@
                     <i class="fa-solid fa-clipboard-check text-cyan-700"></i> Tareas Terapéuticas Asignadas
                 </h2>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     <!-- TAREA 1: MONITOREO DIARIO -->
                     <div id="cardModMonitoreo" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:border-cyan-600 transition space-y-4 flex flex-col justify-between">
                         <div class="space-y-3">
@@ -870,6 +924,26 @@
                         </div>
                         <button onclick="abrirModuloProgramacionPaciente()" class="w-full bg-cyan-700 hover:bg-cyan-800 text-white font-semibold py-2.5 rounded-xl text-sm transition flex items-center justify-center gap-2 shadow-sm">
                             <span>Ver Programación</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                    <!-- TAREA 5: NOTAS Y REFLEXIONES DEL PACIENTE -->
+                    <div id="cardModNotas" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:border-cyan-600 transition space-y-4 flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-start">
+                                <div class="w-12 h-12 bg-cyan-50 text-cyan-700 border border-cyan-200 rounded-xl flex items-center justify-center text-xl font-bold">
+                                    <i class="fa-solid fa-note-sticky"></i>
+                                </div>
+                                <span class="text-xs bg-emerald-100 text-emerald-800 border border-emerald-200 px-2.5 py-1 rounded-full font-bold">Asignado</span>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-slate-900 text-base">Notas y Reflexiones</h3>
+                                <p class="text-xs text-slate-500 mt-1">Escribe tus pensamientos, apuntes de sesión, emociones o dudas para revisar con tu terapeuta.</p>
+                            </div>
+                        </div>
+                        <button onclick="abrirModuloNotasPaciente()" class="w-full bg-cyan-700 hover:bg-cyan-800 text-white font-semibold py-2.5 rounded-xl text-sm transition flex items-center justify-center gap-2 shadow-sm">
+                            <span>Ingresar a Mis Notas</span>
                             <i class="fa-solid fa-arrow-right"></i>
                         </button>
                     </div>
@@ -1127,6 +1201,57 @@
 
                 <!-- CONTENEDOR DE TARJETAS PROGRAMADAS PARA PACIENTE -->
                 <div id="containerProgramadasPaciente" class="space-y-4">
+                </div>
+            </div>
+        </section>
+
+        <!-- VISTA 8: PACIENTE NOTAS Y REFLEXIONES (NUEVO MÓDULO) -->
+        <section id="secPacienteFormNotas" class="hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-200 pb-4">
+                    <div>
+                        <button onclick="volverDashboardPaciente()" class="text-xs text-cyan-700 font-bold hover:underline mb-1 inline-flex items-center gap-1 no-print">
+                            <i class="fa-solid fa-arrow-left"></i> Volver a mis Tareas
+                        </button>
+                        <h1 class="text-2xl font-bold text-slate-900">Notas y Reflexiones Personal</h1>
+                        <p class="text-xs text-slate-500 mt-1">Escribe pensamientos, situaciones vividas, dudas o reflexiones que quieras revisar o trabajar en tu próxima sesión con tu terapeuta.</p>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-2 no-print shrink-0">
+                        <button onclick="exportarPDF()" class="text-xs bg-cyan-700 hover:bg-cyan-800 text-white px-3 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shadow-sm">
+                            <i class="fa-solid fa-file-pdf"></i> Descargar (PDF)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- FORMULARIO DE INGRESO DE NOTAS DEL PACIENTE -->
+                <form onsubmit="agregarNotaPaciente(event)" class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3 no-print">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Título o Tema Principal de la Nota</label>
+                        <input type="text" id="inputNotaTitulo" required placeholder="Ej. Situación sobrecargada en el trabajo / Duda de la semana" class="w-full px-3 py-2 bg-white text-slate-900 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-cyan-600 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Contenido de la Nota / Pensamientos y Emociones</label>
+                        <textarea id="inputNotaContenido" rows="4" required placeholder="Escribe libremente lo que sentiste, pensaste o qué sucedió para abordarlo en consulta..." class="w-full px-3 py-2 bg-white text-slate-900 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-cyan-600 focus:outline-none"></textarea>
+                    </div>
+                    <div class="flex justify-end">
+                        <button type="submit" class="bg-cyan-700 hover:bg-cyan-800 text-white font-semibold px-4 py-2 rounded-xl text-xs transition shadow-sm flex items-center gap-1.5">
+                            <i class="fa-solid fa-plus"></i> Guardar Nota
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- LISTADO DE NOTAS GUARDADAS POR EL PACIENTE -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                <div class="flex justify-between items-center">
+                    <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-note-sticky text-cyan-700"></i> Mis Notas Registradas
+                    </h3>
+                    <span id="cantNotasPaciente" class="text-xs bg-cyan-100 text-cyan-800 border border-cyan-200 px-2.5 py-0.5 rounded-full font-bold">0 notas</span>
+                </div>
+
+                <div id="containerNotasPaciente" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 </div>
             </div>
         </section>
@@ -1505,12 +1630,13 @@
                 fechaInicio: fechaStr,
                 updatedAt: new Date().toISOString(),
                 notasClinicas: "",
-                modulosAsignados: ['monitoreo', 'identificacion_actividades', 'jerarquia_actividades', 'programacion_actividades'],
+                modulosAsignados: ['monitoreo', 'identificacion_actividades', 'jerarquia_actividades', 'programacion_actividades', 'notas_paciente'],
                 jerarquiaBloqueada: false,
                 jerarquiaActividades: [],
                 identificacionBloqueada: false,
                 identificacionActividades: [],
                 programacionActividades: [],
+                notasPaciente: [],
                 semanas: { [fechaStr]: crearSemanaVacia() }
             };
 
@@ -1561,11 +1687,12 @@
             document.getElementById('detIdPaciente').innerText = p.id;
             document.getElementById('detNotasClinicas').value = p.notasClinicas || "";
 
-            const mods = p.modulosAsignados || ['monitoreo', 'identificacion_actividades', 'jerarquia_actividades', 'programacion_actividades'];
+            const mods = p.modulosAsignados || ['monitoreo', 'identificacion_actividades', 'jerarquia_actividades', 'programacion_actividades', 'notas_paciente'];
             if (document.getElementById('chkModMonitoreo')) document.getElementById('chkModMonitoreo').checked = mods.includes('monitoreo');
             if (document.getElementById('chkModJerarquia')) document.getElementById('chkModJerarquia').checked = mods.includes('jerarquia_actividades');
             if (document.getElementById('chkModIdentificacion')) document.getElementById('chkModIdentificacion').checked = mods.includes('identificacion_actividades');
             if (document.getElementById('chkModProgramacion')) document.getElementById('chkModProgramacion').checked = mods.includes('programacion_actividades');
+            if (document.getElementById('chkModNotas')) document.getElementById('chkModNotas').checked = mods.includes('notas_paciente');
 
             const selectSem = document.getElementById('selectSemanaTerapeuta');
             selectSem.innerHTML = '';
@@ -1603,6 +1730,8 @@
                 renderIdentificacionTerapeuta(p);
             } else if (tareaSeleccionada === 'programacion_actividades') {
                 renderProgramacionTerapeuta(p);
+            } else if (tareaSeleccionada === 'notas_paciente') {
+                renderNotasTerapeuta(p);
             }
         }
 
@@ -1639,10 +1768,14 @@
             const cardPrg = document.getElementById('cardTareaProgramacion');
             const iconPrg = document.getElementById('iconCheckTareaProgramacion');
 
+            const cardNot = document.getElementById('cardTareaNotas');
+            const iconNot = document.getElementById('iconCheckTareaNotas');
+
             const secMon = document.getElementById('secDesgloseTarea');
             const secJer = document.getElementById('secDesgloseJerarquia');
             const secIde = document.getElementById('secDesgloseIdentificacion');
             const secPrg = document.getElementById('secDesgloseProgramacion');
+            const secNot = document.getElementById('secDesgloseNotas');
             const msgVacio = document.getElementById('mensajeSinTareaSeleccionada');
             const ctrlSemanas = document.getElementById('containerControlBloqueSemanal');
 
@@ -1655,11 +1788,14 @@
             iconIde.className = "fa-regular fa-circle text-slate-300 text-sm";
             cardPrg.className = "cursor-pointer p-3 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-slate-200 hover:border-cyan-400";
             iconPrg.className = "fa-regular fa-circle text-slate-300 text-sm";
+            cardNot.className = "cursor-pointer p-3 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-slate-200 hover:border-cyan-400";
+            iconNot.className = "fa-regular fa-circle text-slate-300 text-sm";
 
             secMon.classList.add('hidden');
             secJer.classList.add('hidden');
             secIde.classList.add('hidden');
             secPrg.classList.add('hidden');
+            secNot.classList.add('hidden');
             ctrlSemanas.classList.add('hidden');
 
             if (tareaSeleccionada === 'monitoreo') {
@@ -1683,9 +1819,64 @@
                 iconPrg.className = "fa-solid fa-circle-check text-cyan-600 text-sm";
                 secPrg.classList.remove('hidden');
                 msgVacio.classList.add('hidden');
+            } else if (tareaSeleccionada === 'notas_paciente') {
+                cardNot.className = "cursor-pointer p-3 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-cyan-600 ring-2 ring-cyan-600/30";
+                iconNot.className = "fa-solid fa-circle-check text-cyan-600 text-sm";
+                secNot.classList.remove('hidden');
+                msgVacio.classList.add('hidden');
             } else {
                 msgVacio.classList.remove('hidden');
             }
+        }
+
+        // RENDERING TAREA NOTAS EN TERAPEUTA
+        function renderNotasTerapeuta(p) {
+            const container = document.getElementById('containerNotasTerapeuta');
+            container.innerHTML = '';
+
+            const notas = p.notasPaciente || [];
+            document.getElementById('cantNotasTerapeuta').innerText = `${notas.length} notas`;
+
+            if (notas.length === 0) {
+                container.innerHTML = `<div class="col-span-full p-8 text-center text-slate-400 bg-slate-50 border border-dashed border-slate-300 rounded-2xl text-xs">El paciente aún no ha registrado notas o reflexiones.</div>`;
+                return;
+            }
+
+            notas.forEach((nota, idx) => {
+                const card = document.createElement('div');
+                card.className = "bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-2 flex flex-col justify-between hover:border-cyan-400 transition";
+                card.innerHTML = `
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-start gap-2 border-b border-slate-100 pb-2">
+                            <h4 class="font-extrabold text-slate-900 text-sm">${escapeHtml(nota.titulo)}</h4>
+                            <span class="text-[10px] text-slate-500 font-semibold bg-slate-100 px-2 py-0.5 rounded border border-slate-200 shrink-0">
+                                <i class="fa-regular fa-clock mr-1"></i>${nota.fecha || '--'}
+                            </span>
+                        </div>
+                        <p class="text-xs text-slate-700 whitespace-pre-wrap leading-relaxed">${escapeHtml(nota.contenido)}</p>
+                    </div>
+                    <div class="flex justify-end pt-2 border-t border-slate-100 no-print">
+                        <button onclick="eliminarNotaTerapeuta(${idx})" class="text-xs bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 px-3 py-1.5 rounded-lg font-bold transition flex items-center gap-1 shadow-sm">
+                            <i class="fa-solid fa-trash-can"></i> Eliminar Nota en Sesión
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function eliminarNotaTerapeuta(idx) {
+            if (!confirm("¿Deseas eliminar esta nota del paciente?")) return;
+            (pacienteData.notasPaciente || []).splice(idx, 1);
+            sincronizarGarantizado();
+            renderNotasTerapeuta(pacienteData);
+        }
+
+        function eliminarTodasLasNotasTerapeuta() {
+            if (!confirm("⚠️ ¿Estás seguro de eliminar TODAS las notas escritas por el paciente? esta acción no se puede deshacer.")) return;
+            pacienteData.notasPaciente = [];
+            sincronizarGarantizado();
+            renderNotasTerapeuta(pacienteData);
         }
 
         // RENDERING TAREA JERARQUÍA EN TERAPEUTA
@@ -1860,7 +2051,7 @@
             }
         }
 
-        // RENDERING TAREA PROGRAMACIÓN DE ACTIVIDADES EN TERAPEUTA (CON ORDEN NUMÉRICO EN SELECT)
+        // RENDERING TAREA PROGRAMACIÓN DE ACTIVIDADES EN TERAPEUTA
         function renderProgramacionTerapeuta(p) {
             const selectJer = document.getElementById('progSelectJerarquia');
             selectJer.innerHTML = '';
@@ -2264,7 +2455,7 @@
         }
 
         async function toggleModuloAsignado(modKey) {
-            if (!pacienteData.modulosAsignados) pacienteData.modulosAsignados = ['monitoreo', 'identificacion_actividades', 'jerarquia_actividades', 'programacion_actividades'];
+            if (!pacienteData.modulosAsignados) pacienteData.modulosAsignados = ['monitoreo', 'identificacion_actividades', 'jerarquia_actividades', 'programacion_actividades', 'notas_paciente'];
             const idx = pacienteData.modulosAsignados.indexOf(modKey);
             if (idx === -1) pacienteData.modulosAsignados.push(modKey);
             else pacienteData.modulosAsignados.splice(idx, 1);
@@ -2529,6 +2720,8 @@
                             renderIdentificacionPaciente();
                         } else if (!modoPacienteGuardando && !document.getElementById('secPacienteFormProgramacion').classList.contains('hidden')) {
                             renderProgramacionPaciente();
+                        } else if (!modoPacienteGuardando && !document.getElementById('secPacienteFormNotas').classList.contains('hidden')) {
+                            renderNotasPaciente();
                         } else if (!modoPacienteGuardando) {
                             mostrarDashboardPaciente();
                         }
@@ -2557,11 +2750,12 @@
 
             poblarSelectoresSemanaPaciente();
 
-            const mods = pacienteData.modulosAsignados || ['monitoreo', 'identificacion_actividades', 'jerarquia_actividades', 'programacion_actividades'];
+            const mods = pacienteData.modulosAsignados || ['monitoreo', 'identificacion_actividades', 'jerarquia_actividades', 'programacion_actividades', 'notas_paciente'];
             document.getElementById('cardModMonitoreo').style.display = mods.includes('monitoreo') ? 'flex' : 'none';
             document.getElementById('cardModJerarquia').style.display = mods.includes('jerarquia_actividades') ? 'flex' : 'none';
             document.getElementById('cardModIdentificacion').style.display = mods.includes('identificacion_actividades') ? 'flex' : 'none';
             document.getElementById('cardModProgramacion').style.display = mods.includes('programacion_actividades') ? 'flex' : 'none';
+            document.getElementById('cardModNotas').style.display = mods.includes('notas_paciente') ? 'flex' : 'none';
         }
 
         function poblarSelectoresSemanaPaciente() {
@@ -2618,10 +2812,80 @@
             renderProgramacionPaciente();
         }
 
+        function abrirModuloNotasPaciente() {
+            ocultarTodasLasSecciones();
+            document.getElementById('secPacienteFormNotas').classList.remove('hidden');
+            renderNotasPaciente();
+        }
+
         function volverDashboardPaciente() {
             if (pacienteData && pacienteActualId) {
                 mostrarDashboardPaciente();
             }
+        }
+
+        // LÓGICA PACIENTE PARA NOTAS Y REFLEXIONES
+        function renderNotasPaciente() {
+            const container = document.getElementById('containerNotasPaciente');
+            container.innerHTML = '';
+
+            const notas = pacienteData.notasPaciente || [];
+            document.getElementById('cantNotasPaciente').innerText = `${notas.length} notas`;
+
+            if (notas.length === 0) {
+                container.innerHTML = `<div class="col-span-full p-8 text-center text-slate-400 bg-slate-50 border border-dashed border-slate-300 rounded-2xl text-xs">No has guardado notas aún. Utiliza el formulario superior para redactar una.</div>`;
+                return;
+            }
+
+            notas.forEach((nota, idx) => {
+                const card = document.createElement('div');
+                card.className = "bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-2 flex flex-col justify-between";
+                card.innerHTML = `
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-start gap-2 border-b border-slate-100 pb-2">
+                            <h4 class="font-bold text-slate-900 text-sm">${escapeHtml(nota.titulo)}</h4>
+                            <span class="text-[10px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded border border-slate-200 shrink-0">
+                                <i class="fa-regular fa-clock mr-1"></i>${nota.fecha || '--'}
+                            </span>
+                        </div>
+                        <p class="text-xs text-slate-700 whitespace-pre-wrap leading-relaxed">${escapeHtml(nota.contenido)}</p>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function agregarNotaPaciente(e) {
+            e.preventDefault();
+            const inputTit = document.getElementById('inputNotaTitulo');
+            const inputCont = document.getElementById('inputNotaContenido');
+
+            const titulo = inputTit.value.trim();
+            const contenido = inputCont.value.trim();
+
+            if (!titulo || !contenido) {
+                alert("Por favor completa el título y el contenido de la nota.");
+                return;
+            }
+
+            if (!pacienteData.notasPaciente) pacienteData.notasPaciente = [];
+
+            const now = new Date();
+            const fechaFormateada = `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+
+            const nuevaNota = {
+                id: 'n_' + Math.random().toString(36).substr(2, 9),
+                titulo: titulo,
+                contenido: contenido,
+                fecha: fechaFormateada
+            };
+
+            pacienteData.notasPaciente.unshift(nuevaNota);
+            inputTit.value = '';
+            inputCont.value = '';
+
+            sincronizarGarantizado();
+            renderNotasPaciente();
         }
 
         // LÓGICA DE PACIENTE PARA JERARQUÍA DE ACTIVIDADES
@@ -3209,6 +3473,7 @@
             document.getElementById('secPacienteFormJerarquia').classList.add('hidden');
             document.getElementById('secPacienteFormIdentificacion').classList.add('hidden');
             document.getElementById('secPacienteFormProgramacion').classList.add('hidden');
+            document.getElementById('secPacienteFormNotas').classList.add('hidden');
         }
 
         function crearSemanaVacia() {
@@ -3230,12 +3495,13 @@
                 fechaInicio: '2026-10-26',
                 updatedAt: new Date().toISOString(),
                 notasClinicas: 'Paciente en monitoreo activo.',
-                modulosAsignados: ['monitoreo', 'identificacion_actividades', 'jerarquia_actividades', 'programacion_actividades'],
+                modulosAsignados: ['monitoreo', 'identificacion_actividades', 'jerarquia_actividades', 'programacion_actividades', 'notas_paciente'],
                 jerarquiaBloqueada: false,
                 jerarquiaActividades: [],
                 identificacionBloqueada: false,
                 identificacionActividades: [],
                 programacionActividades: [],
+                notasPaciente: [],
                 semanas: { '2026-10-26': crearSemanaVacia() }
             }];
         }
