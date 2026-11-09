@@ -37,10 +37,25 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
     <style>
+        .plantilla-limpia, .plantilla-limpia-block { display: none; }
+
         @media print {
+            /* Fix de colapso de impresión en navegadores */
+            html, body {
+                background: white !important;
+                color: black !important;
+                height: auto !important;
+                min-height: 0 !important;
+                overflow: visible !important;
+                display: block !important;
+                font-size: 10pt;
+            }
+            main, section, div, table {
+                overflow: visible !important;
+                height: auto !important;
+            }
             .no-print { display: none !important; }
             .print-only { display: block !important; }
-            body { background: white !important; color: black !important; font-size: 10pt; }
             .print-bg-white { background: white !important; color: black !important; border-color: #cbd5e1 !important; }
             .print-text-dark { color: #0f172a !important; }
             input, select, textarea { border: 1px solid #94a3b8 !important; color: black !important; background: white !important; }
@@ -51,7 +66,6 @@
             body.print-modo-limpio .plantilla-limpia-block { display: block !important; }
         }
         .print-only { display: none; }
-        .plantilla-limpia, .plantilla-limpia-block { display: none; }
         input[type=number]::-webkit-inner-spin-button, 
         input[type=number]::-webkit-outer-spin-button { 
             -webkit-appearance: none; 
@@ -349,7 +363,7 @@
                         </div>
                     </div>
 
-                <!-- CONTROL SEMANAS (SOLO VISIBLE EN MONITOREO DIARIO) -->
+                <!-- CONTROL SEMANAS -->
                 <div id="containerControlBloqueSemanal" class="hidden flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200 no-print">
                     <div class="flex items-center gap-3">
                         <i class="fa-regular fa-calendar-check text-cyan-700 text-xl"></i>
@@ -440,6 +454,32 @@
                                     <tr id="headerFechasSupervision"><th class="p-2 border border-slate-700 min-w-[100px]">HORA (12h)</th></tr>
                                 </thead>
                                 <tbody id="bodySupervision" class="divide-y divide-slate-200 text-slate-800 datos-diligenciados"></tbody>
+                                <tbody class="plantilla-limpia divide-y divide-slate-300">
+                                    <tr class="h-8"><td class="p-1 border border-slate-300 font-bold bg-slate-50 text-[10px]">12am - 1am</td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                                    <tr class="h-8"><td class="p-1 border border-slate-300 font-bold bg-slate-50 text-[10px]">1am - 2am</td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                                    <tr class="h-8"><td class="p-1 border border-slate-300 font-bold bg-slate-50 text-[10px]">2am - 3am</td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                                    <tr class="h-8"><td class="p-1 border border-slate-300 font-bold bg-slate-50 text-[10px]">3am - 4am</td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                                    <tr class="h-8"><td class="p-1 border border-slate-300 font-bold bg-slate-50 text-[10px]">4am - 5am</td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                                    <tr class="h-8"><td class="p-1 border border-slate-300 font-bold bg-slate-50 text-[10px]">5am - 6am</td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                                    <tr class="h-8"><td class="p-1 border border-slate-300 font-bold bg-slate-50 text-[10px]">6am - 7am</td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                                    <tr class="h-8"><td class="p-1 border border-slate-300 font-bold bg-slate-50 text-[10px]">7am - 8am</td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                                    <tr class="h-8"><td class="p-1 border border-slate-300 font-bold bg-slate-50 text-[10px]">8am - 9am</td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                                    <tr class="h-8"><td class="p-1 border border-slate-300 font-bold bg-slate-50 text-[10px]">9am - 10am</td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                                    <tr class="h-8"><td class="p-1 border border-slate-300 font-bold bg-slate-50 text-[10px]">10am - 11am</td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                                    <tr class="h-8"><td class="p-1 border border-slate-300 font-bold bg-slate-50 text-[10px]">11am - 12pm</td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                                    <tr class="h-8"><td class="p-1 border border-slate-300 font-bold bg-slate-50 text-[10px]">12pm - 1pm</td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                                    <tr class="h-8"><td class="p-1 border border-slate-300 font-bold bg-slate-50 text-[10px]">1pm - 2pm</td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                                    <tr class="h-8"><td class="p-1 border border-slate-300 font-bold bg-slate-50 text-[10px]">2pm - 3pm</td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                                    <tr class="h-8"><td class="p-1 border border-slate-300 font-bold bg-slate-50 text-[10px]">3pm - 4pm</td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                                    <tr class="h-8"><td class="p-1 border border-slate-300 font-bold bg-slate-50 text-[10px]">4pm - 5pm</td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                                    <tr class="h-8"><td class="p-1 border border-slate-300 font-bold bg-slate-50 text-[10px]">5pm - 6pm</td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                                    <tr class="h-8"><td class="p-1 border border-slate-300 font-bold bg-slate-50 text-[10px]">6pm - 7pm</td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                                    <tr class="h-8"><td class="p-1 border border-slate-300 font-bold bg-slate-50 text-[10px]">7pm - 8pm</td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                                    <tr class="h-8"><td class="p-1 border border-slate-300 font-bold bg-slate-50 text-[10px]">8pm - 9pm</td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                                    <tr class="h-8"><td class="p-1 border border-slate-300 font-bold bg-slate-50 text-[10px]">9pm - 10pm</td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                                    <tr class="h-8"><td class="p-1 border border-slate-300 font-bold bg-slate-50 text-[10px]">10pm - 11pm</td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                                    <tr class="h-8"><td class="p-1 border border-slate-300 font-bold bg-slate-50 text-[10px]">11pm - 12am</td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -497,11 +537,21 @@
                                 </thead>
                                 <tbody id="tablaJerarquiaTerapeutaBody" class="divide-y divide-slate-200 datos-diligenciados"></tbody>
                                 <tbody class="plantilla-limpia divide-y divide-slate-300">
-                                    <tr class="h-8"><td class="border p-2 text-center font-bold">Nivel 1</td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
-                                    <tr class="h-8"><td class="border p-2 text-center font-bold">Nivel 2</td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
-                                    <tr class="h-8"><td class="border p-2 text-center font-bold">Nivel 3</td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
-                                    <tr class="h-8"><td class="border p-2 text-center font-bold">Nivel 4</td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                                    <tr class="h-8"><td class="border p-2 text-center font-bold">Nivel 15 (Máxima)</td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                                    <tr class="h-8"><td class="border p-2 text-center font-bold">Nivel 14</td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                                    <tr class="h-8"><td class="border p-2 text-center font-bold">Nivel 13</td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                                    <tr class="h-8"><td class="border p-2 text-center font-bold">Nivel 12</td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                                    <tr class="h-8"><td class="border p-2 text-center font-bold">Nivel 11</td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                                    <tr class="h-8"><td class="border p-2 text-center font-bold">Nivel 10</td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                                    <tr class="h-8"><td class="border p-2 text-center font-bold">Nivel 9</td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                                    <tr class="h-8"><td class="border p-2 text-center font-bold">Nivel 8</td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                                    <tr class="h-8"><td class="border p-2 text-center font-bold">Nivel 7</td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                                    <tr class="h-8"><td class="border p-2 text-center font-bold">Nivel 6</td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
                                     <tr class="h-8"><td class="border p-2 text-center font-bold">Nivel 5</td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                                    <tr class="h-8"><td class="border p-2 text-center font-bold">Nivel 4</td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                                    <tr class="h-8"><td class="border p-2 text-center font-bold">Nivel 3</td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                                    <tr class="h-8"><td class="border p-2 text-center font-bold">Nivel 2</td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                                    <tr class="h-8"><td class="border p-2 text-center font-bold">Nivel 1 (Mínima)</td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -526,6 +576,34 @@
                             </div>
                         </div>
                         <div id="containerIdentificacionCategoriasTerapeuta" class="space-y-6 datos-diligenciados"></div>
+
+                        <div class="plantilla-limpia-block space-y-4">
+                            <div class="border border-slate-300 p-3 rounded-xl bg-white space-y-2">
+                                <h4 class="font-bold text-xs uppercase text-slate-900 border-b pb-1">1. Rutina de Cuidado Personal</h4>
+                                <div class="border-b border-dashed border-slate-300 h-6"></div>
+                                <div class="border-b border-dashed border-slate-300 h-6"></div>
+                            </div>
+                            <div class="border border-slate-300 p-3 rounded-xl bg-white space-y-2">
+                                <h4 class="font-bold text-xs uppercase text-slate-900 border-b pb-1">2. Solía Disfrutar pero Dejé de Hacer</h4>
+                                <div class="border-b border-dashed border-slate-300 h-6"></div>
+                                <div class="border-b border-dashed border-slate-300 h-6"></div>
+                            </div>
+                            <div class="border border-slate-300 p-3 rounded-xl bg-white space-y-2">
+                                <h4 class="font-bold text-xs uppercase text-slate-900 border-b pb-1">3. Nuevas Actividades a Empezar</h4>
+                                <div class="border-b border-dashed border-slate-300 h-6"></div>
+                                <div class="border-b border-dashed border-slate-300 h-6"></div>
+                            </div>
+                            <div class="border border-slate-300 p-3 rounded-xl bg-white space-y-2">
+                                <h4 class="font-bold text-xs uppercase text-slate-900 border-b pb-1">4. Actividades Evitadas / Pospuestas</h4>
+                                <div class="border-b border-dashed border-slate-300 h-6"></div>
+                                <div class="border-b border-dashed border-slate-300 h-6"></div>
+                            </div>
+                            <div class="border border-slate-300 p-3 rounded-xl bg-white space-y-2">
+                                <h4 class="font-bold text-xs uppercase text-slate-900 border-b pb-1">5. Metas a Largo Plazo y Valores</h4>
+                                <div class="border-b border-dashed border-slate-300 h-6"></div>
+                                <div class="border-b border-dashed border-slate-300 h-6"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -588,6 +666,26 @@
                             </form>
                         </div>
                         <div id="containerProgramadasTerapeuta" class="space-y-4 datos-diligenciados"></div>
+
+                        <div class="plantilla-limpia-block space-y-4">
+                            <table class="w-full text-left text-xs border-collapse border border-slate-300">
+                                <thead class="bg-slate-100 uppercase font-bold border-b border-slate-300">
+                                    <tr>
+                                        <th class="p-2 border border-slate-300">Actividad (Jerarquía)</th>
+                                        <th class="p-2 border border-slate-300">¿Por qué es importante?</th>
+                                        <th class="p-2 border border-slate-300">Acción Concreta</th>
+                                        <th class="p-2 border border-slate-300">Fecha / Hora</th>
+                                        <th class="p-2 border border-slate-300">Obstáculo & Solución</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="h-14"><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td></tr>
+                                    <tr class="h-14"><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td></tr>
+                                    <tr class="h-14"><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td></tr>
+                                    <tr class="h-14"><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
@@ -606,6 +704,18 @@
                             </div>
                         </div>
                         <div id="containerNotasTerapeuta" class="grid grid-cols-1 md:grid-cols-2 gap-4 datos-diligenciados"></div>
+
+                        <div class="plantilla-limpia-block space-y-3">
+                            <h4 class="font-bold text-xs uppercase text-slate-900 border-b pb-1">Hoja de Notas y Reflexiones</h4>
+                            <div class="space-y-4 pt-2">
+                                <div class="border-b border-slate-300 h-8"></div>
+                                <div class="border-b border-slate-300 h-8"></div>
+                                <div class="border-b border-slate-300 h-8"></div>
+                                <div class="border-b border-slate-300 h-8"></div>
+                                <div class="border-b border-slate-300 h-8"></div>
+                                <div class="border-b border-slate-300 h-8"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -683,11 +793,11 @@
                                     <tbody id="tablaRegistroPensamientosTerapeutaBody" class="divide-y divide-slate-200 text-slate-800 datos-diligenciados">
                                     </tbody>
                                     <tbody class="plantilla-limpia divide-y divide-slate-300">
-                                        <tr class="h-10"><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
-                                        <tr class="h-10"><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
-                                        <tr class="h-10"><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
-                                        <tr class="h-10"><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
-                                        <tr class="h-10"><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                                        <tr class="h-10"><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td></tr>
+                                        <tr class="h-10"><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td></tr>
+                                        <tr class="h-10"><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td></tr>
+                                        <tr class="h-10"><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td></tr>
+                                        <tr class="h-10"><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td></tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -883,7 +993,7 @@
         <!-- VISTA 5: PACIENTE JERARQUÍA -->
         <section id="secPacienteFormJerarquia" class="hidden space-y-6">
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-200 pb-4 gap-3">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-200 pb-4">
                     <div>
                         <button onclick="volverDashboardPaciente()" class="text-xs text-cyan-700 font-bold hover:underline mb-1 inline-flex items-center gap-1 no-print"><i class="fa-solid fa-arrow-left"></i> Volver a mis Tareas</button>
                         <h1 class="text-2xl font-bold text-slate-900">Jerarquía de Actividades</h1>
@@ -910,6 +1020,13 @@
                             <tr><th class="p-3 w-28 text-center">Jerarquía</th><th class="p-3">Actividad</th><th class="p-3 w-36 text-center">Importancia</th><th class="p-3 w-40">Fecha</th><th class="p-3 w-24 text-center no-print">Acción</th></tr>
                         </thead>
                         <tbody id="tablaJerarquiaPacienteBody" class="divide-y divide-slate-200 text-slate-800 datos-diligenciados"></tbody>
+                        <tbody class="plantilla-limpia divide-y divide-slate-300">
+                            <tr class="h-8"><td class="border p-2 text-center font-bold">Nivel 15</td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                            <tr class="h-8"><td class="border p-2 text-center font-bold">Nivel 14</td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                            <tr class="h-8"><td class="border p-2 text-center font-bold">Nivel 13</td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                            <tr class="h-8"><td class="border p-2 text-center font-bold">Nivel 12</td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                            <tr class="h-8"><td class="border p-2 text-center font-bold">Nivel 11</td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                        </tbody>
                     </table>
                 </div>
             </div>
@@ -948,6 +1065,34 @@
                 </form>
             </div>
             <div id="containerPacienteCategoriasIdentificacion" class="space-y-6 datos-diligenciados"></div>
+
+            <div class="plantilla-limpia-block space-y-4">
+                <div class="border border-slate-300 p-3 rounded-xl bg-white space-y-2">
+                    <h4 class="font-bold text-xs uppercase text-slate-900 border-b pb-1">1. Rutina de Cuidado Personal</h4>
+                    <div class="border-b border-dashed border-slate-300 h-6"></div>
+                    <div class="border-b border-dashed border-slate-300 h-6"></div>
+                </div>
+                <div class="border border-slate-300 p-3 rounded-xl bg-white space-y-2">
+                    <h4 class="font-bold text-xs uppercase text-slate-900 border-b pb-1">2. Solía Disfrutar pero Dejé de Hacer</h4>
+                    <div class="border-b border-dashed border-slate-300 h-6"></div>
+                    <div class="border-b border-dashed border-slate-300 h-6"></div>
+                </div>
+                <div class="border border-slate-300 p-3 rounded-xl bg-white space-y-2">
+                    <h4 class="font-bold text-xs uppercase text-slate-900 border-b pb-1">3. Nuevas Actividades a Empezar</h4>
+                    <div class="border-b border-dashed border-slate-300 h-6"></div>
+                    <div class="border-b border-dashed border-slate-300 h-6"></div>
+                </div>
+                <div class="border border-slate-300 p-3 rounded-xl bg-white space-y-2">
+                    <h4 class="font-bold text-xs uppercase text-slate-900 border-b pb-1">4. Actividades Evitadas / Pospuestas</h4>
+                    <div class="border-b border-dashed border-slate-300 h-6"></div>
+                    <div class="border-b border-dashed border-slate-300 h-6"></div>
+                </div>
+                <div class="border border-slate-300 p-3 rounded-xl bg-white space-y-2">
+                    <h4 class="font-bold text-xs uppercase text-slate-900 border-b pb-1">5. Metas a Largo Plazo y Valores</h4>
+                    <div class="border-b border-dashed border-slate-300 h-6"></div>
+                    <div class="border-b border-dashed border-slate-300 h-6"></div>
+                </div>
+            </div>
         </section>
 
         <!-- VISTA 7: PACIENTE PROGRAMACIÓN -->
@@ -1116,9 +1261,9 @@
                         <tbody id="tablaRegistroPensamientosPacienteBody" class="divide-y divide-slate-200 text-slate-800 datos-diligenciados">
                         </tbody>
                         <tbody class="plantilla-limpia divide-y divide-slate-300">
-                            <tr class="h-10"><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
-                            <tr class="h-10"><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
-                            <tr class="h-10"><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                            <tr class="h-10"><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td></tr>
+                            <tr class="h-10"><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td></tr>
+                            <tr class="h-10"><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -1623,17 +1768,21 @@
             }
         }
 
-        // FUNCIÓN DE IMPRESIÓN EXCLUSIVA POR TAREA (DILIGENCIADO O EN LIMPIO)
+        // FUNCIÓN DE IMPRESIÓN SOLUCIONADA PARA EVITAR PÁGINAS EN BLANCO
         function exportarPDFTarea(modo = 'diligenciado') {
             if (modo === 'limpio') {
                 document.body.classList.add('print-modo-limpio');
             } else {
                 document.body.classList.remove('print-modo-limpio');
             }
-            window.print();
+            
+            // Retraso de renderizado para asegurar aplicación de clases CSS antes de imprimir
             setTimeout(() => {
-                document.body.classList.remove('print-modo-limpio');
-            }, 1000);
+                window.print();
+                setTimeout(() => {
+                    document.body.classList.remove('print-modo-limpio');
+                }, 500);
+            }, 100);
         }
 
         // RENDERING REGISTRO DE PENSAMIENTOS TERAPEUTA
