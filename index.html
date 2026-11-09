@@ -44,8 +44,14 @@
             .print-bg-white { background: white !important; color: black !important; border-color: #cbd5e1 !important; }
             .print-text-dark { color: #0f172a !important; }
             input, select, textarea { border: 1px solid #94a3b8 !important; color: black !important; background: white !important; }
+            
+            /* Control de Impresión en Limpio vs Diligenciado */
+            body.print-modo-limpio .datos-diligenciados { display: none !important; }
+            body.print-modo-limpio .plantilla-limpia { display: table-row-group !important; }
+            body.print-modo-limpio .plantilla-limpia-block { display: block !important; }
         }
         .print-only { display: none; }
+        .plantilla-limpia, .plantilla-limpia-block { display: none; }
         input[type=number]::-webkit-inner-spin-button, 
         input[type=number]::-webkit-outer-spin-button { 
             -webkit-appearance: none; 
@@ -113,16 +119,6 @@
     </div>
 
     <main class="max-w-7xl mx-auto p-4 md:p-6 w-full">
-
-        <div id="firebaseAlert" class="hidden mb-6 p-4 bg-amber-50 border-l-4 border-amber-500 text-amber-900 rounded-r shadow-sm text-sm">
-            <div class="flex items-start">
-                <i class="fa-solid fa-triangle-exclamation text-amber-600 text-xl mr-3 mt-0.5"></i>
-                <div>
-                    <h4 class="font-bold">Modo de Demostración Local (Sin conexión a Firebase)</h4>
-                    <p class="mt-0.5 text-xs">No se pudo conectar a la base de datos de Firebase. Revisa la consola o las credenciales.</p>
-                </div>
-            </div>
-        </div>
 
         <!-- VISTA 1: LOGIN TERAPEUTA -->
         <section id="secLoginTerapeuta" class="max-w-md mx-auto my-12 bg-white p-8 rounded-2xl shadow-xl border border-slate-200">
@@ -227,9 +223,6 @@
                         </div>
                     </div>
                     <div class="flex flex-wrap gap-2 no-print">
-                        <button onclick="exportarPDF()" class="bg-slate-800 hover:bg-slate-900 text-white border border-slate-800 px-3.5 py-2 rounded-xl text-sm font-medium transition flex items-center gap-1.5 shadow-sm">
-                            <i class="fa-solid fa-file-pdf text-rose-400"></i> Descargar Ficha Completa (PDF)
-                        </button>
                         <button onclick="liberarEspacioPaciente()" class="bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 px-3.5 py-2 rounded-xl text-sm font-medium transition flex items-center gap-1.5 shadow-sm">
                             <i class="fa-solid fa-trash-can"></i> Eliminar Paciente
                         </button>
@@ -356,7 +349,7 @@
                         </div>
                     </div>
 
-                <!-- CONTROL SEMANAS -->
+                <!-- CONTROL SEMANAS (SOLO VISIBLE EN MONITOREO DIARIO) -->
                 <div id="containerControlBloqueSemanal" class="hidden flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200 no-print">
                     <div class="flex items-center gap-3">
                         <i class="fa-regular fa-calendar-check text-cyan-700 text-xl"></i>
@@ -389,11 +382,18 @@
                 <!-- DESGLOSE TAREA 1: MONITOREO DIARIO -->
                 <div id="secDesgloseTarea" class="hidden space-y-6">
                     <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-3 no-print">
-                        <div class="flex justify-between items-center">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                             <h3 class="font-bold text-slate-800 text-xs uppercase tracking-wider flex items-center gap-2">
-                                <i class="fa-solid fa-eye text-cyan-700"></i> Seleccionar Vistas de Evolución a Mostrar
+                                <i class="fa-solid fa-eye text-cyan-700"></i> Monitoreo Diario de Actividades
                             </h3>
-                            <span class="text-[11px] font-bold bg-cyan-100 text-cyan-800 border border-cyan-200 px-2.5 py-0.5 rounded-full">Tarea: Monitoreo Diario</span>
+                            <div class="flex flex-wrap gap-2">
+                                <button onclick="exportarPDFTarea('diligenciado')" class="text-xs bg-cyan-700 hover:bg-cyan-800 text-white px-3 py-1.5 rounded-lg font-semibold transition flex items-center gap-1.5 shadow-sm">
+                                    <i class="fa-solid fa-file-pdf"></i> Descargar (Diligenciado)
+                                </button>
+                                <button onclick="exportarPDFTarea('limpio')" class="text-xs bg-slate-200 hover:bg-slate-300 text-slate-800 px-3 py-1.5 rounded-lg font-semibold transition flex items-center gap-1.5 shadow-sm">
+                                    <i class="fa-solid fa-print"></i> Descargar (Plantilla en Limpio)
+                                </button>
+                            </div>
                         </div>
                         <div class="flex flex-wrap gap-4 text-xs font-medium">
                             <label class="flex items-center space-x-2 cursor-pointer bg-white px-3 py-2 rounded-lg border border-slate-200 hover:border-cyan-600 shadow-sm">
@@ -439,7 +439,7 @@
                                 <thead class="bg-slate-800 text-white font-bold">
                                     <tr id="headerFechasSupervision"><th class="p-2 border border-slate-700 min-w-[100px]">HORA (12h)</th></tr>
                                 </thead>
-                                <tbody id="bodySupervision" class="divide-y divide-slate-200 text-slate-800"></tbody>
+                                <tbody id="bodySupervision" class="divide-y divide-slate-200 text-slate-800 datos-diligenciados"></tbody>
                             </table>
                         </div>
                     </div>
@@ -476,26 +476,33 @@
                 <!-- DESGLOSE TAREA 2: JERARQUÍA -->
                 <div id="secDesgloseJerarquia" class="hidden space-y-6">
                     <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
-                        <div class="flex justify-between items-center border-b border-slate-200 pb-4">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-200 pb-4">
                             <h3 class="font-bold text-lg text-slate-900"><i class="fa-solid fa-list-ol text-cyan-700 mr-2"></i>Jerarquía de Actividades</h3>
-                            <button id="btnLockJerarquia" onclick="toggleBloqueoJerarquia()" class="text-xs px-3.5 py-2 rounded-xl font-bold shadow-sm">
-                                <i class="fa-solid fa-lock"></i> Bloquear Eliminación
-                            </button>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <button onclick="exportarPDFTarea('diligenciado')" class="text-xs bg-cyan-700 hover:bg-cyan-800 text-white px-3 py-1.5 rounded-lg font-semibold transition flex items-center gap-1.5 shadow-sm no-print">
+                                    <i class="fa-solid fa-file-pdf"></i> Descargar (Diligenciado)
+                                </button>
+                                <button onclick="exportarPDFTarea('limpio')" class="text-xs bg-slate-200 hover:bg-slate-300 text-slate-800 px-3 py-1.5 rounded-lg font-semibold transition flex items-center gap-1.5 shadow-sm no-print">
+                                    <i class="fa-solid fa-print"></i> Descargar (Plantilla en Limpio)
+                                </button>
+                                <button id="btnLockJerarquia" onclick="toggleBloqueoJerarquia()" class="text-xs px-3.5 py-1.5 rounded-xl font-bold shadow-sm no-print">
+                                    <i class="fa-solid fa-lock"></i> Bloquear Eliminación
+                                </button>
+                            </div>
                         </div>
                         <div class="overflow-x-auto border border-slate-200 rounded-xl">
                             <table class="w-full text-left text-xs border-collapse">
                                 <thead class="bg-slate-100 text-slate-700 uppercase font-bold border-b border-slate-200">
                                     <tr><th class="p-3 w-32 text-center">Jerarquía</th><th class="p-3">Actividad</th><th class="p-3 w-32 text-center">Importancia</th><th class="p-3 w-44">Fecha</th></tr>
                                 </thead>
-                                <tbody id="tablaJerarquiaTerapeutaBody" class="divide-y divide-slate-200"></tbody>
-                            </table>
-                        </div>
-                        <div class="overflow-x-auto border border-amber-200 rounded-xl bg-amber-50/30">
-                            <table class="w-full text-left text-xs border-collapse">
-                                <thead class="bg-amber-100/70 text-amber-900 uppercase font-bold border-b border-amber-200">
-                                    <tr><th class="p-3 w-28 text-center">Estado</th><th class="p-3">Actividad Agregada</th><th class="p-3 w-32 text-center">Importancia</th><th class="p-3 w-48">Fecha</th></tr>
-                                </thead>
-                                <tbody id="tablaJerarquiaAdicionalBody" class="divide-y divide-amber-200 text-slate-800"></tbody>
+                                <tbody id="tablaJerarquiaTerapeutaBody" class="divide-y divide-slate-200 datos-diligenciados"></tbody>
+                                <tbody class="plantilla-limpia divide-y divide-slate-300">
+                                    <tr class="h-8"><td class="border p-2 text-center font-bold">Nivel 1</td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                                    <tr class="h-8"><td class="border p-2 text-center font-bold">Nivel 2</td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                                    <tr class="h-8"><td class="border p-2 text-center font-bold">Nivel 3</td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                                    <tr class="h-8"><td class="border p-2 text-center font-bold">Nivel 4</td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                                    <tr class="h-8"><td class="border p-2 text-center font-bold">Nivel 5</td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -504,28 +511,38 @@
                 <!-- DESGLOSE TAREA 3: IDENTIFICACIÓN -->
                 <div id="secDesgloseIdentificacion" class="hidden space-y-6">
                     <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
-                        <div class="flex justify-between items-center border-b border-slate-200 pb-4">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-200 pb-4">
                             <h3 class="font-bold text-lg text-slate-900"><i class="fa-solid fa-magnifying-glass-chart text-cyan-700 mr-2"></i>Identificación de Actividades</h3>
-                            <button id="btnLockIdentificacion" onclick="toggleBloqueoIdentificacion()" class="text-xs px-3.5 py-2 rounded-xl font-bold shadow-sm">
-                                <i class="fa-solid fa-lock"></i> Bloquear Eliminación
-                            </button>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <button onclick="exportarPDFTarea('diligenciado')" class="text-xs bg-cyan-700 hover:bg-cyan-800 text-white px-3 py-1.5 rounded-lg font-semibold transition flex items-center gap-1.5 shadow-sm no-print">
+                                    <i class="fa-solid fa-file-pdf"></i> Descargar (Diligenciado)
+                                </button>
+                                <button onclick="exportarPDFTarea('limpio')" class="text-xs bg-slate-200 hover:bg-slate-300 text-slate-800 px-3 py-1.5 rounded-lg font-semibold transition flex items-center gap-1.5 shadow-sm no-print">
+                                    <i class="fa-solid fa-print"></i> Descargar (Plantilla en Limpio)
+                                </button>
+                                <button id="btnLockIdentificacion" onclick="toggleBloqueoIdentificacion()" class="text-xs px-3.5 py-1.5 rounded-xl font-bold shadow-sm no-print">
+                                    <i class="fa-solid fa-lock"></i> Bloquear Eliminación
+                                </button>
+                            </div>
                         </div>
-                        <div id="containerIdentificacionCategoriasTerapeuta" class="space-y-6"></div>
-                        <div class="overflow-x-auto border border-amber-200 rounded-xl bg-amber-50/30">
-                            <table class="w-full text-left text-xs border-collapse">
-                                <thead class="bg-amber-100/70 text-amber-900 uppercase font-bold border-b border-amber-200">
-                                    <tr><th class="p-3 w-28 text-center">Estado</th><th class="p-3 w-48">Categoría</th><th class="p-3">Actividad</th><th class="p-3 w-44">Fecha</th></tr>
-                                </thead>
-                                <tbody id="tablaIdentificacionAdicionalBody" class="divide-y divide-amber-200 text-slate-800"></tbody>
-                            </table>
-                        </div>
+                        <div id="containerIdentificacionCategoriasTerapeuta" class="space-y-6 datos-diligenciados"></div>
                     </div>
                 </div>
 
                 <!-- DESGLOSE TAREA 4: PROGRAMACIÓN -->
                 <div id="secDesgloseProgramacion" class="hidden space-y-6">
                     <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
-                        <h3 class="font-bold text-lg text-slate-900 border-b border-slate-200 pb-4"><i class="fa-solid fa-calendar-days text-cyan-700 mr-2"></i>Programación de Actividades</h3>
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-200 pb-4">
+                            <h3 class="font-bold text-lg text-slate-900"><i class="fa-solid fa-calendar-days text-cyan-700 mr-2"></i>Programación de Actividades</h3>
+                            <div class="flex flex-wrap items-center gap-2 no-print">
+                                <button onclick="exportarPDFTarea('diligenciado')" class="text-xs bg-cyan-700 hover:bg-cyan-800 text-white px-3 py-1.5 rounded-lg font-semibold transition flex items-center gap-1.5 shadow-sm">
+                                    <i class="fa-solid fa-file-pdf"></i> Descargar (Diligenciado)
+                                </button>
+                                <button onclick="exportarPDFTarea('limpio')" class="text-xs bg-slate-200 hover:bg-slate-300 text-slate-800 px-3 py-1.5 rounded-lg font-semibold transition flex items-center gap-1.5 shadow-sm">
+                                    <i class="fa-solid fa-print"></i> Descargar (Plantilla en Limpio)
+                                </button>
+                            </div>
+                        </div>
                         
                         <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-4 no-print">
                             <h4 class="font-bold text-slate-900 text-xs uppercase"><span id="formProgTitulo">Programar Nueva Actividad</span></h4>
@@ -570,20 +587,25 @@
                                 </div>
                             </form>
                         </div>
-                        <div id="containerProgramadasTerapeuta" class="space-y-4"></div>
+                        <div id="containerProgramadasTerapeuta" class="space-y-4 datos-diligenciados"></div>
                     </div>
                 </div>
 
                 <!-- DESGLOSE TAREA 5: NOTAS Y REFLEXIONES DEL PACIENTE -->
                 <div id="secDesgloseNotas" class="hidden space-y-6">
                     <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
-                        <div class="flex justify-between items-center border-b border-slate-200 pb-4">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-200 pb-4">
                             <h3 class="font-bold text-lg text-slate-900"><i class="fa-solid fa-note-sticky text-cyan-700 mr-2"></i>Notas y Reflexiones Redactadas por el Paciente</h3>
-                            <button onclick="eliminarTodasLasNotasTerapeuta()" class="text-xs bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 px-3 py-2 rounded-xl font-medium transition shadow-sm">
-                                <i class="fa-solid fa-trash-can mr-1"></i>Limpiar Todas las Notas en Sesión
-                            </button>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <button onclick="exportarPDFTarea('diligenciado')" class="text-xs bg-cyan-700 hover:bg-cyan-800 text-white px-3 py-1.5 rounded-lg font-semibold transition flex items-center gap-1.5 shadow-sm no-print">
+                                    <i class="fa-solid fa-file-pdf"></i> Descargar (Diligenciado)
+                                </button>
+                                <button onclick="eliminarTodasLasNotasTerapeuta()" class="text-xs bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 px-3 py-1.5 rounded-lg font-medium transition shadow-sm no-print">
+                                    <i class="fa-solid fa-trash-can mr-1"></i>Limpiar Todas las Notas en Sesión
+                                </button>
+                            </div>
                         </div>
-                        <div id="containerNotasTerapeuta" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                        <div id="containerNotasTerapeuta" class="grid grid-cols-1 md:grid-cols-2 gap-4 datos-diligenciados"></div>
                     </div>
                 </div>
 
@@ -598,9 +620,42 @@
                                 <p class="text-xs text-slate-500 mt-0.5">Registros continuos completados por el paciente para evaluar fusiones y respuestas conductuales.</p>
                             </div>
                             <div class="flex flex-wrap items-center gap-2 no-print">
-                                <button onclick="exportarPDF()" class="text-xs bg-purple-700 hover:bg-purple-800 text-white px-3 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shadow-sm">
-                                    <i class="fa-solid fa-file-pdf"></i> Descargar (PDF)
+                                <button onclick="exportarPDFTarea('diligenciado')" class="text-xs bg-purple-700 hover:bg-purple-800 text-white px-3 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shadow-sm">
+                                    <i class="fa-solid fa-file-pdf"></i> Descargar (Diligenciado)
                                 </button>
+                                <button onclick="exportarPDFTarea('limpio')" class="text-xs bg-slate-200 hover:bg-slate-300 text-slate-800 px-3 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shadow-sm">
+                                    <i class="fa-solid fa-print"></i> Descargar (Plantilla en Limpio)
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- CUADRO GUÍA CON EL EJEMPLO EN ROJO -->
+                        <div class="p-4 bg-rose-50 border-2 border-rose-400 rounded-2xl space-y-3 shadow-sm">
+                            <div class="flex items-center gap-2 border-b border-rose-200 pb-2">
+                                <i class="fa-solid fa-lightbulb text-rose-600 text-base"></i>
+                                <h4 class="font-extrabold text-xs uppercase tracking-wider text-rose-700">Ejemplo Guía de Diligenciamiento</h4>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-6 gap-3 text-xs text-rose-800">
+                                <div class="bg-white/80 p-2.5 rounded-xl border border-rose-200">
+                                    <span class="font-bold block text-[10px] text-rose-900 uppercase">Fecha</span>
+                                    <p class="font-semibold mt-0.5">11/08</p>
+                                </div>
+                                <div class="bg-white/80 p-2.5 rounded-xl border border-rose-200">
+                                    <span class="font-bold block text-[10px] text-rose-900 uppercase">Situación</span>
+                                    <p class="mt-0.5">Estaba comiendo con mis amigos. no me escuchaban lo que decía.</p>
+                                </div>
+                                <div class="bg-white/80 p-2.5 rounded-xl border border-rose-200 md:col-span-2">
+                                    <span class="font-bold block text-[10px] text-rose-900 uppercase">Pensamiento</span>
+                                    <p class="mt-0.5 italic">"Nadie te va a querer nunca" "No te hablan porque no son tus amigos" "Voy a quedarme solo"</p>
+                                </div>
+                                <div class="bg-white/80 p-2.5 rounded-xl border border-rose-200">
+                                    <span class="font-bold block text-[10px] text-rose-900 uppercase">Emoción & Sensación</span>
+                                    <p class="mt-0.5">Tristeza. Sentí como una presión en la garganta. Me dieron ganas de llorar.</p>
+                                </div>
+                                <div class="bg-white/80 p-2.5 rounded-xl border border-rose-200">
+                                    <span class="font-bold block text-[10px] text-rose-900 uppercase">Conducta & Ánimo</span>
+                                    <p class="mt-0.5">-Saqué el celular y empecé a scrollear mirando videos.<br>-Metí una excusa y me fui al baño.<br><strong>Ánimo: 8/10</strong></p>
+                                </div>
                             </div>
                         </div>
 
@@ -618,14 +673,21 @@
                                         <tr>
                                             <th class="p-3 w-20 text-center">Fecha</th>
                                             <th class="p-3">Situación</th>
-                                            <th class="p-3">Pensamiento ("Él")</th>
+                                            <th class="p-3">Pensamiento</th>
                                             <th class="p-3">Emoción & Sensación</th>
                                             <th class="p-3">Conducta</th>
                                             <th class="p-3 w-20 text-center">Ánimo</th>
                                             <th class="p-3 w-20 text-center no-print">Acción</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="tablaRegistroPensamientosTerapeutaBody" class="divide-y divide-slate-200 text-slate-800">
+                                    <tbody id="tablaRegistroPensamientosTerapeutaBody" class="divide-y divide-slate-200 text-slate-800 datos-diligenciados">
+                                    </tbody>
+                                    <tbody class="plantilla-limpia divide-y divide-slate-300">
+                                        <tr class="h-10"><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                                        <tr class="h-10"><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                                        <tr class="h-10"><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                                        <tr class="h-10"><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                                        <tr class="h-10"><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -634,7 +696,7 @@
                 </div>
 
                 <!-- NOTAS CLINICAS TERAPEUTA -->
-                <div class="space-y-2 pt-2 border-t border-slate-200">
+                <div class="space-y-2 pt-2 border-t border-slate-200 no-print">
                     <label class="block text-sm font-bold text-slate-800"><i class="fa-solid fa-user-pen text-cyan-700 mr-1"></i> Observaciones Clínicas y Acuerdos Terapéuticos</label>
                     <textarea id="detNotasClinicas" rows="3" placeholder="Anota tus observaciones clínicas o acuerdos aquí..." class="w-full p-3 bg-slate-50 text-slate-900 border border-slate-300 rounded-xl focus:ring-2 focus:ring-cyan-600 text-sm" onchange="guardarNotasClinicas()"></textarea>
                 </div>
@@ -782,8 +844,11 @@
                             <span class="text-xs font-bold text-slate-700">Semana:</span>
                             <select id="selectSemanaPacienteForm" onchange="cambiarSemanaPaciente(this.value)" class="text-xs font-bold bg-white text-slate-800 border border-slate-300 rounded-lg px-2.5 py-1 focus:outline-none"></select>
                         </div>
-                        <button onclick="exportarPDF()" class="text-xs bg-cyan-700 hover:bg-cyan-800 text-white px-3 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shadow-sm">
-                            <i class="fa-solid fa-file-pdf"></i> Descargar (PDF)
+                        <button onclick="exportarPDFTarea('diligenciado')" class="text-xs bg-cyan-700 hover:bg-cyan-800 text-white px-3 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shadow-sm">
+                            <i class="fa-solid fa-file-pdf"></i> Descargar (Diligenciado)
+                        </button>
+                        <button onclick="exportarPDFTarea('limpio')" class="text-xs bg-slate-200 hover:bg-slate-300 text-slate-800 px-3 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shadow-sm">
+                            <i class="fa-solid fa-print"></i> Descargar (Plantilla en Limpio)
                         </button>
                     </div>
                 </div>
@@ -818,10 +883,18 @@
         <!-- VISTA 5: PACIENTE JERARQUÍA -->
         <section id="secPacienteFormJerarquia" class="hidden space-y-6">
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
-                <div class="flex justify-between items-center border-b border-slate-200 pb-4">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-200 pb-4 gap-3">
                     <div>
                         <button onclick="volverDashboardPaciente()" class="text-xs text-cyan-700 font-bold hover:underline mb-1 inline-flex items-center gap-1 no-print"><i class="fa-solid fa-arrow-left"></i> Volver a mis Tareas</button>
                         <h1 class="text-2xl font-bold text-slate-900">Jerarquía de Actividades</h1>
+                    </div>
+                    <div class="flex flex-wrap gap-2 no-print">
+                        <button onclick="exportarPDFTarea('diligenciado')" class="text-xs bg-cyan-700 hover:bg-cyan-800 text-white px-3 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shadow-sm">
+                            <i class="fa-solid fa-file-pdf"></i> Descargar (Diligenciado)
+                        </button>
+                        <button onclick="exportarPDFTarea('limpio')" class="text-xs bg-slate-200 hover:bg-slate-300 text-slate-800 px-3 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shadow-sm">
+                            <i class="fa-solid fa-print"></i> Descargar (Plantilla en Limpio)
+                        </button>
                     </div>
                 </div>
                 <form onsubmit="agregarActividadJerarquiaPaciente(event)" class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-col sm:flex-row items-end gap-3 no-print">
@@ -836,7 +909,7 @@
                         <thead class="bg-slate-100 text-slate-700 uppercase font-bold border-b border-slate-200">
                             <tr><th class="p-3 w-28 text-center">Jerarquía</th><th class="p-3">Actividad</th><th class="p-3 w-36 text-center">Importancia</th><th class="p-3 w-40">Fecha</th><th class="p-3 w-24 text-center no-print">Acción</th></tr>
                         </thead>
-                        <tbody id="tablaJerarquiaPacienteBody" class="divide-y divide-slate-200 text-slate-800"></tbody>
+                        <tbody id="tablaJerarquiaPacienteBody" class="divide-y divide-slate-200 text-slate-800 datos-diligenciados"></tbody>
                     </table>
                 </div>
             </div>
@@ -845,8 +918,20 @@
         <!-- VISTA 6: PACIENTE IDENTIFICACIÓN -->
         <section id="secPacienteFormIdentificacion" class="hidden space-y-6">
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
-                <button onclick="volverDashboardPaciente()" class="text-xs text-cyan-700 font-bold hover:underline mb-1 inline-flex items-center gap-1 no-print"><i class="fa-solid fa-arrow-left"></i> Volver a mis Tareas</button>
-                <h1 class="text-2xl font-bold text-slate-900">Identificación de Actividades</h1>
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                    <div>
+                        <button onclick="volverDashboardPaciente()" class="text-xs text-cyan-700 font-bold hover:underline mb-1 inline-flex items-center gap-1 no-print"><i class="fa-solid fa-arrow-left"></i> Volver a mis Tareas</button>
+                        <h1 class="text-2xl font-bold text-slate-900">Identificación de Actividades</h1>
+                    </div>
+                    <div class="flex flex-wrap gap-2 no-print">
+                        <button onclick="exportarPDFTarea('diligenciado')" class="text-xs bg-cyan-700 hover:bg-cyan-800 text-white px-3 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shadow-sm">
+                            <i class="fa-solid fa-file-pdf"></i> Descargar (Diligenciado)
+                        </button>
+                        <button onclick="exportarPDFTarea('limpio')" class="text-xs bg-slate-200 hover:bg-slate-300 text-slate-800 px-3 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shadow-sm">
+                            <i class="fa-solid fa-print"></i> Descargar (Plantilla en Limpio)
+                        </button>
+                    </div>
+                </div>
                 <form onsubmit="agregarActividadIdentificacionPaciente(event)" class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-col md:flex-row items-end gap-3 no-print">
                     <div class="w-full md:w-72 shrink-0">
                         <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Eje / Categoría Terapéutica</label>
@@ -862,23 +947,41 @@
                     <button type="submit" class="w-full md:w-auto bg-cyan-700 text-white font-semibold px-4 py-2 rounded-xl text-xs shrink-0"><i class="fa-solid fa-plus mr-1"></i>Agregar</button>
                 </form>
             </div>
-            <div id="containerPacienteCategoriasIdentificacion" class="space-y-6"></div>
+            <div id="containerPacienteCategoriasIdentificacion" class="space-y-6 datos-diligenciados"></div>
         </section>
 
         <!-- VISTA 7: PACIENTE PROGRAMACIÓN -->
         <section id="secPacienteFormProgramacion" class="hidden space-y-6">
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
-                <button onclick="volverDashboardPaciente()" class="text-xs text-cyan-700 font-bold hover:underline mb-1 inline-flex items-center gap-1 no-print"><i class="fa-solid fa-arrow-left"></i> Volver a mis Tareas</button>
-                <h1 class="text-2xl font-bold text-slate-900">Programación de Actividades Terapéuticas</h1>
-                <div id="containerProgramadasPaciente" class="space-y-4"></div>
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                    <div>
+                        <button onclick="volverDashboardPaciente()" class="text-xs text-cyan-700 font-bold hover:underline mb-1 inline-flex items-center gap-1 no-print"><i class="fa-solid fa-arrow-left"></i> Volver a mis Tareas</button>
+                        <h1 class="text-2xl font-bold text-slate-900">Programación de Actividades Terapéuticas</h1>
+                    </div>
+                    <div class="flex flex-wrap gap-2 no-print">
+                        <button onclick="exportarPDFTarea('diligenciado')" class="text-xs bg-cyan-700 hover:bg-cyan-800 text-white px-3 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shadow-sm">
+                            <i class="fa-solid fa-file-pdf"></i> Descargar (Diligenciado)
+                        </button>
+                    </div>
+                </div>
+                <div id="containerProgramadasPaciente" class="space-y-4 datos-diligenciados"></div>
             </div>
         </section>
 
         <!-- VISTA 8: PACIENTE NOTAS Y REFLEXIONES -->
         <section id="secPacienteFormNotas" class="hidden space-y-6">
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
-                <button onclick="volverDashboardPaciente()" class="text-xs text-cyan-700 font-bold hover:underline mb-1 inline-flex items-center gap-1 no-print"><i class="fa-solid fa-arrow-left"></i> Volver a mis Tareas</button>
-                <h1 class="text-2xl font-bold text-slate-900">Notas y Reflexiones Personal</h1>
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                    <div>
+                        <button onclick="volverDashboardPaciente()" class="text-xs text-cyan-700 font-bold hover:underline mb-1 inline-flex items-center gap-1 no-print"><i class="fa-solid fa-arrow-left"></i> Volver a mis Tareas</button>
+                        <h1 class="text-2xl font-bold text-slate-900">Notas y Reflexiones Personal</h1>
+                    </div>
+                    <div class="flex flex-wrap gap-2 no-print">
+                        <button onclick="exportarPDFTarea('diligenciado')" class="text-xs bg-cyan-700 hover:bg-cyan-800 text-white px-3 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shadow-sm">
+                            <i class="fa-solid fa-file-pdf"></i> Descargar (Diligenciado)
+                        </button>
+                    </div>
+                </div>
                 <form onsubmit="agregarNotaPaciente(event)" class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3 no-print">
                     <div><label class="block text-xs font-bold text-slate-700 uppercase mb-1">Título de la Nota</label><input type="text" id="inputNotaTitulo" required class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs"></div>
                     <div><label class="block text-xs font-bold text-slate-700 uppercase mb-1">Contenido</label><textarea id="inputNotaContenido" rows="4" required class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs"></textarea></div>
@@ -886,7 +989,7 @@
                 </form>
             </div>
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
-                <div id="containerNotasPaciente" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                <div id="containerNotasPaciente" class="grid grid-cols-1 md:grid-cols-2 gap-4 datos-diligenciados"></div>
             </div>
         </section>
 
@@ -902,38 +1005,41 @@
                         <p class="text-xs text-slate-500 mt-1">Completa cada campo según la experiencia vivida. Una vez enviado, el registro se guarda de forma permanente para la consulta.</p>
                     </div>
                     <div class="flex flex-wrap items-center gap-2 no-print shrink-0">
-                        <button onclick="exportarPDF()" class="text-xs bg-purple-700 hover:bg-purple-800 text-white px-3 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shadow-sm">
-                            <i class="fa-solid fa-file-pdf"></i> Descargar (PDF)
+                        <button onclick="exportarPDFTarea('diligenciado')" class="text-xs bg-purple-700 hover:bg-purple-800 text-white px-3 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shadow-sm">
+                            <i class="fa-solid fa-file-pdf"></i> Descargar (Diligenciado)
+                        </button>
+                        <button onclick="exportarPDFTarea('limpio')" class="text-xs bg-slate-200 hover:bg-slate-300 text-slate-800 px-3 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shadow-sm">
+                            <i class="fa-solid fa-print"></i> Descargar (Plantilla en Limpio)
                         </button>
                     </div>
                 </div>
 
-                <!-- EJEMPLO RESALTADO EN ROJO ADAPTADO DE TU ARCHIVO -->
+                <!-- EJEMPLO GUÍA EN ROJO -->
                 <div class="p-4 bg-rose-50 border-2 border-rose-400 rounded-2xl space-y-3 shadow-sm">
                     <div class="flex items-center gap-2 border-b border-rose-200 pb-2">
                         <i class="fa-solid fa-lightbulb text-rose-600 text-base"></i>
-                        <h4 class="font-extrabold text-xs uppercase tracking-wider text-rose-700">Ejemplo Guía de Diligenciamiento[cite: 13]</h4>
+                        <h4 class="font-extrabold text-xs uppercase tracking-wider text-rose-700">Ejemplo Guía de Diligenciamiento</h4>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-6 gap-3 text-xs text-rose-800">
                         <div class="bg-white/80 p-2.5 rounded-xl border border-rose-200">
-                            <span class="font-bold block text-[10px] text-rose-900 uppercase">Fecha[cite: 13]</span>
-                            <p class="font-semibold mt-0.5">11/08[cite: 13]</p>
+                            <span class="font-bold block text-[10px] text-rose-900 uppercase">Fecha</span>
+                            <p class="font-semibold mt-0.5">11/08</p>
                         </div>
                         <div class="bg-white/80 p-2.5 rounded-xl border border-rose-200">
-                            <span class="font-bold block text-[10px] text-rose-900 uppercase">Situación[cite: 13]</span>
-                            <p class="mt-0.5">Estaba comiendo con mis amigos. No me escuchaban lo que decía.[cite: 13]</p>
+                            <span class="font-bold block text-[10px] text-rose-900 uppercase">Situación</span>
+                            <p class="mt-0.5">Estaba comiendo con mis amigos. no me escuchaban lo que decía.</p>
                         </div>
                         <div class="bg-white/80 p-2.5 rounded-xl border border-rose-200 md:col-span-2">
-                            <span class="font-bold block text-[10px] text-rose-900 uppercase">Pensamiento[cite: 13]</span>
-                            <p class="mt-0.5 italic">"Nadie te va a querer nunca" "No te hablan porque no son tus amigos" "Voy a quedarme solo"[cite: 13]</p>
+                            <span class="font-bold block text-[10px] text-rose-900 uppercase">Pensamiento</span>
+                            <p class="mt-0.5 italic">"Nadie te va a querer nunca" "No te hablan porque no son tus amigos" "Voy a quedarme solo"</p>
                         </div>
                         <div class="bg-white/80 p-2.5 rounded-xl border border-rose-200">
-                            <span class="font-bold block text-[10px] text-rose-900 uppercase">Emoción[cite: 13]</span>
-                            <p class="mt-0.5">Tristeza. Sentí como una presión en la garganta. Me dieron ganas de llorar.[cite: 13]</p>
+                            <span class="font-bold block text-[10px] text-rose-900 uppercase">Emoción & Sensación</span>
+                            <p class="mt-0.5">Tristeza. Sentí como una presión en la garganta. Me dieron ganas de llorar.</p>
                         </div>
                         <div class="bg-white/80 p-2.5 rounded-xl border border-rose-200">
-                            <span class="font-bold block text-[10px] text-rose-900 uppercase">Conducta & Ánimo[cite: 13]</span>
-                            <p class="mt-0.5">-Scrollear celular.<br>-Irme al baño.<br><strong>Ánimo: 8/10</strong>[cite: 13]</p>
+                            <span class="font-bold block text-[10px] text-rose-900 uppercase">Conducta & Ánimo</span>
+                            <p class="mt-0.5">-Saqué el celular y empecé a scrollear mirando videos.<br>-Metí una excusa y me fui al baño.<br><strong>Ánimo: 8/10</strong></p>
                         </div>
                     </div>
                 </div>
@@ -944,32 +1050,32 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-6 gap-4">
                         <div class="md:col-span-1">
-                            <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Fecha (MM/DD)[cite: 13]</label>
+                            <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Fecha (MM/DD)</label>
                             <input type="text" id="regPensFecha" required placeholder="MM/DD" class="w-full px-3 py-2 bg-white text-slate-900 border border-slate-300 rounded-xl text-xs font-bold focus:ring-2 focus:ring-purple-600 focus:outline-none">
                         </div>
 
                         <div class="md:col-span-5">
-                            <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Situación[cite: 13]</label>
-                            <input type="text" id="regPensSituacion" required placeholder="¿En qué momento ocurrió? ¿Qué estabas haciendo antes?" class="w-full px-3 py-2 bg-white text-slate-900 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-purple-600 focus:outline-none">[cite: 13]
+                            <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Situación</label>
+                            <input type="text" id="regPensSituacion" required placeholder="¿En qué momento ocurrió? ¿Qué estabas haciendo antes?" class="w-full px-3 py-2 bg-white text-slate-900 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-purple-600 focus:outline-none">
                         </div>
 
                         <div class="md:col-span-3">
-                            <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Pensamiento ("¿Qué te dijo el pensamiento?")[cite: 13]</label>
-                            <textarea id="regPensPensamiento" rows="3" required placeholder="¿Podrías escribirlo tal cual lo pensaste? ¿Hay alguna palabra que te haya resonado?" class="w-full px-3 py-2 bg-white text-slate-900 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-purple-600 focus:outline-none"></textarea>[cite: 13]
+                            <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Pensamiento ("¿Qué te dijo el pensamiento?")</label>
+                            <textarea id="regPensPensamiento" rows="3" required placeholder="¿Podrías escribirlo tal cual lo pensaste? ¿Hay alguna palabra que te haya resonado?" class="w-full px-3 py-2 bg-white text-slate-900 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-purple-600 focus:outline-none"></textarea>
                         </div>
 
                         <div class="md:col-span-3">
-                            <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Emoción & Sensación Corporal[cite: 13]</label>
-                            <textarea id="regPensEmocion" rows="3" required placeholder="¿Qué emoción sentiste? (Alegría, tristeza, ansiedad, miedo, enojo). ¿Qué sentías en el cuerpo?" class="w-full px-3 py-2 bg-white text-slate-900 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-purple-600 focus:outline-none"></textarea>[cite: 13]
+                            <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Emoción & Sensación Corporal</label>
+                            <textarea id="regPensEmocion" rows="3" required placeholder="¿Qué emoción sentiste? (Alegría, tristeza, ansiedad, miedo, enojo). ¿Qué sentías en el cuerpo?" class="w-full px-3 py-2 bg-white text-slate-900 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-purple-600 focus:outline-none"></textarea>
                         </div>
 
                         <div class="md:col-span-4">
-                            <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Conducta[cite: 13]</label>
-                            <input type="text" id="regPensConducta" required placeholder="¿Qué hiciste en ese momento?" class="w-full px-3 py-2 bg-white text-slate-900 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-purple-600 focus:outline-none">[cite: 13]
+                            <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Conducta</label>
+                            <input type="text" id="regPensConducta" required placeholder="¿Qué hiciste en ese momento?" class="w-full px-3 py-2 bg-white text-slate-900 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-purple-600 focus:outline-none">
                         </div>
 
                         <div class="md:col-span-2">
-                            <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Ánimo (1 al 10)[cite: 13]</label>
+                            <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Ánimo (1 al 10)</label>
                             <input type="number" min="1" max="10" id="regPensAnimo" required placeholder="1 - 10" class="w-full px-3 py-2 bg-white text-slate-900 border border-slate-300 rounded-xl text-xs font-bold text-center focus:ring-2 focus:ring-purple-600 focus:outline-none">
                         </div>
                     </div>
@@ -1007,7 +1113,12 @@
                                 <th class="p-3 w-20 text-center">Estado</th>
                             </tr>
                         </thead>
-                        <tbody id="tablaRegistroPensamientosPacienteBody" class="divide-y divide-slate-200 text-slate-800">
+                        <tbody id="tablaRegistroPensamientosPacienteBody" class="divide-y divide-slate-200 text-slate-800 datos-diligenciados">
+                        </tbody>
+                        <tbody class="plantilla-limpia divide-y divide-slate-300">
+                            <tr class="h-10"><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                            <tr class="h-10"><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
+                            <tr class="h-10"><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td><td class="border"></td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -1512,6 +1623,19 @@
             }
         }
 
+        // FUNCIÓN DE IMPRESIÓN EXCLUSIVA POR TAREA (DILIGENCIADO O EN LIMPIO)
+        function exportarPDFTarea(modo = 'diligenciado') {
+            if (modo === 'limpio') {
+                document.body.classList.add('print-modo-limpio');
+            } else {
+                document.body.classList.remove('print-modo-limpio');
+            }
+            window.print();
+            setTimeout(() => {
+                document.body.classList.remove('print-modo-limpio');
+            }, 1000);
+        }
+
         // RENDERING REGISTRO DE PENSAMIENTOS TERAPEUTA
         function renderRegistroPensamientosTerapeuta(p) {
             const tbody = document.getElementById('tablaRegistroPensamientosTerapeutaBody');
@@ -1555,7 +1679,6 @@
             const container = document.getElementById('containerNotasTerapeuta');
             container.innerHTML = '';
             const notas = p.notasPaciente || [];
-            document.getElementById('cantNotasTerapeuta').innerText = `${notas.length} notas`;
 
             if (notas.length === 0) {
                 container.innerHTML = `<div class="col-span-full p-8 text-center text-slate-400 bg-slate-50 border border-dashed border-slate-300 rounded-2xl text-xs">El paciente aún no ha registrado notas.</div>`;
@@ -1591,7 +1714,7 @@
         }
 
         function eliminarTodasLasNotasTerapeuta() {
-            if (!confirm("⚠️ ¿Estás seguro de eliminar TODAS las notas escritas por el paciente?")) return;
+            if (!confirm("¿Estás seguro de eliminar TODAS las notas escritas por el paciente?")) return;
             pacienteData.notasPaciente = [];
             sincronizarGarantizado();
             renderNotasTerapeuta(pacienteData);
@@ -1600,20 +1723,17 @@
         function renderJerarquiaTerapeuta(p) {
             const btnLock = document.getElementById('btnLockJerarquia');
             if (p.jerarquiaBloqueada) {
-                btnLock.className = "text-xs bg-rose-50 text-rose-700 border border-rose-300 hover:bg-rose-100 px-3.5 py-2 rounded-xl font-bold transition shadow-sm";
+                btnLock.className = "text-xs bg-rose-50 text-rose-700 border border-rose-300 hover:bg-rose-100 px-3.5 py-1.5 rounded-xl font-bold transition shadow-sm";
                 btnLock.innerHTML = `<i class="fa-solid fa-lock text-rose-600"></i> Bloqueado`;
             } else {
-                btnLock.className = "text-xs bg-emerald-50 text-emerald-800 border border-emerald-300 hover:bg-emerald-100 px-3.5 py-2 rounded-xl font-bold transition shadow-sm";
+                btnLock.className = "text-xs bg-emerald-50 text-emerald-800 border border-emerald-300 hover:bg-emerald-100 px-3.5 py-1.5 rounded-xl font-bold transition shadow-sm";
                 btnLock.innerHTML = `<i class="fa-solid fa-lock-open text-emerald-600"></i> Desbloqueado`;
             }
 
             const items = p.jerarquiaActividades || [];
             const principales = items.filter(x => !x.esAdicional);
-            const adicionales = items.filter(x => x.esAdicional);
-
             const principalesAsc = [...principales].sort((a, b) => parseFloat(a.importancia) - parseFloat(b.importancia));
             principalesAsc.forEach((item, index) => { item.rankJerarquia = index + 1; });
-
             const principalesDesc = [...principalesAsc].sort((a, b) => parseFloat(b.importancia) - parseFloat(a.importancia));
 
             const tbodyP = document.getElementById('tablaJerarquiaTerapeutaBody');
@@ -1633,40 +1753,20 @@
                     tbodyP.appendChild(tr);
                 });
             }
-
-            const tbodyA = document.getElementById('tablaJerarquiaAdicionalBody');
-            tbodyA.innerHTML = '';
-            if (adicionales.length === 0) {
-                tbodyA.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-slate-400">No hay actividades adicionales.</td></tr>`;
-            } else {
-                adicionales.forEach(item => {
-                    const tr = document.createElement('tr');
-                    tr.className = "hover:bg-amber-100/40 transition";
-                    tr.innerHTML = `
-                        <td class="p-3 text-center"><span class="text-[10px] uppercase font-bold text-amber-900 bg-amber-200 border border-amber-400 px-2 py-0.5 rounded-full">Extra</span></td>
-                        <td class="p-3 font-bold text-slate-900 text-sm">${escapeHtml(item.actividad)}</td>
-                        <td class="p-3 text-center font-extrabold text-sm text-amber-800"><span class="bg-amber-100 border border-amber-300 px-3 py-1 rounded-lg">${item.importancia} / 15</span></td>
-                        <td class="p-3 text-xs text-amber-900 font-semibold">${item.fecha || '--'}</td>
-                    `;
-                    tbodyA.appendChild(tr);
-                });
-            }
         }
 
         function renderIdentificacionTerapeuta(p) {
             const btnLock = document.getElementById('btnLockIdentificacion');
             if (p.identificacionBloqueada) {
-                btnLock.className = "text-xs bg-rose-50 text-rose-700 border border-rose-300 hover:bg-rose-100 px-3.5 py-2 rounded-xl font-bold transition shadow-sm";
+                btnLock.className = "text-xs bg-rose-50 text-rose-700 border border-rose-300 hover:bg-rose-100 px-3.5 py-1.5 rounded-xl font-bold transition shadow-sm";
                 btnLock.innerHTML = `<i class="fa-solid fa-lock text-rose-600"></i> Bloqueado`;
             } else {
-                btnLock.className = "text-xs bg-emerald-50 text-emerald-800 border border-emerald-300 hover:bg-emerald-100 px-3.5 py-2 rounded-xl font-bold transition shadow-sm";
+                btnLock.className = "text-xs bg-emerald-50 text-emerald-800 border border-emerald-300 hover:bg-emerald-100 px-3.5 py-1.5 rounded-xl font-bold transition shadow-sm";
                 btnLock.innerHTML = `<i class="fa-solid fa-lock-open text-emerald-600"></i> Desbloqueado`;
             }
 
             const items = p.identificacionActividades || [];
             const principales = items.filter(x => !x.esAdicional);
-            const adicionales = items.filter(x => x.esAdicional);
-
             const containerCat = document.getElementById('containerIdentificacionCategoriasTerapeuta');
             containerCat.innerHTML = '';
 
@@ -1693,25 +1793,6 @@
                 `;
                 containerCat.appendChild(block);
             });
-
-            const tbodyA = document.getElementById('tablaIdentificacionAdicionalBody');
-            tbodyA.innerHTML = '';
-            if (adicionales.length === 0) {
-                tbodyA.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-slate-400">No hay actividades adicionales.</td></tr>`;
-            } else {
-                adicionales.forEach(item => {
-                    const catObj = CATEGORIAS_IDENTIFICACION.find(c => c.id === item.categoria) || {};
-                    const tr = document.createElement('tr');
-                    tr.className = "hover:bg-amber-100/40 transition";
-                    tr.innerHTML = `
-                        <td class="p-3 text-center"><span class="text-[10px] uppercase font-bold text-amber-900 bg-amber-200 border border-amber-400 px-2 py-0.5 rounded-full">Posterior</span></td>
-                        <td class="p-3 font-bold text-amber-950 text-xs">${catObj.nombre || item.categoria}</td>
-                        <td class="p-3 font-semibold text-slate-900 text-xs">${escapeHtml(item.actividad)}</td>
-                        <td class="p-3 text-xs text-amber-900 font-semibold">${item.fecha || '--'}</td>
-                    `;
-                    tbodyA.appendChild(tr);
-                });
-            }
         }
 
         function renderProgramacionTerapeuta(p) {
@@ -2294,7 +2375,6 @@
             const container = document.getElementById('containerNotasPaciente');
             container.innerHTML = '';
             const notas = pacienteData.notasPaciente || [];
-            document.getElementById('cantNotasPaciente').innerText = `${notas.length} notas`;
 
             if (notas.length === 0) {
                 container.innerHTML = `<div class="col-span-full p-8 text-center text-slate-400 bg-slate-50 border border-dashed border-slate-300 rounded-2xl text-xs">No has guardado notas aún.</div>`;
@@ -2636,8 +2716,6 @@
             if (dotEl) dotEl.className = `w-2.5 h-2.5 rounded-full ${colorBg} animate-pulse`;
             if (statusLabel) statusLabel.innerText = texto;
         }
-
-        function exportarPDF() { window.print(); }
 
         function ocultarTodasLasSecciones() {
             document.getElementById('secLoginTerapeuta').classList.add('hidden');
