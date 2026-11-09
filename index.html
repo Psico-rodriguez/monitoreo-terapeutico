@@ -278,7 +278,7 @@
                                     </div>
                                     <div>
                                         <h4 class="font-bold text-xs text-slate-900">Defusión Cognitiva</h4>
-                                        <span class="text-[10px] text-purple-700 font-semibold">1 Tarea disponible</span>
+                                        <span class="text-[10px] text-purple-700 font-semibold">2 Tareas disponibles</span>
                                     </div>
                                 </div>
                                 <i id="iconCheckDC" class="fa-regular fa-circle text-slate-300 text-lg"></i>
@@ -358,6 +358,17 @@
                                 <div class="flex items-center space-x-1.5" onclick="event.stopPropagation()">
                                     <label class="flex items-center space-x-1 cursor-pointer bg-slate-50 hover:bg-slate-100 px-1.5 py-1 rounded border border-slate-200"><input type="checkbox" id="chkModRegistroPensamientos" onchange="toggleModuloAsignado('registro_pensamientos')" class="w-3.5 h-3.5 text-purple-600 rounded bg-white"><span class="text-[10px] font-bold text-slate-700">Asignada</span></label>
                                     <i id="iconCheckTareaRegistroPensamientos" class="fa-regular fa-circle text-slate-300 text-sm"></i>
+                                </div>
+                            </div>
+
+                            <div id="cardTareaDialogoMente" onclick="seleccionarTarea('dialogo_mente')" class="cursor-pointer p-3 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-slate-200 hover:border-purple-400">
+                                <div class="flex items-center space-x-2.5">
+                                    <div class="w-8 h-8 bg-purple-50 text-purple-700 border border-purple-200 rounded-lg flex items-center justify-center text-sm font-bold shrink-0"><i class="fa-solid fa-comments"></i></div>
+                                    <div><h5 class="font-bold text-xs text-slate-900">Diálogo con mi Mente</h5><p class="text-[10px] text-slate-500">Qué dijo mi mente vs Qué dije yo</p></div>
+                                </div>
+                                <div class="flex items-center space-x-1.5" onclick="event.stopPropagation()">
+                                    <label class="flex items-center space-x-1 cursor-pointer bg-slate-50 hover:bg-slate-100 px-1.5 py-1 rounded border border-slate-200"><input type="checkbox" id="chkModDialogoMente" onchange="toggleModuloAsignado('dialogo_mente')" class="w-3.5 h-3.5 text-purple-600 rounded bg-white"><span class="text-[10px] font-bold text-slate-700">Asignada</span></label>
+                                    <i id="iconCheckTareaDialogoMente" class="fa-regular fa-circle text-slate-300 text-sm"></i>
                                 </div>
                             </div>
                         </div>
@@ -805,6 +816,56 @@
                     </div>
                 </div>
 
+                <!-- DESGLOSE TAREA 7: DIÁLOGO CON MI MENTE (DEFUSIÓN COGNITIVA) -->
+                <div id="secDesgloseDialogoMente" class="hidden space-y-6">
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-200 pb-4">
+                            <div>
+                                <h3 class="font-bold text-lg text-slate-900 flex items-center gap-2">
+                                    <i class="fa-solid fa-comments text-purple-700"></i> Diálogo con mi Mente (Defusión Cognitiva)
+                                </h3>
+                                <p class="text-xs text-slate-500 mt-0.5">Revisión de diálogos entre lo que dijo la mente y la respuesta de defusión del paciente.</p>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-2 no-print">
+                                <button onclick="exportarPDFTarea('diligenciado')" class="text-xs bg-purple-700 hover:bg-purple-800 text-white px-3 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shadow-sm">
+                                    <i class="fa-solid fa-file-pdf"></i> Descargar (Diligenciado)
+                                </button>
+                                <button onclick="exportarPDFTarea('limpio')" class="text-xs bg-slate-200 hover:bg-slate-300 text-slate-800 px-3 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shadow-sm">
+                                    <i class="fa-solid fa-print"></i> Descargar (Plantilla en Limpio)
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- REGISTROS DILIGENCIADOS TERAPEUTA -->
+                        <div class="space-y-4 datos-diligenciados" id="containerDialogoMenteTerapeuta">
+                        </div>
+
+                        <!-- PLANTILLA EN LIMPIO PARA IMPRIMIR TERAPEUTA/PACIENTE -->
+                        <div class="plantilla-limpia-block space-y-6">
+                            <div class="border-2 border-slate-400 p-4 rounded-xl bg-white space-y-3">
+                                <div class="border-b border-slate-300 pb-2 font-bold text-xs">
+                                    Qué situación pasó:
+                                    <div class="h-8"></div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4 border-b border-slate-300 pb-4">
+                                    <div class="border-r border-slate-300 pr-2">
+                                        <div class="font-bold text-xs text-center border-b pb-1 mb-2">Que dijo mi mente</div>
+                                        <div class="h-28"></div>
+                                    </div>
+                                    <div>
+                                        <div class="font-bold text-xs text-center border-b pb-1 mb-2">Que dije yo</div>
+                                        <div class="h-28"></div>
+                                    </div>
+                                </div>
+                                <div class="font-bold text-xs">
+                                    ¿Que hice despues?:
+                                    <div class="h-8"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- NOTAS CLINICAS TERAPEUTA -->
                 <div class="space-y-2 pt-2 border-t border-slate-200 no-print">
                     <label class="block text-sm font-bold text-slate-800"><i class="fa-solid fa-user-pen text-cyan-700 mr-1"></i> Observaciones Clínicas y Acuerdos Terapéuticos</label>
@@ -931,6 +992,26 @@
                         </div>
                         <button onclick="abrirModuloRegistroPensamientosPaciente()" class="w-full bg-purple-700 hover:bg-purple-800 text-white font-semibold py-2.5 rounded-xl text-sm transition flex items-center justify-center gap-2 shadow-sm">
                             <span>Ingresar a Registro de Pensamientos</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                    <!-- TAREA DIÁLOGO CON MI MENTE (DEFUSIÓN COGNITIVA) -->
+                    <div id="cardModDialogoMente" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:border-purple-600 transition space-y-4 flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-start">
+                                <div class="w-12 h-12 bg-purple-50 text-purple-700 border border-purple-200 rounded-xl flex items-center justify-center text-xl font-bold">
+                                    <i class="fa-solid fa-comments"></i>
+                                </div>
+                                <span class="text-xs bg-emerald-100 text-emerald-800 border border-emerald-200 px-2.5 py-1 rounded-full font-bold">Asignado</span>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-slate-900 text-base">Diálogo con mi Mente</h3>
+                                <p class="text-xs text-slate-500 mt-1">Distingue entre lo que te dice tu mente y tus propias respuestas y acciones.</p>
+                            </div>
+                        </div>
+                        <button onclick="abrirModuloDialogoMentePaciente()" class="w-full bg-purple-700 hover:bg-purple-800 text-white font-semibold py-2.5 rounded-xl text-sm transition flex items-center justify-center gap-2 shadow-sm">
+                            <span>Ingresar a Diálogo con mi Mente</span>
                             <i class="fa-solid fa-arrow-right"></i>
                         </button>
                     </div>
@@ -1270,6 +1351,112 @@
             </div>
         </section>
 
+        <!-- VISTA 10: PACIENTE DIÁLOGO CON MI MENTE (DEFUSIÓN COGNITIVA) -->
+        <section id="secPacienteFormDialogoMente" class="hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-200 pb-4">
+                    <div>
+                        <button onclick="volverDashboardPaciente()" class="text-xs text-purple-700 font-bold hover:underline mb-1 inline-flex items-center gap-1 no-print">
+                            <i class="fa-solid fa-arrow-left"></i> Volver a mis Tareas
+                        </button>
+                        <h1 class="text-2xl font-bold text-slate-900">Diálogo con mi Mente</h1>
+                        <p class="text-xs text-slate-500 mt-1">Registra la situación, contrapón lo que dijo tu mente con tu respuesta de defusión y anota tu conducta posterior.</p>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2 no-print shrink-0">
+                        <button onclick="exportarPDFTarea('diligenciado')" class="text-xs bg-purple-700 hover:bg-purple-800 text-white px-3 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shadow-sm">
+                            <i class="fa-solid fa-file-pdf"></i> Descargar (Diligenciado)
+                        </button>
+                        <button onclick="exportarPDFTarea('limpio')" class="text-xs bg-slate-200 hover:bg-slate-300 text-slate-800 px-3 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shadow-sm">
+                            <i class="fa-solid fa-print"></i> Descargar (Plantilla en Limpio)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- FORMULARIO PACIENTE -->
+                <form onsubmit="agregarDialogoMentePaciente(event)" class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-4 no-print">
+                    <h4 class="font-bold text-xs uppercase tracking-wider text-slate-800">Nuevo Diálogo con mi Mente</h4>
+
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-6 gap-3">
+                            <div class="md:col-span-2">
+                                <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Fecha (MM/DD)</label>
+                                <input type="text" id="diagFecha" required placeholder="Ej: 11/08" class="w-full px-3 py-2 bg-white text-slate-900 border border-slate-300 rounded-xl text-xs font-bold focus:ring-2 focus:ring-purple-600 focus:outline-none">
+                            </div>
+                            <div class="md:col-span-4">
+                                <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Qué situación pasó:</label>
+                                <input type="text" id="diagSituacion" required placeholder="Describe brevemente el contexto o evento..." class="w-full px-3 py-2 bg-white text-slate-900 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-purple-600 focus:outline-none">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-white p-4 rounded-xl border border-slate-200">
+                            <div>
+                                <label class="block text-[11px] font-bold text-purple-900 uppercase mb-1 flex items-center gap-1">
+                                    <i class="fa-solid fa-head-side-virus"></i> Que dijo mi mente
+                                </label>
+                                <textarea id="diagQueDijoMente" rows="4" required placeholder="Pensamientos automáticos, juicio o regla que apareció en tu mente..." class="w-full p-2.5 bg-purple-50/40 border border-purple-200 rounded-xl text-xs text-purple-900 focus:ring-2 focus:ring-purple-600 focus:outline-none"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-cyan-900 uppercase mb-1 flex items-center gap-1">
+                                    <i class="fa-solid fa-comment-dots"></i> Que dije yo
+                                </label>
+                                <textarea id="diagQueDijeYo" rows="4" required placeholder="Tu respuesta consciente, perspectiva tomada o respuesta desfusionada..." class="w-full p-2.5 bg-cyan-50/40 border border-cyan-200 rounded-xl text-xs text-cyan-900 focus:ring-2 focus:ring-cyan-600 focus:outline-none"></textarea>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">¿Que hice despues?:</label>
+                            <input type="text" id="diagQueHiceDespues" required placeholder="Tu conducta o acción consecuente..." class="w-full px-3 py-2 bg-white text-slate-900 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-purple-600 focus:outline-none">
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-center pt-2">
+                        <span class="text-[11px] text-amber-700 font-semibold bg-amber-50 px-3 py-1 rounded-lg border border-amber-200">
+                            <i class="fa-solid fa-lock mr-1"></i> Una vez guardado, no se podrá editar.
+                        </span>
+                        <button type="submit" class="bg-purple-700 hover:bg-purple-800 text-white font-semibold px-5 py-2.5 rounded-xl text-xs transition shadow-sm flex items-center gap-1.5">
+                            <i class="fa-solid fa-paper-plane"></i> Guardar y Enviar Registro
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- REGISTROS ENVIADOS PACIENTE (INMODIFICABLES) -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                <div class="flex justify-between items-center">
+                    <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-history text-purple-700"></i> Mis Registros Enviados (Bloqueados para Edición)
+                    </h3>
+                    <span id="cantDialogoMentePaciente" class="text-xs bg-purple-100 text-purple-800 border border-purple-200 px-2.5 py-0.5 rounded-full font-bold">0 registros</span>
+                </div>
+
+                <div id="containerDialogoMentePaciente" class="space-y-4 datos-diligenciados">
+                </div>
+
+                <div class="plantilla-limpia-block space-y-6">
+                    <div class="border-2 border-slate-400 p-4 rounded-xl bg-white space-y-3">
+                        <div class="border-b border-slate-300 pb-2 font-bold text-xs">
+                            Qué situación pasó:
+                            <div class="h-8"></div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 border-b border-slate-300 pb-4">
+                            <div class="border-r border-slate-300 pr-2">
+                                <div class="font-bold text-xs text-center border-b pb-1 mb-2">Que dijo mi mente</div>
+                                <div class="h-28"></div>
+                            </div>
+                            <div>
+                                <div class="font-bold text-xs text-center border-b pb-1 mb-2">Que dije yo</div>
+                                <div class="h-28"></div>
+                            </div>
+                        </div>
+                        <div class="font-bold text-xs">
+                            ¿Que hice despues?:
+                            <div class="h-8"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
     </main>
     </div>
 
@@ -1581,7 +1768,7 @@
                 fechaInicio: fechaStr,
                 updatedAt: new Date().toISOString(),
                 notasClinicas: "",
-                modulosAsignados: ['monitoreo', 'identificacion_actividades', 'jerarquia_actividades', 'programacion_actividades', 'notas_paciente', 'registro_pensamientos'],
+                modulosAsignados: ['monitoreo', 'identificacion_actividades', 'jerarquia_actividades', 'programacion_actividades', 'notas_paciente', 'registro_pensamientos', 'dialogo_mente'],
                 jerarquiaBloqueada: false,
                 jerarquiaActividades: [],
                 identificacionBloqueada: false,
@@ -1589,6 +1776,7 @@
                 programacionActividades: [],
                 notasPaciente: [],
                 registroPensamientos: [],
+                dialogoMente: [],
                 semanas: { [fechaStr]: crearSemanaVacia() }
             };
 
@@ -1639,13 +1827,14 @@
             document.getElementById('detIdPaciente').innerText = p.id;
             document.getElementById('detNotasClinicas').value = p.notasClinicas || "";
 
-            const mods = p.modulosAsignados || ['monitoreo', 'identificacion_actividades', 'jerarquia_actividades', 'programacion_actividades', 'notas_paciente', 'registro_pensamientos'];
+            const mods = p.modulosAsignados || ['monitoreo', 'identificacion_actividades', 'jerarquia_actividades', 'programacion_actividades', 'notas_paciente', 'registro_pensamientos', 'dialogo_mente'];
             if (document.getElementById('chkModMonitoreo')) document.getElementById('chkModMonitoreo').checked = mods.includes('monitoreo');
             if (document.getElementById('chkModJerarquia')) document.getElementById('chkModJerarquia').checked = mods.includes('jerarquia_actividades');
             if (document.getElementById('chkModIdentificacion')) document.getElementById('chkModIdentificacion').checked = mods.includes('identificacion_actividades');
             if (document.getElementById('chkModProgramacion')) document.getElementById('chkModProgramacion').checked = mods.includes('programacion_actividades');
             if (document.getElementById('chkModNotas')) document.getElementById('chkModNotas').checked = mods.includes('notas_paciente');
             if (document.getElementById('chkModRegistroPensamientos')) document.getElementById('chkModRegistroPensamientos').checked = mods.includes('registro_pensamientos');
+            if (document.getElementById('chkModDialogoMente')) document.getElementById('chkModDialogoMente').checked = mods.includes('dialogo_mente');
 
             const selectSem = document.getElementById('selectSemanaTerapeuta');
             selectSem.innerHTML = '';
@@ -1686,6 +1875,8 @@
                 renderNotasTerapeuta(p);
             } else if (tareaSeleccionada === 'registro_pensamientos') {
                 renderRegistroPensamientosTerapeuta(p);
+            } else if (tareaSeleccionada === 'dialogo_mente') {
+                renderDialogoMenteTerapeuta(p);
             }
         }
 
@@ -1738,10 +1929,11 @@
             const secPrg = document.getElementById('secDesgloseProgramacion');
             const secNot = document.getElementById('secDesgloseNotas');
             const secRP = document.getElementById('secDesgloseRegistroPensamientos');
+            const secDM = document.getElementById('secDesgloseDialogoMente');
             const msgVacio = document.getElementById('mensajeSinTareaSeleccionada');
             const ctrlSemanas = document.getElementById('containerControlBloqueSemanal');
 
-            [secMon, secJer, secIde, secPrg, secNot, secRP].forEach(s => s?.classList.add('hidden'));
+            [secMon, secJer, secIde, secPrg, secNot, secRP, secDM].forEach(s => s?.classList.add('hidden'));
             ctrlSemanas.classList.add('hidden');
 
             if (tareaSeleccionada === 'monitoreo') {
@@ -1763,12 +1955,15 @@
             } else if (tareaSeleccionada === 'registro_pensamientos') {
                 secRP.classList.remove('hidden');
                 msgVacio.classList.add('hidden');
+            } else if (tareaSeleccionada === 'dialogo_mente') {
+                secDM.classList.remove('hidden');
+                msgVacio.classList.add('hidden');
             } else {
                 msgVacio.classList.remove('hidden');
             }
         }
 
-        // FUNCIÓN DE IMPRESIÓN SOLUCIONADA PARA EVITAR PÁGINAS EN BLANCO
+        // FUNCIÓN DE IMPRESIÓN SOLUCIONADA
         function exportarPDFTarea(modo = 'diligenciado') {
             if (modo === 'limpio') {
                 document.body.classList.add('print-modo-limpio');
@@ -1776,7 +1971,6 @@
                 document.body.classList.remove('print-modo-limpio');
             }
             
-            // Retraso de renderizado para asegurar aplicación de clases CSS antes de imprimir
             setTimeout(() => {
                 window.print();
                 setTimeout(() => {
@@ -1822,6 +2016,55 @@
             (pacienteData.registroPensamientos || []).splice(idx, 1);
             sincronizarGarantizado();
             renderRegistroPensamientosTerapeuta(pacienteData);
+        }
+
+        // RENDERING DIÁLOGO CON MI MENTE TERAPEUTA
+        function renderDialogoMenteTerapeuta(p) {
+            const container = document.getElementById('containerDialogoMenteTerapeuta');
+            container.innerHTML = '';
+            const registros = p.dialogoMente || [];
+
+            if (registros.length === 0) {
+                container.innerHTML = `<div class="p-8 text-center text-slate-400 bg-slate-50 border border-dashed border-slate-300 rounded-2xl text-xs">No hay entradas de "Diálogo con mi Mente" enviadas por el paciente aún.</div>`;
+                return;
+            }
+
+            registros.forEach((reg, idx) => {
+                const card = document.createElement('div');
+                card.className = "border-2 border-slate-300 p-5 rounded-2xl bg-white space-y-4 shadow-sm hover:border-purple-400 transition";
+                card.innerHTML = `
+                    <div class="flex justify-between items-start border-b border-slate-200 pb-2">
+                        <div class="space-y-1">
+                            <span class="text-[11px] font-bold bg-purple-100 text-purple-900 border border-purple-200 px-2.5 py-0.5 rounded-full">Fecha: ${escapeHtml(reg.fecha)}</span>
+                            <div class="text-xs text-slate-800 pt-1"><strong>Qué situación pasó:</strong> ${escapeHtml(reg.situacion)}</div>
+                        </div>
+                        <button onclick="eliminarDialogoMenteTerapeuta(${idx})" class="text-xs bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 px-2.5 py-1 rounded-lg font-bold transition no-print">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 border border-slate-200 rounded-xl overflow-hidden divide-y md:divide-y-0 md:divide-x divide-slate-200">
+                        <div class="p-3 bg-purple-50/30 space-y-1">
+                            <span class="font-bold text-xs uppercase text-purple-900 block border-b border-purple-100 pb-1 flex items-center gap-1"><i class="fa-solid fa-head-side-virus"></i> Que dijo mi mente</span>
+                            <p class="text-xs text-purple-950 whitespace-pre-wrap leading-relaxed italic">"${escapeHtml(reg.queDijoMente)}"</p>
+                        </div>
+                        <div class="p-3 bg-cyan-50/30 space-y-1">
+                            <span class="font-bold text-xs uppercase text-cyan-900 block border-b border-cyan-100 pb-1 flex items-center gap-1"><i class="fa-solid fa-comment-dots"></i> Que dije yo</span>
+                            <p class="text-xs text-cyan-950 whitespace-pre-wrap leading-relaxed">${escapeHtml(reg.queDijeYo)}</p>
+                        </div>
+                    </div>
+                    <div class="text-xs text-slate-800 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                        <strong>¿Que hice despues?:</strong> ${escapeHtml(reg.queHiceDespues)}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function eliminarDialogoMenteTerapeuta(idx) {
+            if (!confirm("¿Eliminar este diálogo registrado?")) return;
+            (pacienteData.dialogoMente || []).splice(idx, 1);
+            sincronizarGarantizado();
+            renderDialogoMenteTerapeuta(pacienteData);
         }
 
         function renderNotasTerapeuta(p) {
@@ -2186,7 +2429,7 @@
         }
 
         async function toggleModuloAsignado(modKey) {
-            if (!pacienteData.modulosAsignados) pacienteData.modulosAsignados = ['monitoreo', 'identificacion_actividades', 'jerarquia_actividades', 'programacion_actividades', 'notas_paciente', 'registro_pensamientos'];
+            if (!pacienteData.modulosAsignados) pacienteData.modulosAsignados = ['monitoreo', 'identificacion_actividades', 'jerarquia_actividades', 'programacion_actividades', 'notas_paciente', 'registro_pensamientos', 'dialogo_mente'];
             const idx = pacienteData.modulosAsignados.indexOf(modKey);
             if (idx === -1) pacienteData.modulosAsignados.push(modKey);
             else pacienteData.modulosAsignados.splice(idx, 1);
@@ -2384,6 +2627,8 @@
                             renderNotasPaciente();
                         } else if (!modoPacienteGuardando && !document.getElementById('secPacienteFormRegistroPensamientos').classList.contains('hidden')) {
                             renderRegistroPensamientosPaciente();
+                        } else if (!modoPacienteGuardando && !document.getElementById('secPacienteFormDialogoMente').classList.contains('hidden')) {
+                            renderDialogoMentePaciente();
                         } else if (!modoPacienteGuardando) {
                             mostrarDashboardPaciente();
                         }
@@ -2402,13 +2647,14 @@
             document.getElementById('pacienteBienvenidaNombre').innerText = `¡Hola, ${pacienteData.nombre}! 👋`;
             poblarSelectoresSemanaPaciente();
 
-            const mods = pacienteData.modulosAsignados || ['monitoreo', 'identificacion_actividades', 'jerarquia_actividades', 'programacion_actividades', 'notas_paciente', 'registro_pensamientos'];
+            const mods = pacienteData.modulosAsignados || ['monitoreo', 'identificacion_actividades', 'jerarquia_actividades', 'programacion_actividades', 'notas_paciente', 'registro_pensamientos', 'dialogo_mente'];
             document.getElementById('cardModMonitoreo').style.display = mods.includes('monitoreo') ? 'flex' : 'none';
             document.getElementById('cardModJerarquia').style.display = mods.includes('jerarquia_actividades') ? 'flex' : 'none';
             document.getElementById('cardModIdentificacion').style.display = mods.includes('identificacion_actividades') ? 'flex' : 'none';
             document.getElementById('cardModProgramacion').style.display = mods.includes('programacion_actividades') ? 'flex' : 'none';
             document.getElementById('cardModNotas').style.display = mods.includes('notas_paciente') ? 'flex' : 'none';
             document.getElementById('cardModRegistroPensamientos').style.display = mods.includes('registro_pensamientos') ? 'flex' : 'none';
+            document.getElementById('cardModDialogoMente').style.display = mods.includes('dialogo_mente') ? 'flex' : 'none';
         }
 
         function poblarSelectoresSemanaPaciente() {
@@ -2446,9 +2692,89 @@
         function abrirModuloProgramacionPaciente() { ocultarTodasLasSecciones(); document.getElementById('secPacienteFormProgramacion').classList.remove('hidden'); renderProgramacionPaciente(); }
         function abrirModuloNotasPaciente() { ocultarTodasLasSecciones(); document.getElementById('secPacienteFormNotas').classList.remove('hidden'); renderNotasPaciente(); }
         function abrirModuloRegistroPensamientosPaciente() { ocultarTodasLasSecciones(); document.getElementById('secPacienteFormRegistroPensamientos').classList.remove('hidden'); renderRegistroPensamientosPaciente(); }
+        function abrirModuloDialogoMentePaciente() { ocultarTodasLasSecciones(); document.getElementById('secPacienteFormDialogoMente').classList.remove('hidden'); renderDialogoMentePaciente(); }
 
         function volverDashboardPaciente() {
             if (pacienteData && pacienteActualId) mostrarDashboardPaciente();
+        }
+
+        // LÓGICA PACIENTE: DIÁLOGO CON MI MENTE
+        function renderDialogoMentePaciente() {
+            const container = document.getElementById('containerDialogoMentePaciente');
+            container.innerHTML = '';
+            const registros = pacienteData.dialogoMente || [];
+            document.getElementById('cantDialogoMentePaciente').innerText = `${registros.length} registros`;
+
+            if (registros.length === 0) {
+                container.innerHTML = `<div class="p-8 text-center text-slate-400 bg-slate-50 border border-dashed border-slate-300 rounded-2xl text-xs">Aún no has enviado diálogos con tu mente.</div>`;
+                return;
+            }
+
+            registros.forEach((reg) => {
+                const card = document.createElement('div');
+                card.className = "border-2 border-slate-300 p-5 rounded-2xl bg-white space-y-4 shadow-sm";
+                card.innerHTML = `
+                    <div class="flex justify-between items-center border-b border-slate-200 pb-2">
+                        <span class="text-[11px] font-bold bg-purple-100 text-purple-900 border border-purple-200 px-2.5 py-0.5 rounded-full">Fecha: ${escapeHtml(reg.fecha)}</span>
+                        <span class="text-xs text-slate-400 font-bold"><i class="fa-solid fa-lock text-rose-500 mr-1"></i>Enviado / Inmodificable</span>
+                    </div>
+                    <div class="text-xs text-slate-800">
+                        <strong>Qué situación pasó:</strong> ${escapeHtml(reg.situacion)}
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 border border-slate-200 rounded-xl overflow-hidden divide-y md:divide-y-0 md:divide-x divide-slate-200">
+                        <div class="p-3 bg-purple-50/30 space-y-1">
+                            <span class="font-bold text-xs uppercase text-purple-900 block border-b border-purple-100 pb-1 flex items-center gap-1"><i class="fa-solid fa-head-side-virus"></i> Que dijo mi mente</span>
+                            <p class="text-xs text-purple-950 whitespace-pre-wrap leading-relaxed italic">"${escapeHtml(reg.queDijoMente)}"</p>
+                        </div>
+                        <div class="p-3 bg-cyan-50/30 space-y-1">
+                            <span class="font-bold text-xs uppercase text-cyan-900 block border-b border-cyan-100 pb-1 flex items-center gap-1"><i class="fa-solid fa-comment-dots"></i> Que dije yo</span>
+                            <p class="text-xs text-cyan-950 whitespace-pre-wrap leading-relaxed">${escapeHtml(reg.queDijeYo)}</p>
+                        </div>
+                    </div>
+                    <div class="text-xs text-slate-800 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                        <strong>¿Que hice despues?:</strong> ${escapeHtml(reg.queHiceDespues)}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function agregarDialogoMentePaciente(e) {
+            e.preventDefault();
+            const fecha = document.getElementById('diagFecha').value.trim();
+            const situacion = document.getElementById('diagSituacion').value.trim();
+            const queDijoMente = document.getElementById('diagQueDijoMente').value.trim();
+            const queDijeYo = document.getElementById('diagQueDijeYo').value.trim();
+            const queHiceDespues = document.getElementById('diagQueHiceDespues').value.trim();
+
+            if (!fecha || !situacion || !queDijoMente || !queDijeYo || !queHiceDespues) {
+                alert("Por favor completa todos los campos.");
+                return;
+            }
+
+            if (!pacienteData.dialogoMente) pacienteData.dialogoMente = [];
+
+            const nuevoRegistro = {
+                id: 'dm_' + Math.random().toString(36).substr(2, 9),
+                fecha: fecha,
+                situacion: situacion,
+                queDijoMente: queDijoMente,
+                queDijeYo: queDijeYo,
+                queHiceDespues: queHiceDespues,
+                timestamp: new Date().toISOString()
+            };
+
+            pacienteData.dialogoMente.unshift(nuevoRegistro);
+
+            document.getElementById('diagFecha').value = '';
+            document.getElementById('diagSituacion').value = '';
+            document.getElementById('diagQueDijoMente').value = '';
+            document.getElementById('diagQueDijeYo').value = '';
+            document.getElementById('diagQueHiceDespues').value = '';
+
+            sincronizarGarantizado();
+            renderDialogoMentePaciente();
+            alert("¡Diálogo con tu mente guardado y enviado exitosamente!");
         }
 
         // LÓGICA PACIENTE: REGISTRO DE PENSAMIENTOS
@@ -2526,7 +2852,7 @@
             const notas = pacienteData.notasPaciente || [];
 
             if (notas.length === 0) {
-                container.innerHTML = `<div class="col-span-full p-8 text-center text-slate-400 bg-slate-50 border border-dashed border-slate-300 rounded-2xl text-xs">No has guardado notas aún.</div>`;
+                container.innerHTML = `<div class="col-span-full p-8 text-center text-slate-400 bg-slate-50 border border-dashed border-slate-300 rounded-2xl text-xs">No me has guardado notas aún.</div>`;
                 return;
             }
 
@@ -2877,6 +3203,7 @@
             document.getElementById('secPacienteFormProgramacion').classList.add('hidden');
             document.getElementById('secPacienteFormNotas').classList.add('hidden');
             document.getElementById('secPacienteFormRegistroPensamientos').classList.add('hidden');
+            document.getElementById('secPacienteFormDialogoMente').classList.add('hidden');
         }
 
         function crearSemanaVacia() {
@@ -2898,7 +3225,7 @@
                 fechaInicio: '2026-10-26',
                 updatedAt: new Date().toISOString(),
                 notasClinicas: 'Paciente en monitoreo activo.',
-                modulosAsignados: ['monitoreo', 'identificacion_actividades', 'jerarquia_actividades', 'programacion_actividades', 'notas_paciente', 'registro_pensamientos'],
+                modulosAsignados: ['monitoreo', 'identificacion_actividades', 'jerarquia_actividades', 'programacion_actividades', 'notas_paciente', 'registro_pensamientos', 'dialogo_mente'],
                 jerarquiaBloqueada: false,
                 jerarquiaActividades: [],
                 identificacionBloqueada: false,
@@ -2906,6 +3233,7 @@
                 programacionActividades: [],
                 notasPaciente: [],
                 registroPensamientos: [],
+                dialogoMente: [],
                 semanas: { '2026-10-26': crearSemanaVacia() }
             }];
         }
