@@ -3138,11 +3138,13 @@
 
         // MODO PACIENTE
         function iniciarModoPaciente(pId) {
+            ocultarTodasLasSecciones();
             document.getElementById('btnTerapeutaLogin').classList.add('hidden');
             document.getElementById('syncBadge').classList.remove('hidden');
 
             if (firebaseActivo) {
-                db.collection('pacientes').doc(pId).onSnapshot(doc => {
+                if (unsubscribeRealtime) unsubscribeRealtime();
+                unsubscribeRealtime = db.collection('pacientes').doc(pId).onSnapshot(doc => {
                     if (doc.exists) {
                         pacienteData = doc.data();
                         if (!pacienteData.semanas) pacienteData.semanas = { [obtenerLunes(pacienteData.fechaInicio || '2026-10-26')]: crearSemanaVacia() };
@@ -3155,7 +3157,11 @@
                         else if (!modoPacienteGuardando && !document.getElementById('secPacienteFormRegistroPensamientos').classList.contains('hidden')) renderRegistroPensamientosPaciente();
                         else if (!modoPacienteGuardando && !document.getElementById('secPacienteFormDialogoMente').classList.contains('hidden')) renderDialogoMentePaciente();
                         else if (!modoPacienteGuardando && !document.getElementById('secPacienteFormJerarquiaTemores').classList.contains('hidden')) renderJerarquiaTemoresPaciente();
+                        else if (!modoPacienteGuardando) mostrarDashboardPaciente();
                     } else alert("Expediente no encontrado.");
+                }, err => {
+                    console.error("Error de conexión con expediente:", err);
+                    alert("No se pudo cargar el expediente del paciente: " + err.message);
                 });
             } else {
                 let local = JSON.parse(localStorage.getItem('demo_pacientes') || '[]');
