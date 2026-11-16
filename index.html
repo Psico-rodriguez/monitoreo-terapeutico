@@ -283,6 +283,20 @@
                                 </div>
                                 <i id="iconCheckDC" class="fa-regular fa-circle text-slate-300 text-lg"></i>
                             </div>
+
+                            <!-- Terapia 3: Terapia de Exposición -->
+                            <div id="cardTerapiaEX" onclick="seleccionarTerapia('terapia_exposicion')" class="cursor-pointer p-3.5 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-slate-200 hover:border-amber-400">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-9 h-9 bg-amber-100 text-amber-800 rounded-lg flex items-center justify-center font-bold text-lg">
+                                        <i class="fa-solid fa-stairs"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-xs text-slate-900">Terapia de Exposición</h4>
+                                        <span class="text-[10px] text-amber-700 font-semibold">1 Tarea disponible</span>
+                                    </div>
+                                </div>
+                                <i id="iconCheckEX" class="fa-regular fa-circle text-slate-300 text-lg"></i>
+                            </div>
                         </div>
                     </div>
 
@@ -369,6 +383,20 @@
                                 <div class="flex items-center space-x-1.5" onclick="event.stopPropagation()">
                                     <label class="flex items-center space-x-1 cursor-pointer bg-slate-50 hover:bg-slate-100 px-1.5 py-1 rounded border border-slate-200"><input type="checkbox" id="chkModDialogoMente" onchange="toggleModuloAsignado('dialogo_mente')" class="w-3.5 h-3.5 text-purple-600 rounded bg-white"><span class="text-[10px] font-bold text-slate-700">Asignada</span></label>
                                     <i id="iconCheckTareaDialogoMente" class="fa-regular fa-circle text-slate-300 text-sm"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- GRUPO TERAPIA DE EXPOSICIÓN -->
+                        <div id="grupoTareasEX" class="hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                            <div id="cardTareaJerarquiaTemores" onclick="seleccionarTarea('jerarquia_temores')" class="cursor-pointer p-3 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-slate-200 hover:border-amber-400">
+                                <div class="flex items-center space-x-2.5">
+                                    <div class="w-8 h-8 bg-amber-50 text-amber-700 border border-amber-200 rounded-lg flex items-center justify-center text-sm font-bold shrink-0"><i class="fa-solid fa-stairs"></i></div>
+                                    <div><h5 class="font-bold text-xs text-slate-900">Jerarquía de Temores</h5><p class="text-[10px] text-slate-500">Escala USA (0 a 100)</p></div>
+                                </div>
+                                <div class="flex items-center space-x-1.5" onclick="event.stopPropagation()">
+                                    <label class="flex items-center space-x-1 cursor-pointer bg-slate-50 hover:bg-slate-100 px-1.5 py-1 rounded border border-slate-200"><input type="checkbox" id="chkModJerarquiaTemores" onchange="toggleModuloAsignado('jerarquia_temores')" class="w-3.5 h-3.5 text-amber-600 rounded bg-white"><span class="text-[10px] font-bold text-slate-700">Asignada</span></label>
+                                    <i id="iconCheckTareaJerarquiaTemores" class="fa-regular fa-circle text-slate-300 text-sm"></i>
                                 </div>
                             </div>
                         </div>
@@ -866,6 +894,104 @@
                     </div>
                 </div>
 
+                <!-- DESGLOSE TAREA 8: JERARQUÍA DE TEMORES (TERAPIA DE EXPOSICIÓN) -->
+                <div id="secDesgloseJerarquiaTemores" class="hidden space-y-6">
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-200 pb-4">
+                            <div>
+                                <h3 class="font-bold text-lg text-slate-900 flex items-center gap-2">
+                                    <i class="fa-solid fa-stairs text-amber-600"></i> Jerarquía de Temores — Escala USA (Terapia de Exposición)
+                                </h3>
+                                <p class="text-xs text-slate-500 mt-0.5">Registro libre (sin frecuencia semanal). Tanto el paciente como el terapeuta pueden enlistar categorías o situaciones y asignarles un valor USA (0 a 100); la jerarquía se ordena automáticamente de menor a mayor ansiedad.</p>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-2 no-print shrink-0">
+                                <button onclick="exportarPDFTarea('diligenciado')" class="text-xs bg-amber-600 hover:bg-amber-700 text-white px-3 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shadow-sm">
+                                    <i class="fa-solid fa-file-pdf"></i> Descargar (Diligenciado)
+                                </button>
+                                <button onclick="exportarPDFTarea('limpio')" class="text-xs bg-slate-200 hover:bg-slate-300 text-slate-800 px-3 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shadow-sm">
+                                    <i class="fa-solid fa-print"></i> Descargar (Plantilla en Limpio)
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- MÉTRICAS RESUMEN -->
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                            <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+                                <span class="text-[10px] text-slate-500 font-bold uppercase block">Categorías / Ítems</span>
+                                <span class="text-2xl font-extrabold text-slate-900" id="jtTerapeutaStatsTotal">0</span>
+                            </div>
+                            <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+                                <span class="text-[10px] text-slate-500 font-bold uppercase block">Promedio USA</span>
+                                <span class="text-2xl font-extrabold text-amber-600" id="jtTerapeutaStatsProm">0</span>
+                            </div>
+                            <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+                                <span class="text-[10px] text-slate-500 font-bold uppercase block">Mínimo USA (Inicio)</span>
+                                <span class="text-2xl font-extrabold text-emerald-700" id="jtTerapeutaStatsMin">--</span>
+                            </div>
+                            <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+                                <span class="text-[10px] text-slate-500 font-bold uppercase block">Máximo USA (Tope)</span>
+                                <span class="text-2xl font-extrabold text-rose-700" id="jtTerapeutaStatsMax">--</span>
+                            </div>
+                        </div>
+
+                        <!-- GUÍA RÁPIDA ESCALA USA -->
+                        <div class="flex flex-wrap items-center gap-2 bg-amber-50/60 border border-amber-200 p-3 rounded-xl text-[11px]">
+                            <span class="font-bold text-amber-900 uppercase mr-1"><i class="fa-solid fa-gauge-high mr-1"></i>Escala USA (0–100):</span>
+                            <span class="bg-white border border-slate-300 text-slate-700 px-2 py-0.5 rounded-full font-semibold">0: Sin ansiedad</span>
+                            <span class="bg-emerald-50 border border-emerald-300 text-emerald-800 px-2 py-0.5 rounded-full font-semibold">1–25: Leve</span>
+                            <span class="bg-amber-100 border border-amber-300 text-amber-900 px-2 py-0.5 rounded-full font-semibold">26–50: Moderada</span>
+                            <span class="bg-orange-100 border border-orange-300 text-orange-900 px-2 py-0.5 rounded-full font-semibold">51–75: Alta</span>
+                            <span class="bg-rose-100 border border-rose-300 text-rose-900 px-2 py-0.5 rounded-full font-semibold">76–100: Muy alta</span>
+                        </div>
+
+                        <!-- FORMULARIO TERAPEUTA LADO A LADO -->
+                        <form onsubmit="agregarJerarquiaTemores(event, 'Terapeuta')" class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-col md:flex-row items-end gap-3 no-print">
+                            <div class="flex-1 w-full">
+                                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Categoría / Situación o Estímulo Temido</label>
+                                <input type="text" id="jtTerapeutaCategoria" required placeholder="Ej: Subir a un ascensor solo hasta el piso 5..." class="w-full px-3.5 py-2 bg-white text-slate-900 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                            </div>
+                            <div class="w-full md:w-52 shrink-0">
+                                <div class="flex justify-between items-center mb-1">
+                                    <label class="block text-xs font-bold text-slate-700 uppercase">Escala USA (0–100)</label>
+                                    <span id="jtTerapeutaPreview" class="text-[10px] font-bold px-2 py-0.5 rounded-full border bg-slate-100 text-slate-600 border-slate-300">--</span>
+                                </div>
+                                <input type="number" min="0" max="100" id="jtTerapeutaUsa" required placeholder="0 - 100" oninput="actualizarPreviewUsa('jtTerapeutaUsa', 'jtTerapeutaPreview')" class="w-full px-3 py-2 bg-white text-slate-900 border border-slate-300 rounded-xl text-xs font-extrabold text-center focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                            </div>
+                            <button type="submit" class="w-full md:w-auto bg-amber-600 hover:bg-amber-700 text-white font-semibold px-4 py-2 rounded-xl text-xs shrink-0 shadow-sm transition flex items-center justify-center gap-1.5">
+                                <i class="fa-solid fa-plus"></i> Agregar a Jerarquía
+                            </button>
+                        </form>
+
+                        <!-- TABLA ORDENADA DE MENOR A MAYOR -->
+                        <div class="overflow-x-auto border border-slate-200 rounded-xl">
+                            <table class="w-full text-left text-xs border-collapse">
+                                <thead class="bg-slate-800 text-white uppercase font-bold">
+                                    <tr>
+                                        <th class="p-3 w-24 text-center">Orden</th>
+                                        <th class="p-3">Categoría / Situación Temida</th>
+                                        <th class="p-3 w-48 text-center">Escala USA (0–100)</th>
+                                        <th class="p-3 w-44">Registrado / Editado</th>
+                                        <th class="p-3 w-20 text-center no-print">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tablaJerarquiaTemoresTerapeutaBody" class="divide-y divide-slate-200 text-slate-800 datos-diligenciados"></tbody>
+                                <tbody class="plantilla-limpia divide-y divide-slate-300">
+                                    <tr class="h-9"><td class="border p-2 text-center font-bold">#1 (Menor)</td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td></tr>
+                                    <tr class="h-9"><td class="border p-2 text-center font-bold">#2</td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td></tr>
+                                    <tr class="h-9"><td class="border p-2 text-center font-bold">#3</td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td></tr>
+                                    <tr class="h-9"><td class="border p-2 text-center font-bold">#4</td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td></tr>
+                                    <tr class="h-9"><td class="border p-2 text-center font-bold">#5</td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td></tr>
+                                    <tr class="h-9"><td class="border p-2 text-center font-bold">#6</td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td></tr>
+                                    <tr class="h-9"><td class="border p-2 text-center font-bold">#7</td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td></tr>
+                                    <tr class="h-9"><td class="border p-2 text-center font-bold">#8</td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td></tr>
+                                    <tr class="h-9"><td class="border p-2 text-center font-bold">#9</td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td></tr>
+                                    <tr class="h-9"><td class="border p-2 text-center font-bold">#10 (Mayor)</td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- NOTAS CLINICAS TERAPEUTA -->
                 <div class="space-y-2 pt-2 border-t border-slate-200 no-print">
                     <label class="block text-sm font-bold text-slate-800"><i class="fa-solid fa-user-pen text-cyan-700 mr-1"></i> Observaciones Clínicas y Acuerdos Terapéuticos</label>
@@ -1012,6 +1138,26 @@
                         </div>
                         <button onclick="abrirModuloDialogoMentePaciente()" class="w-full bg-purple-700 hover:bg-purple-800 text-white font-semibold py-2.5 rounded-xl text-sm transition flex items-center justify-center gap-2 shadow-sm">
                             <span>Ingresar a Diálogo con mi Mente</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                    <!-- TAREA JERARQUÍA DE TEMORES (TERAPIA DE EXPOSICIÓN) -->
+                    <div id="cardModJerarquiaTemores" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:border-amber-600 transition space-y-4 flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-start">
+                                <div class="w-12 h-12 bg-amber-50 text-amber-700 border border-amber-200 rounded-xl flex items-center justify-center text-xl font-bold">
+                                    <i class="fa-solid fa-stairs"></i>
+                                </div>
+                                <span class="text-xs bg-emerald-100 text-emerald-800 border border-emerald-200 px-2.5 py-1 rounded-full font-bold">Asignado</span>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-slate-900 text-base">Jerarquía de Temores</h3>
+                                <p class="text-xs text-slate-500 mt-1">Enlista las situaciones o categorías temidas y califícalas de 0 a 100 en la escala USA. Se ordenarán de menor a mayor.</p>
+                            </div>
+                        </div>
+                        <button onclick="abrirModuloJerarquiaTemoresPaciente()" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-semibold py-2.5 rounded-xl text-sm transition flex items-center justify-center gap-2 shadow-sm">
+                            <span>Ingresar a Jerarquía de Temores</span>
                             <i class="fa-solid fa-arrow-right"></i>
                         </button>
                     </div>
@@ -1457,6 +1603,104 @@
             </div>
         </section>
 
+        <!-- VISTA 11: PACIENTE JERARQUÍA DE TEMORES (TERAPIA DE EXPOSICIÓN) -->
+        <section id="secPacienteFormJerarquiaTemores" class="hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-200 pb-4">
+                    <div>
+                        <button onclick="volverDashboardPaciente()" class="text-xs text-amber-700 font-bold hover:underline mb-1 inline-flex items-center gap-1 no-print">
+                            <i class="fa-solid fa-arrow-left"></i> Volver a mis Tareas
+                        </button>
+                        <h1 class="text-2xl font-bold text-slate-900">Jerarquía de Temores — Escala USA</h1>
+                        <p class="text-xs text-slate-500 mt-1">Escribe cada categoría o situación que te genera temor o ansiedad y asígnale un valor numérico de <strong>0 a 100</strong> en la escala USA. Tus registros se organizarán automáticamente de <strong>menor a mayor</strong> ansiedad.</p>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2 no-print shrink-0">
+                        <button onclick="exportarPDFTarea('diligenciado')" class="text-xs bg-amber-600 hover:bg-amber-700 text-white px-3 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shadow-sm">
+                            <i class="fa-solid fa-file-pdf"></i> Descargar (Diligenciado)
+                        </button>
+                        <button onclick="exportarPDFTarea('limpio')" class="text-xs bg-slate-200 hover:bg-slate-300 text-slate-800 px-3 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shadow-sm">
+                            <i class="fa-solid fa-print"></i> Descargar (Plantilla en Limpio)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- GUÍA RÁPIDA ESCALA USA -->
+                <div class="flex flex-wrap items-center gap-2 bg-amber-50/60 border border-amber-200 p-3 rounded-xl text-[11px]">
+                    <span class="font-bold text-amber-900 uppercase mr-1"><i class="fa-solid fa-gauge-high mr-1"></i>Guía Escala USA (0–100):</span>
+                    <span class="bg-white border border-slate-300 text-slate-700 px-2 py-0.5 rounded-full font-semibold">0: Sin ansiedad</span>
+                    <span class="bg-emerald-50 border border-emerald-300 text-emerald-800 px-2 py-0.5 rounded-full font-semibold">1–25: Leve</span>
+                    <span class="bg-amber-100 border border-amber-300 text-amber-900 px-2 py-0.5 rounded-full font-semibold">26–50: Moderada</span>
+                    <span class="bg-orange-100 border border-orange-300 text-orange-900 px-2 py-0.5 rounded-full font-semibold">51–75: Alta</span>
+                    <span class="bg-rose-100 border border-rose-300 text-rose-900 px-2 py-0.5 rounded-full font-semibold">76–100: Muy alta</span>
+                </div>
+
+                <!-- FORMULARIO PACIENTE LADO A LADO -->
+                <form onsubmit="agregarJerarquiaTemores(event, 'Paciente')" class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-col md:flex-row items-end gap-3 no-print">
+                    <div class="flex-1 w-full">
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Categoría / Situación Temida</label>
+                        <input type="text" id="jtPacienteCategoria" required placeholder="Describe la situación, lugar o estímulo que te genera temor..." class="w-full px-3.5 py-2 bg-white text-slate-900 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                    </div>
+                    <div class="w-full md:w-52 shrink-0">
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="block text-xs font-bold text-slate-700 uppercase">Escala USA (0–100)</label>
+                            <span id="jtPacientePreview" class="text-[10px] font-bold px-2 py-0.5 rounded-full border bg-slate-100 text-slate-600 border-slate-300">--</span>
+                        </div>
+                        <input type="number" min="0" max="100" id="jtPacienteUsa" required placeholder="0 - 100" oninput="actualizarPreviewUsa('jtPacienteUsa', 'jtPacientePreview')" class="w-full px-3 py-2 bg-white text-slate-900 border border-slate-300 rounded-xl text-xs font-extrabold text-center focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                    </div>
+                    <button type="submit" class="w-full md:w-auto bg-amber-600 hover:bg-amber-700 text-white font-semibold px-4 py-2 rounded-xl text-xs shrink-0 shadow-sm transition flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-plus"></i> Agregar a Jerarquía
+                    </button>
+                </form>
+            </div>
+
+            <!-- LISTA ORDENADA DE MENOR A MAYOR -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                        <span class="text-[10px] text-slate-500 font-bold uppercase block">Total Situaciones</span>
+                        <span class="text-xl font-extrabold text-slate-900" id="jtPacienteStatsTotal">0</span>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                        <span class="text-[10px] text-slate-500 font-bold uppercase block">Promedio USA</span>
+                        <span class="text-xl font-extrabold text-amber-600" id="jtPacienteStatsProm">0</span>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                        <span class="text-[10px] text-slate-500 font-bold uppercase block">Mínimo USA</span>
+                        <span class="text-xl font-extrabold text-emerald-700" id="jtPacienteStatsMin">--</span>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                        <span class="text-[10px] text-slate-500 font-bold uppercase block">Máximo USA</span>
+                        <span class="text-xl font-extrabold text-rose-700" id="jtPacienteStatsMax">--</span>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto border border-slate-200 rounded-xl">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead class="bg-slate-100 text-slate-700 uppercase font-bold border-b border-slate-200">
+                            <tr>
+                                <th class="p-3 w-24 text-center">Orden</th>
+                                <th class="p-3">Categoría / Situación Temida</th>
+                                <th class="p-3 w-48 text-center">Escala USA (0–100)</th>
+                                <th class="p-3 w-44">Registrado / Editado</th>
+                                <th class="p-3 w-20 text-center no-print">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaJerarquiaTemoresPacienteBody" class="divide-y divide-slate-200 text-slate-800 datos-diligenciados"></tbody>
+                        <tbody class="plantilla-limpia divide-y divide-slate-300">
+                            <tr class="h-9"><td class="border p-2 text-center font-bold">#1 (Menor)</td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td></tr>
+                            <tr class="h-9"><td class="border p-2 text-center font-bold">#2</td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td></tr>
+                            <tr class="h-9"><td class="border p-2 text-center font-bold">#3</td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td></tr>
+                            <tr class="h-9"><td class="border p-2 text-center font-bold">#4</td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td></tr>
+                            <tr class="h-9"><td class="border p-2 text-center font-bold">#5</td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td></tr>
+                            <tr class="h-9"><td class="border p-2 text-center font-bold">#6</td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td></tr>
+                            <tr class="h-9"><td class="border p-2 text-center font-bold">#7</td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td></tr>
+                            <tr class="h-9"><td class="border p-2 text-center font-bold">#8 (Mayor)</td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
     </main>
     </div>
 
@@ -1546,6 +1790,17 @@
             { id: 'nuevas_actividades', nombre: '3. Nuevas Actividades a Empezar', desc: 'Nuevos comienzos o pasatiempos que te gustaría iniciar.', preguntas: ["¿Qué cosas te gustaría empezar a hacer de nuevo?"] },
             { id: 'evitando_realizar', nombre: '4. Actividades Evitadas por Malestar', desc: 'Cosas que evitas o postergas.', preguntas: ["¿Con qué frecuencia te notas evitando actividades?"] },
             { id: 'metas_largo_plazo', nombre: '5. Metas a Largo Plazo y Valores', desc: 'Actividades conectadas con tus valores trascendentes.', preguntas: ["¿Qué metas a largo plazo son importantes para ti?"] }
+        ];
+
+        const TODOS_MODULOS_DEFAULT = [
+            'monitoreo',
+            'identificacion_actividades',
+            'jerarquia_actividades',
+            'programacion_actividades',
+            'notas_paciente',
+            'registro_pensamientos',
+            'dialogo_mente',
+            'jerarquia_temores'
         ];
 
         let pacienteActualId = null;
@@ -1768,7 +2023,7 @@
                 fechaInicio: fechaStr,
                 updatedAt: new Date().toISOString(),
                 notasClinicas: "",
-                modulosAsignados: ['monitoreo', 'identificacion_actividades', 'jerarquia_actividades', 'programacion_actividades', 'notas_paciente', 'registro_pensamientos', 'dialogo_mente'],
+                modulosAsignados: [...TODOS_MODULOS_DEFAULT],
                 jerarquiaBloqueada: false,
                 jerarquiaActividades: [],
                 identificacionBloqueada: false,
@@ -1777,6 +2032,7 @@
                 notasPaciente: [],
                 registroPensamientos: [],
                 dialogoMente: [],
+                jerarquiaTemores: [],
                 semanas: { [fechaStr]: crearSemanaVacia() }
             };
 
@@ -1827,7 +2083,7 @@
             document.getElementById('detIdPaciente').innerText = p.id;
             document.getElementById('detNotasClinicas').value = p.notasClinicas || "";
 
-            const mods = p.modulosAsignados || ['monitoreo', 'identificacion_actividades', 'jerarquia_actividades', 'programacion_actividades', 'notas_paciente', 'registro_pensamientos', 'dialogo_mente'];
+            const mods = p.modulosAsignados || [...TODOS_MODULOS_DEFAULT];
             if (document.getElementById('chkModMonitoreo')) document.getElementById('chkModMonitoreo').checked = mods.includes('monitoreo');
             if (document.getElementById('chkModJerarquia')) document.getElementById('chkModJerarquia').checked = mods.includes('jerarquia_actividades');
             if (document.getElementById('chkModIdentificacion')) document.getElementById('chkModIdentificacion').checked = mods.includes('identificacion_actividades');
@@ -1835,6 +2091,7 @@
             if (document.getElementById('chkModNotas')) document.getElementById('chkModNotas').checked = mods.includes('notas_paciente');
             if (document.getElementById('chkModRegistroPensamientos')) document.getElementById('chkModRegistroPensamientos').checked = mods.includes('registro_pensamientos');
             if (document.getElementById('chkModDialogoMente')) document.getElementById('chkModDialogoMente').checked = mods.includes('dialogo_mente');
+            if (document.getElementById('chkModJerarquiaTemores')) document.getElementById('chkModJerarquiaTemores').checked = mods.includes('jerarquia_temores');
 
             const selectSem = document.getElementById('selectSemanaTerapeuta');
             selectSem.innerHTML = '';
@@ -1877,6 +2134,8 @@
                 renderRegistroPensamientosTerapeuta(p);
             } else if (tareaSeleccionada === 'dialogo_mente') {
                 renderDialogoMenteTerapeuta(p);
+            } else if (tareaSeleccionada === 'jerarquia_temores') {
+                renderJerarquiaTemoresTerapeuta(p);
             }
         }
 
@@ -1886,6 +2145,8 @@
                 tareaSeleccionada = 'monitoreo';
             } else if (idTerapia === 'defusion_cognitiva') {
                 tareaSeleccionada = 'registro_pensamientos';
+            } else if (idTerapia === 'terapia_exposicion') {
+                tareaSeleccionada = 'jerarquia_temores';
             } else {
                 tareaSeleccionada = null;
             }
@@ -1902,25 +2163,36 @@
             const iconAC = document.getElementById('iconCheckAC');
             const cardDC = document.getElementById('cardTerapiaDC');
             const iconDC = document.getElementById('iconCheckDC');
+            const cardEX = document.getElementById('cardTerapiaEX');
+            const iconEX = document.getElementById('iconCheckEX');
 
             const grupoAC = document.getElementById('grupoTareasAC');
             const grupoDC = document.getElementById('grupoTareasDC');
+            const grupoEX = document.getElementById('grupoTareasEX');
 
             cardAC.className = "cursor-pointer p-3.5 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-slate-200 hover:border-cyan-400";
             iconAC.className = "fa-regular fa-circle text-slate-300 text-lg";
             cardDC.className = "cursor-pointer p-3.5 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-slate-200 hover:border-purple-400";
             iconDC.className = "fa-regular fa-circle text-slate-300 text-lg";
+            cardEX.className = "cursor-pointer p-3.5 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-slate-200 hover:border-amber-400";
+            iconEX.className = "fa-regular fa-circle text-slate-300 text-lg";
+
+            grupoAC.classList.add('hidden');
+            grupoDC.classList.add('hidden');
+            grupoEX.classList.add('hidden');
 
             if (terapiaSeleccionada === 'activacion_conductual') {
                 cardAC.className = "cursor-pointer p-3.5 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-cyan-600 ring-2 ring-cyan-600/30";
                 iconAC.className = "fa-solid fa-circle-check text-cyan-600 text-lg";
                 grupoAC.classList.remove('hidden');
-                grupoDC.classList.add('hidden');
             } else if (terapiaSeleccionada === 'defusion_cognitiva') {
                 cardDC.className = "cursor-pointer p-3.5 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-purple-600 ring-2 ring-purple-600/30";
                 iconDC.className = "fa-solid fa-circle-check text-purple-600 text-lg";
-                grupoAC.classList.add('hidden');
                 grupoDC.classList.remove('hidden');
+            } else if (terapiaSeleccionada === 'terapia_exposicion') {
+                cardEX.className = "cursor-pointer p-3.5 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-amber-600 ring-2 ring-amber-600/30";
+                iconEX.className = "fa-solid fa-circle-check text-amber-600 text-lg";
+                grupoEX.classList.remove('hidden');
             }
 
             const secMon = document.getElementById('secDesgloseTarea');
@@ -1930,10 +2202,11 @@
             const secNot = document.getElementById('secDesgloseNotas');
             const secRP = document.getElementById('secDesgloseRegistroPensamientos');
             const secDM = document.getElementById('secDesgloseDialogoMente');
+            const secJT = document.getElementById('secDesgloseJerarquiaTemores');
             const msgVacio = document.getElementById('mensajeSinTareaSeleccionada');
             const ctrlSemanas = document.getElementById('containerControlBloqueSemanal');
 
-            [secMon, secJer, secIde, secPrg, secNot, secRP, secDM].forEach(s => s?.classList.add('hidden'));
+            [secMon, secJer, secIde, secPrg, secNot, secRP, secDM, secJT].forEach(s => s?.classList.add('hidden'));
             ctrlSemanas.classList.add('hidden');
 
             if (tareaSeleccionada === 'monitoreo') {
@@ -1958,6 +2231,9 @@
             } else if (tareaSeleccionada === 'dialogo_mente') {
                 secDM.classList.remove('hidden');
                 msgVacio.classList.add('hidden');
+            } else if (tareaSeleccionada === 'jerarquia_temores') {
+                secJT.classList.remove('hidden');
+                msgVacio.classList.add('hidden');
             } else {
                 msgVacio.classList.remove('hidden');
             }
@@ -1977,6 +2253,235 @@
                     document.body.classList.remove('print-modo-limpio');
                 }, 500);
             }, 100);
+        }
+
+        // ============================================================
+        // LÓGICA TERAPIA DE EXPOSICIÓN: JERARQUÍA DE TEMORES (ESCALA USA)
+        // ============================================================
+        function obtenerInfoUsa(valor) {
+            const v = parseInt(valor, 10);
+            if (isNaN(v)) {
+                return { label: '--', badgeClass: 'bg-slate-100 text-slate-600 border-slate-300', barClass: 'bg-slate-400' };
+            }
+            if (v === 0) {
+                return { label: 'Sin ansiedad', badgeClass: 'bg-slate-100 text-slate-700 border-slate-300', barClass: 'bg-slate-400' };
+            }
+            if (v <= 25) {
+                return { label: 'Leve', badgeClass: 'bg-emerald-50 text-emerald-800 border-emerald-300', barClass: 'bg-emerald-500' };
+            }
+            if (v <= 50) {
+                return { label: 'Moderada', badgeClass: 'bg-amber-50 text-amber-800 border-amber-300', barClass: 'bg-amber-500' };
+            }
+            if (v <= 75) {
+                return { label: 'Alta', badgeClass: 'bg-orange-50 text-orange-800 border-orange-300', barClass: 'bg-orange-500' };
+            }
+            return { label: 'Muy alta', badgeClass: 'bg-rose-50 text-rose-800 border-rose-300', barClass: 'bg-rose-600' };
+        }
+
+        function actualizarPreviewUsa(inputId, badgeId) {
+            const inputEl = document.getElementById(inputId);
+            const badgeEl = document.getElementById(badgeId);
+            if (!inputEl || !badgeEl) return;
+            const raw = inputEl.value.trim();
+            if (raw === '') {
+                badgeEl.innerText = '--';
+                badgeEl.className = 'text-[10px] font-bold px-2 py-0.5 rounded-full border bg-slate-100 text-slate-600 border-slate-300';
+                return;
+            }
+            const num = Math.max(0, Math.min(100, parseInt(raw, 10) || 0));
+            const info = obtenerInfoUsa(num);
+            badgeEl.innerText = `${num} · ${info.label}`;
+            badgeEl.className = `text-[10px] font-bold px-2 py-0.5 rounded-full border ${info.badgeClass}`;
+        }
+
+        function obtenerJerarquiaTemoresOrdenada(p) {
+            const lista = [...(p.jerarquiaTemores || [])];
+            // Ordenamiento estricto de menor a mayor según puntuación USA
+            lista.sort((a, b) => {
+                const diff = parseFloat(a.usa) - parseFloat(b.usa);
+                if (diff !== 0) return diff;
+                return (a.timestamp || '').localeCompare(b.timestamp || '');
+            });
+            return lista;
+        }
+
+        function agregarJerarquiaTemores(e, rol) {
+            e.preventDefault();
+            const isTerapeuta = (rol === 'Terapeuta');
+            const inputCat = document.getElementById(isTerapeuta ? 'jtTerapeutaCategoria' : 'jtPacienteCategoria');
+            const inputUsa = document.getElementById(isTerapeuta ? 'jtTerapeutaUsa' : 'jtPacienteUsa');
+            const previewEl = document.getElementById(isTerapeuta ? 'jtTerapeutaPreview' : 'jtPacientePreview');
+
+            const categoria = (inputCat.value || '').trim();
+            const usaVal = parseInt(inputUsa.value, 10);
+
+            if (!categoria || isNaN(usaVal) || usaVal < 0 || usaVal > 100) {
+                alert("Por favor escribe la categoría/situación y asigna un valor USA válido entre 0 y 100.");
+                return;
+            }
+
+            if (!pacienteData.jerarquiaTemores) pacienteData.jerarquiaTemores = [];
+
+            const now = new Date();
+            const fechaFormateada = `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+
+            pacienteData.jerarquiaTemores.push({
+                id: 'jt_' + Math.random().toString(36).substr(2, 9),
+                categoria: categoria,
+                usa: usaVal,
+                autor: rol,
+                fecha: fechaFormateada,
+                timestamp: now.toISOString()
+            });
+
+            inputCat.value = '';
+            inputUsa.value = '';
+            if (previewEl) {
+                previewEl.innerText = '--';
+                previewEl.className = 'text-[10px] font-bold px-2 py-0.5 rounded-full border bg-slate-100 text-slate-600 border-slate-300';
+            }
+
+            if (!isTerapeuta) modoPacienteGuardando = true;
+            sincronizarGarantizado();
+
+            if (isTerapeuta) renderJerarquiaTemoresTerapeuta(pacienteData);
+            else renderJerarquiaTemoresPaciente();
+        }
+
+        function editarItemJerarquiaTemores(id, campo, valor, rol) {
+            if (!pacienteData || !pacienteData.jerarquiaTemores) return;
+            const item = pacienteData.jerarquiaTemores.find(x => x.id === id);
+            if (!item) return;
+
+            const now = new Date();
+            const fechaFormateada = `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+
+            if (campo === 'categoria') {
+                const limpio = (valor || '').trim();
+                if (!limpio) {
+                    if (rol === 'Terapeuta') renderJerarquiaTemoresTerapeuta(pacienteData);
+                    else renderJerarquiaTemoresPaciente();
+                    return;
+                }
+                item.categoria = limpio;
+                item.autor = rol;
+                item.fecha = fechaFormateada;
+            } else if (campo === 'usa') {
+                let num = parseInt(valor, 10);
+                if (isNaN(num)) {
+                    if (rol === 'Terapeuta') renderJerarquiaTemoresTerapeuta(pacienteData);
+                    else renderJerarquiaTemoresPaciente();
+                    return;
+                }
+                num = Math.max(0, Math.min(100, num));
+                item.usa = num;
+                item.autor = rol;
+                item.fecha = fechaFormateada;
+            }
+
+            if (rol === 'Paciente') modoPacienteGuardando = true;
+            sincronizarGarantizado();
+
+            if (rol === 'Terapeuta') renderJerarquiaTemoresTerapeuta(pacienteData);
+            else renderJerarquiaTemoresPaciente();
+        }
+
+        function eliminarItemJerarquiaTemores(id, rol) {
+            if (!confirm("¿Eliminar esta categoría de la jerarquía de temores?")) return;
+            pacienteData.jerarquiaTemores = (pacienteData.jerarquiaTemores || []).filter(x => x.id !== id);
+            if (rol === 'Paciente') modoPacienteGuardando = true;
+            sincronizarGarantizado();
+
+            if (rol === 'Terapeuta') renderJerarquiaTemoresTerapeuta(pacienteData);
+            else renderJerarquiaTemoresPaciente();
+        }
+
+        function actualizarEstadisticasJerarquiaTemores(itemsOrdenados, prefix) {
+            const totalEl = document.getElementById(prefix + 'StatsTotal');
+            const promEl = document.getElementById(prefix + 'StatsProm');
+            const minEl = document.getElementById(prefix + 'StatsMin');
+            const maxEl = document.getElementById(prefix + 'StatsMax');
+
+            if (!totalEl) return;
+            const n = itemsOrdenados.length;
+            totalEl.innerText = n;
+
+            if (n === 0) {
+                promEl.innerText = '0';
+                minEl.innerText = '--';
+                maxEl.innerText = '--';
+                return;
+            }
+
+            const suma = itemsOrdenados.reduce((acc, x) => acc + (parseFloat(x.usa) || 0), 0);
+            promEl.innerText = (suma / n).toFixed(1);
+            minEl.innerText = `${itemsOrdenados[0].usa}`;
+            maxEl.innerText = `${itemsOrdenados[n - 1].usa}`;
+        }
+
+        function renderTablaJerarquiaTemores(itemsOrdenados, tbodyId, rolVista) {
+            const tbody = document.getElementById(tbodyId);
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            if (itemsOrdenados.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-400">Aún no se han registrado categorías o situaciones temidas.</td></tr>`;
+                return;
+            }
+
+            itemsOrdenados.forEach((item, index) => {
+                const info = obtenerInfoUsa(item.usa);
+                const esTerapeuta = (item.autor === 'Terapeuta');
+                const autorBadge = esTerapeuta
+                    ? `<span class="inline-flex items-center gap-1 text-[10px] font-bold bg-cyan-50 text-cyan-800 border border-cyan-200 px-2 py-0.5 rounded-full"><i class="fa-solid fa-user-doctor"></i> Terapeuta</span>`
+                    : `<span class="inline-flex items-center gap-1 text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200 px-2 py-0.5 rounded-full"><i class="fa-solid fa-user"></i> Paciente</span>`;
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition";
+                tr.innerHTML = `
+                    <td class="p-3 text-center">
+                        <span class="font-black text-amber-900 bg-amber-100 border border-amber-300 px-2.5 py-1 rounded-lg text-xs">#${index + 1}</span>
+                    </td>
+                    <td class="p-3">
+                        <input type="text" value="${escapeHtml(item.categoria)}" onchange="editarItemJerarquiaTemores('${item.id}', 'categoria', this.value, '${rolVista}')" class="w-full px-2.5 py-1.5 bg-transparent hover:bg-white focus:bg-white border border-transparent hover:border-slate-300 focus:border-amber-500 rounded-lg font-bold text-slate-900 text-xs focus:outline-none transition">
+                    </td>
+                    <td class="p-3">
+                        <div class="flex flex-col items-center gap-1.5">
+                            <div class="flex items-center justify-center gap-2">
+                                <input type="number" min="0" max="100" value="${item.usa}" onchange="editarItemJerarquiaTemores('${item.id}', 'usa', this.value, '${rolVista}')" class="w-16 text-center py-1 bg-white border border-slate-300 focus:border-amber-500 rounded-lg font-extrabold text-slate-900 text-xs focus:outline-none">
+                                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${info.badgeClass}">${info.label}</span>
+                            </div>
+                            <div class="w-full max-w-[140px] h-1.5 bg-slate-200 rounded-full overflow-hidden no-print">
+                                <div class="h-full ${info.barClass} transition-all duration-300" style="width: ${Math.max(0, Math.min(100, item.usa))}%"></div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="p-3">
+                        <div class="flex flex-col gap-1">
+                            <div>${autorBadge}</div>
+                            <span class="text-[10px] text-slate-500">${item.fecha || '--'}</span>
+                        </div>
+                    </td>
+                    <td class="p-3 text-center no-print">
+                        <button onclick="eliminarItemJerarquiaTemores('${item.id}', '${rolVista}')" title="Eliminar ítem" class="text-xs bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 px-2.5 py-1 rounded-lg transition font-bold">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderJerarquiaTemoresTerapeuta(p) {
+            const ordenados = obtenerJerarquiaTemoresOrdenada(p);
+            actualizarEstadisticasJerarquiaTemores(ordenados, 'jtTerapeuta');
+            renderTablaJerarquiaTemores(ordenados, 'tablaJerarquiaTemoresTerapeutaBody', 'Terapeuta');
+        }
+
+        function renderJerarquiaTemoresPaciente() {
+            const ordenados = obtenerJerarquiaTemoresOrdenada(pacienteData);
+            actualizarEstadisticasJerarquiaTemores(ordenados, 'jtPaciente');
+            renderTablaJerarquiaTemores(ordenados, 'tablaJerarquiaTemoresPacienteBody', 'Paciente');
         }
 
         // RENDERING REGISTRO DE PENSAMIENTOS TERAPEUTA
@@ -2429,7 +2934,7 @@
         }
 
         async function toggleModuloAsignado(modKey) {
-            if (!pacienteData.modulosAsignados) pacienteData.modulosAsignados = ['monitoreo', 'identificacion_actividades', 'jerarquia_actividades', 'programacion_actividades', 'notas_paciente', 'registro_pensamientos', 'dialogo_mente'];
+            if (!pacienteData.modulosAsignados) pacienteData.modulosAsignados = [...TODOS_MODULOS_DEFAULT];
             const idx = pacienteData.modulosAsignados.indexOf(modKey);
             if (idx === -1) pacienteData.modulosAsignados.push(modKey);
             else pacienteData.modulosAsignados.splice(idx, 1);
@@ -2534,53 +3039,96 @@
                 });
             });
 
-            document.getElementById('statMediaGlobal').innerText = `D: ${cD > 0 ? (sumTotalD / cD).toFixed(1) : "0.0"} | I: ${cI > 0 ? (sumTotalI / cI).toFixed(1) : "0.0"}`;
-            const ctxH = document.getElementById('chartHistogramaMensual').getContext('2d');
+            document.getElementById('statMediaGlobal').innerText = `D: ${cD > 0 ? (sumTotalD / cD).toFixed(1) : '0.0'} | I: ${cI > 0 ? (sumTotalI / cI).toFixed(1) : '0.0'}`;
+            const ctxHist = document.getElementById('chartHistogramaMensual').getContext('2d');
             if (chartHistogramaInstance) chartHistogramaInstance.destroy();
-            chartHistogramaInstance = new Chart(ctxH, {
+            chartHistogramaInstance = new Chart(ctxHist, {
                 type: 'bar',
                 data: {
                     labels: Object.keys(histogramaCounts),
-                    datasets: [{ label: 'Días', data: Object.values(histogramaCounts), backgroundColor: '#0284c7', borderRadius: 6 }]
+                    datasets: [{ label: 'Frecuencia de Días por Rango de Ánimo', data: Object.values(histogramaCounts), backgroundColor: ['#ef4444', '#f97316', '#eab308', '#22c55e', '#0284c7'], borderRadius: 6 }]
                 },
-                options: { responsive: true, maintainAspectRatio: false }
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
             });
         }
 
         function renderGraficoHistoricoTotal(p) {
-            const ctx = document.getElementById('chartEvolucionHistorica').getContext('2d');
-            const semanasKeys = obtenerSemanasOrdenadas(p);
+            const semKeys = obtenerSemanasOrdenadas(p);
             const labels = [], histD = [], histI = [], histAnimo = [];
 
-            semanasKeys.forEach((sk, idx) => {
-                const sData = p.semanas[sk] || {};
-                labels.push(`Sem ${idx + 1}`);
-                let totalD = 0, cD = 0, totalI = 0, cI = 0, totalAnimo = 0;
-                (sData.dias || []).forEach(d => {
-                    if (d.animo !== undefined) totalAnimo += d.animo;
-                    Object.values(d.horas || {}).forEach(h => {
-                        if (h.d !== '') { totalD += parseFloat(h.d); cD++; }
-                        if (h.i !== '') { totalI += parseFloat(h.i); cI++; }
+            semKeys.forEach((sk, i) => {
+                labels.push(`Sem ${i + 1}`);
+                const sem = p.semanas[sk];
+                let sD = 0, cD = 0, sI = 0, cI = 0, sA = 0;
+                (sem.dias || []).forEach(dia => {
+                    sA += (dia.animo !== undefined ? dia.animo : 5);
+                    Object.values(dia.horas || {}).forEach(h => {
+                        if (h.d !== '') { sD += parseFloat(h.d); cD++; }
+                        if (h.i !== '') { sI += parseFloat(h.i); cI++; }
                     });
                 });
-                histD.push(cD > 0 ? (totalD / cD).toFixed(1) : 0);
-                histI.push(cI > 0 ? (totalI / cI).toFixed(1) : 0);
-                histAnimo.push((totalAnimo / 7).toFixed(1));
+                histD.push(cD > 0 ? (sD / cD).toFixed(1) : null);
+                histI.push(cI > 0 ? (sI / cI).toFixed(1) : null);
+                histAnimo.push((sA / 7).toFixed(1));
             });
 
+            const ctxHistTotal = document.getElementById('chartEvolucionHistorica').getContext('2d');
             if (chartHistoricoInstance) chartHistoricoInstance.destroy();
-            chartHistoricoInstance = new Chart(ctx, {
-                type: 'bar',
+            chartHistoricoInstance = new Chart(ctxHistTotal, {
+                type: 'line',
                 data: {
                     labels: labels,
                     datasets: [
-                        { label: 'Disfrute', data: histD, backgroundColor: '#0284c7' },
-                        { label: 'Importancia', data: histI, backgroundColor: '#059669' },
-                        { label: 'Ánimo', data: histAnimo, backgroundColor: '#d97706' }
+                        { label: 'Disfrute Medio', data: histD, borderColor: '#0284c7', tension: 0.3, fill: false },
+                        { label: 'Importancia Media', data: histI, borderColor: '#059669', tension: 0.3, fill: false },
+                        { label: 'Ánimo General', data: histAnimo, borderColor: '#d97706', borderDash: [5, 5], tension: 0.2, fill: false }
                     ]
                 },
                 options: { responsive: true, maintainAspectRatio: false, scales: { y: { min: 0, max: 10 } } }
             });
+        }
+
+        function exportarBackupJSON() {
+            const dataStr = JSON.stringify(pacientesCache, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `respaldo_clinico_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function importarBackupJSON(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (!Array.isArray(data)) throw new Error("Formato inválido");
+                    if (firebaseActivo) {
+                        for (let p of data) if (p.id) await db.collection('pacientes').doc(p.id).set(p);
+                    } else {
+                        localStorage.setItem('demo_pacientes', JSON.stringify(data));
+                    }
+                    alert(`Restauración completada (${data.length} pacientes).`);
+                    cargarDashboardTerapeuta({ email: auth ? auth.currentUser.email : 'psicologoorodriguez@gmail.com' });
+                } catch (err) { alert("Error al restaurar: " + err.message); }
+            };
+            reader.readAsText(file);
+        }
+
+        async function liberarEspacioPaciente() {
+            if (!confirm(`¿Eliminar definitivamente el expediente de ${pacienteData.nombre}?`)) return;
+            if (firebaseActivo) await db.collection('pacientes').doc(pacienteActualId).delete();
+            else {
+                let local = JSON.parse(localStorage.getItem('demo_pacientes') || '[]');
+                local = local.filter(item => item.id !== pacienteActualId);
+                localStorage.setItem('demo_pacientes', JSON.stringify(local));
+            }
+            volverListaPacientes();
+            cargarDashboardTerapeuta({ email: auth ? auth.currentUser.email : 'psicologoorodriguez@gmail.com' });
         }
 
         async function guardarNotasClinicas() {
@@ -2588,55 +3136,30 @@
             sincronizarGarantizado();
         }
 
-        async function liberarEspacioPaciente() {
-            if (!confirm(`¿Eliminar a ${pacienteData.nombre}?`)) return;
-            if (unsubscribeRealtime) unsubscribeRealtime();
-
-            if (firebaseActivo) {
-                await db.collection('pacientes').doc(pacienteActualId).delete();
-            } else {
-                let local = JSON.parse(localStorage.getItem('demo_pacientes') || '[]');
-                local = local.filter(p => p.id !== pacienteActualId);
-                localStorage.setItem('demo_pacientes', JSON.stringify(local));
-            }
-            volverListaPacientes();
-            cargarDashboardTerapeuta({ email: auth ? auth.currentUser.email : 'psicologoorodriguez@gmail.com' });
-        }
-
+        // MODO PACIENTE
         function iniciarModoPaciente(pId) {
-            actualizarStatusSync("En línea", "bg-cyan-600");
+            document.getElementById('btnTerapeutaLogin').classList.add('hidden');
             document.getElementById('syncBadge').classList.remove('hidden');
 
             if (firebaseActivo) {
-                if (unsubscribeRealtime) unsubscribeRealtime();
-                unsubscribeRealtime = db.collection('pacientes').doc(pId).onSnapshot(doc => {
+                db.collection('pacientes').doc(pId).onSnapshot(doc => {
                     if (doc.exists) {
                         pacienteData = doc.data();
-                        localStorage.setItem('backup_' + pId, JSON.stringify(pacienteData));
-                        
-                        if (!modoPacienteGuardando && !document.getElementById('secPacienteFormMonitoreo').classList.contains('hidden')) {
-                            poblarSelectoresSemanaPaciente();
-                            actualizarEstadoFormularioPaciente();
-                        } else if (!modoPacienteGuardando && !document.getElementById('secPacienteFormJerarquia').classList.contains('hidden')) {
-                            renderJerarquiaPaciente();
-                        } else if (!modoPacienteGuardando && !document.getElementById('secPacienteFormIdentificacion').classList.contains('hidden')) {
-                            renderIdentificacionPaciente();
-                        } else if (!modoPacienteGuardando && !document.getElementById('secPacienteFormProgramacion').classList.contains('hidden')) {
-                            renderProgramacionPaciente();
-                        } else if (!modoPacienteGuardando && !document.getElementById('secPacienteFormNotas').classList.contains('hidden')) {
-                            renderNotasPaciente();
-                        } else if (!modoPacienteGuardando && !document.getElementById('secPacienteFormRegistroPensamientos').classList.contains('hidden')) {
-                            renderRegistroPensamientosPaciente();
-                        } else if (!modoPacienteGuardando && !document.getElementById('secPacienteFormDialogoMente').classList.contains('hidden')) {
-                            renderDialogoMentePaciente();
-                        } else if (!modoPacienteGuardando) {
-                            mostrarDashboardPaciente();
-                        }
-                    }
+                        if (!pacienteData.semanas) pacienteData.semanas = { [obtenerLunes(pacienteData.fechaInicio || '2026-10-26')]: crearSemanaVacia() };
+                        if (!document.getElementById('secPacienteDashboard').classList.contains('hidden')) mostrarDashboardPaciente();
+                        else if (!modoPacienteGuardando && !document.getElementById('secPacienteFormMonitoreo').classList.contains('hidden')) renderFormularioPaciente();
+                        else if (!modoPacienteGuardando && !document.getElementById('secPacienteFormJerarquia').classList.contains('hidden')) renderJerarquiaPaciente();
+                        else if (!modoPacienteGuardando && !document.getElementById('secPacienteFormIdentificacion').classList.contains('hidden')) renderIdentificacionPaciente();
+                        else if (!modoPacienteGuardando && !document.getElementById('secPacienteFormProgramacion').classList.contains('hidden')) renderProgramacionPaciente();
+                        else if (!modoPacienteGuardando && !document.getElementById('secPacienteFormNotas').classList.contains('hidden')) renderNotasPaciente();
+                        else if (!modoPacienteGuardando && !document.getElementById('secPacienteFormRegistroPensamientos').classList.contains('hidden')) renderRegistroPensamientosPaciente();
+                        else if (!modoPacienteGuardando && !document.getElementById('secPacienteFormDialogoMente').classList.contains('hidden')) renderDialogoMentePaciente();
+                        else if (!modoPacienteGuardando && !document.getElementById('secPacienteFormJerarquiaTemores').classList.contains('hidden')) renderJerarquiaTemoresPaciente();
+                    } else alert("Expediente no encontrado.");
                 });
             } else {
                 let local = JSON.parse(localStorage.getItem('demo_pacientes') || '[]');
-                pacienteData = local.find(p => p.id === pId) || getPacientesEjemplo()[0];
+                pacienteData = local.find(item => item.id === pId) || getPacientesEjemplo()[0];
                 mostrarDashboardPaciente();
             }
         }
@@ -2644,61 +3167,132 @@
         function mostrarDashboardPaciente() {
             ocultarTodasLasSecciones();
             document.getElementById('secPacienteDashboard').classList.remove('hidden');
-            document.getElementById('pacienteBienvenidaNombre').innerText = `¡Hola, ${pacienteData.nombre}! 👋`;
-            poblarSelectoresSemanaPaciente();
+            document.getElementById('pacienteBienvenidaNombre').innerText = `¡Hola, ${pacienteData.nombre || 'Paciente'}! 👋`;
 
-            const mods = pacienteData.modulosAsignados || ['monitoreo', 'identificacion_actividades', 'jerarquia_actividades', 'programacion_actividades', 'notas_paciente', 'registro_pensamientos', 'dialogo_mente'];
+            const mods = pacienteData.modulosAsignados || [...TODOS_MODULOS_DEFAULT];
             document.getElementById('cardModMonitoreo').style.display = mods.includes('monitoreo') ? 'flex' : 'none';
-            document.getElementById('cardModJerarquia').style.display = mods.includes('jerarquia_actividades') ? 'flex' : 'none';
             document.getElementById('cardModIdentificacion').style.display = mods.includes('identificacion_actividades') ? 'flex' : 'none';
+            document.getElementById('cardModJerarquia').style.display = mods.includes('jerarquia_actividades') ? 'flex' : 'none';
             document.getElementById('cardModProgramacion').style.display = mods.includes('programacion_actividades') ? 'flex' : 'none';
             document.getElementById('cardModNotas').style.display = mods.includes('notas_paciente') ? 'flex' : 'none';
             document.getElementById('cardModRegistroPensamientos').style.display = mods.includes('registro_pensamientos') ? 'flex' : 'none';
             document.getElementById('cardModDialogoMente').style.display = mods.includes('dialogo_mente') ? 'flex' : 'none';
+            document.getElementById('cardModJerarquiaTemores').style.display = mods.includes('jerarquia_temores') ? 'flex' : 'none';
         }
 
-        function poblarSelectoresSemanaPaciente() {
-            const semKeys = obtenerSemanasOrdenadas(pacienteData);
-            if (semKeys.length === 0) {
-                const fIni = obtenerLunes(pacienteData.fechaInicio || '2026-10-26');
-                pacienteData.semanas = { [fIni]: crearSemanaVacia() };
-                semKeys.push(fIni);
-            }
-            if (!semanaSeleccionadaKey || !semKeys.includes(semanaSeleccionadaKey)) {
-                semanaSeleccionadaKey = semKeys[semKeys.length - 1];
-            }
-
-            const sel2 = document.getElementById('selectSemanaPacienteForm');
-            if (sel2) sel2.innerHTML = '';
-
-            semKeys.forEach((sk, idx) => {
-                const bloqueada = pacienteData.semanas[sk]?.bloqueada;
-                const optText = `Semana ${idx + 1} (${formatBloqueSemanal(sk)})${bloqueada ? ' 🔒' : ' 🔓'}`;
-                if (sel2) sel2.innerHTML += `<option value="${sk}" ${sk === semanaSeleccionadaKey ? 'selected' : ''}>${optText}</option>`;
-            });
+        function volverDashboardPaciente() {
+            if (pacienteActualId && window.location.search.includes('p=')) mostrarDashboardPaciente();
         }
 
-        function cambiarSemanaPaciente(semKey) {
-            semanaSeleccionadaKey = semKey;
-            poblarSelectoresSemanaPaciente();
-            if (!document.getElementById('secPacienteFormMonitoreo').classList.contains('hidden')) {
-                cargarDiaPaciente(diaSeleccionadoIndex);
-            }
-        }
-
-        function abrirModuloMonitoreo() { ocultarTodasLasSecciones(); document.getElementById('secPacienteFormMonitoreo').classList.remove('hidden'); renderDiasTabs(); cargarDiaPaciente(0); }
+        function abrirModuloMonitoreo() { ocultarTodasLasSecciones(); document.getElementById('secPacienteFormMonitoreo').classList.remove('hidden'); renderFormularioPaciente(); }
         function abrirModuloJerarquiaPaciente() { ocultarTodasLasSecciones(); document.getElementById('secPacienteFormJerarquia').classList.remove('hidden'); renderJerarquiaPaciente(); }
         function abrirModuloIdentificacionPaciente() { ocultarTodasLasSecciones(); document.getElementById('secPacienteFormIdentificacion').classList.remove('hidden'); renderIdentificacionPaciente(); }
         function abrirModuloProgramacionPaciente() { ocultarTodasLasSecciones(); document.getElementById('secPacienteFormProgramacion').classList.remove('hidden'); renderProgramacionPaciente(); }
         function abrirModuloNotasPaciente() { ocultarTodasLasSecciones(); document.getElementById('secPacienteFormNotas').classList.remove('hidden'); renderNotasPaciente(); }
         function abrirModuloRegistroPensamientosPaciente() { ocultarTodasLasSecciones(); document.getElementById('secPacienteFormRegistroPensamientos').classList.remove('hidden'); renderRegistroPensamientosPaciente(); }
         function abrirModuloDialogoMentePaciente() { ocultarTodasLasSecciones(); document.getElementById('secPacienteFormDialogoMente').classList.remove('hidden'); renderDialogoMentePaciente(); }
+        function abrirModuloJerarquiaTemoresPaciente() { ocultarTodasLasSecciones(); document.getElementById('secPacienteFormJerarquiaTemores').classList.remove('hidden'); renderJerarquiaTemoresPaciente(); }
 
-        function volverDashboardPaciente() {
-            if (pacienteData && pacienteActualId) mostrarDashboardPaciente();
+        // REGISTRO DE PENSAMIENTOS PACIENTE
+        function agregarRegistroPensamientoPaciente(e) {
+            e.preventDefault();
+            const fecha = document.getElementById('regPensFecha').value.trim();
+            const situacion = document.getElementById('regPensSituacion').value.trim();
+            const pensamiento = document.getElementById('regPensPensamiento').value.trim();
+            const emocion = document.getElementById('regPensEmocion').value.trim();
+            const conducta = document.getElementById('regPensConducta').value.trim();
+            const animo = parseInt(document.getElementById('regPensAnimo').value);
+
+            if (!fecha || !situacion || !pensamiento || !emocion || !conducta || isNaN(animo)) return;
+
+            if (!pacienteData.registroPensamientos) pacienteData.registroPensamientos = [];
+            pacienteData.registroPensamientos.unshift({
+                id: 'rp_' + Math.random().toString(36).substr(2, 9),
+                fecha: fecha,
+                situacion: situacion,
+                pensamiento: pensamiento,
+                emocion: emocion,
+                conducta: conducta,
+                animo: animo,
+                bloqueado: true,
+                timestamp: new Date().toISOString()
+            });
+
+            document.getElementById('regPensFecha').value = '';
+            document.getElementById('regPensSituacion').value = '';
+            document.getElementById('regPensPensamiento').value = '';
+            document.getElementById('regPensEmocion').value = '';
+            document.getElementById('regPensConducta').value = '';
+            document.getElementById('regPensAnimo').value = '';
+
+            modoPacienteGuardando = true;
+            sincronizarGarantizado();
+            renderRegistroPensamientosPaciente();
+            alert("Registro guardado exitosamente. Ya se encuentra disponible para tu terapeuta.");
         }
 
-        // LÓGICA PACIENTE: DIÁLOGO CON MI MENTE
+        function renderRegistroPensamientosPaciente() {
+            const tbody = document.getElementById('tablaRegistroPensamientosPacienteBody');
+            tbody.innerHTML = '';
+            const registros = pacienteData.registroPensamientos || [];
+            document.getElementById('cantRegistroPensamientosPaciente').innerText = `${registros.length} registros`;
+
+            if (registros.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400">No has enviado registros aún. Usa el formulario superior para añadir uno.</td></tr>`;
+                return;
+            }
+
+            registros.forEach(reg => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition";
+                tr.innerHTML = `
+                    <td class="p-3 text-center font-bold text-purple-900">${escapeHtml(reg.fecha)}</td>
+                    <td class="p-3 font-semibold text-slate-900">${escapeHtml(reg.situacion)}</td>
+                    <td class="p-3 text-slate-800 italic">"${escapeHtml(reg.pensamiento)}"</td>
+                    <td class="p-3 text-slate-700">${escapeHtml(reg.emocion)}</td>
+                    <td class="p-3 text-slate-700">${escapeHtml(reg.conducta)}</td>
+                    <td class="p-3 text-center font-extrabold text-purple-800 bg-purple-50">${reg.animo}/10</td>
+                    <td class="p-3 text-center"><span class="text-[10px] font-bold bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full"><i class="fa-solid fa-lock mr-1"></i>Enviado</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // DIÁLOGO CON MI MENTE PACIENTE
+        function agregarDialogoMentePaciente(e) {
+            e.preventDefault();
+            const fecha = document.getElementById('diagFecha').value.trim();
+            const situacion = document.getElementById('diagSituacion').value.trim();
+            const queDijoMente = document.getElementById('diagQueDijoMente').value.trim();
+            const queDijeYo = document.getElementById('diagQueDijeYo').value.trim();
+            const queHiceDespues = document.getElementById('diagQueHiceDespues').value.trim();
+
+            if (!fecha || !situacion || !queDijoMente || !queDijeYo || !queHiceDespues) return;
+
+            if (!pacienteData.dialogoMente) pacienteData.dialogoMente = [];
+            pacienteData.dialogoMente.unshift({
+                id: 'dm_' + Math.random().toString(36).substr(2, 9),
+                fecha: fecha,
+                situacion: situacion,
+                queDijoMente: queDijoMente,
+                queDijeYo: queDijeYo,
+                queHiceDespues: queHiceDespues,
+                bloqueado: true,
+                timestamp: new Date().toISOString()
+            });
+
+            document.getElementById('diagFecha').value = '';
+            document.getElementById('diagSituacion').value = '';
+            document.getElementById('diagQueDijoMente').value = '';
+            document.getElementById('diagQueDijeYo').value = '';
+            document.getElementById('diagQueHiceDespues').value = '';
+
+            modoPacienteGuardando = true;
+            sincronizarGarantizado();
+            renderDialogoMentePaciente();
+            alert("Diálogo guardado exitosamente. Ya se encuentra disponible para tu terapeuta.");
+        }
+
         function renderDialogoMentePaciente() {
             const container = document.getElementById('containerDialogoMentePaciente');
             container.innerHTML = '';
@@ -2706,20 +3300,20 @@
             document.getElementById('cantDialogoMentePaciente').innerText = `${registros.length} registros`;
 
             if (registros.length === 0) {
-                container.innerHTML = `<div class="p-8 text-center text-slate-400 bg-slate-50 border border-dashed border-slate-300 rounded-2xl text-xs">Aún no has enviado diálogos con tu mente.</div>`;
+                container.innerHTML = `<div class="p-8 text-center text-slate-400 bg-slate-50 border border-dashed border-slate-300 rounded-2xl text-xs">Aún no has enviado diálogos con tu mente. Usa el formulario superior para registrar uno.</div>`;
                 return;
             }
 
-            registros.forEach((reg) => {
+            registros.forEach(reg => {
                 const card = document.createElement('div');
                 card.className = "border-2 border-slate-300 p-5 rounded-2xl bg-white space-y-4 shadow-sm";
                 card.innerHTML = `
-                    <div class="flex justify-between items-center border-b border-slate-200 pb-2">
-                        <span class="text-[11px] font-bold bg-purple-100 text-purple-900 border border-purple-200 px-2.5 py-0.5 rounded-full">Fecha: ${escapeHtml(reg.fecha)}</span>
-                        <span class="text-xs text-slate-400 font-bold"><i class="fa-solid fa-lock text-rose-500 mr-1"></i>Enviado / Inmodificable</span>
-                    </div>
-                    <div class="text-xs text-slate-800">
-                        <strong>Qué situación pasó:</strong> ${escapeHtml(reg.situacion)}
+                    <div class="flex justify-between items-start border-b border-slate-200 pb-2">
+                        <div class="space-y-1">
+                            <span class="text-[11px] font-bold bg-purple-100 text-purple-900 border border-purple-200 px-2.5 py-0.5 rounded-full">Fecha: ${escapeHtml(reg.fecha)}</span>
+                            <div class="text-xs text-slate-800 pt-1"><strong>Qué situación pasó:</strong> ${escapeHtml(reg.situacion)}</div>
+                        </div>
+                        <span class="text-[10px] font-bold bg-slate-200 text-slate-700 px-2.5 py-0.5 rounded-full"><i class="fa-solid fa-lock mr-1"></i>Enviado</span>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 border border-slate-200 rounded-xl overflow-hidden divide-y md:divide-y-0 md:divide-x divide-slate-200">
                         <div class="p-3 bg-purple-50/30 space-y-1">
@@ -2739,131 +3333,44 @@
             });
         }
 
-        function agregarDialogoMentePaciente(e) {
-            e.preventDefault();
-            const fecha = document.getElementById('diagFecha').value.trim();
-            const situacion = document.getElementById('diagSituacion').value.trim();
-            const queDijoMente = document.getElementById('diagQueDijoMente').value.trim();
-            const queDijeYo = document.getElementById('diagQueDijeYo').value.trim();
-            const queHiceDespues = document.getElementById('diagQueHiceDespues').value.trim();
-
-            if (!fecha || !situacion || !queDijoMente || !queDijeYo || !queHiceDespues) {
-                alert("Por favor completa todos los campos.");
-                return;
-            }
-
-            if (!pacienteData.dialogoMente) pacienteData.dialogoMente = [];
-
-            const nuevoRegistro = {
-                id: 'dm_' + Math.random().toString(36).substr(2, 9),
-                fecha: fecha,
-                situacion: situacion,
-                queDijoMente: queDijoMente,
-                queDijeYo: queDijeYo,
-                queHiceDespues: queHiceDespues,
-                timestamp: new Date().toISOString()
-            };
-
-            pacienteData.dialogoMente.unshift(nuevoRegistro);
-
-            document.getElementById('diagFecha').value = '';
-            document.getElementById('diagSituacion').value = '';
-            document.getElementById('diagQueDijoMente').value = '';
-            document.getElementById('diagQueDijeYo').value = '';
-            document.getElementById('diagQueHiceDespues').value = '';
-
-            sincronizarGarantizado();
-            renderDialogoMentePaciente();
-            alert("¡Diálogo con tu mente guardado y enviado exitosamente!");
-        }
-
-        // LÓGICA PACIENTE: REGISTRO DE PENSAMIENTOS
-        function renderRegistroPensamientosPaciente() {
-            const tbody = document.getElementById('tablaRegistroPensamientosPacienteBody');
-            tbody.innerHTML = '';
-            const registros = pacienteData.registroPensamientos || [];
-            document.getElementById('cantRegistroPensamientosPaciente').innerText = `${registros.length} registros`;
-
-            if (registros.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400">Aún no has enviado registros de pensamientos.</td></tr>`;
-                return;
-            }
-
-            registros.forEach((reg) => {
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-50 transition";
-                tr.innerHTML = `
-                    <td class="p-3 text-center font-bold text-purple-900">${escapeHtml(reg.fecha)}</td>
-                    <td class="p-3 font-semibold text-slate-900">${escapeHtml(reg.situacion)}</td>
-                    <td class="p-3 text-slate-800 italic">"${escapeHtml(reg.pensamiento)}"</td>
-                    <td class="p-3 text-slate-700">${escapeHtml(reg.emocion)}</td>
-                    <td class="p-3 text-slate-700">${escapeHtml(reg.conducta)}</td>
-                    <td class="p-3 text-center font-extrabold text-purple-800 bg-purple-50">${reg.animo}/10</td>
-                    <td class="p-3 text-center text-slate-400 font-bold text-[10px]"><i class="fa-solid fa-lock text-rose-500 mr-1"></i>Enviado</td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function agregarRegistroPensamientoPaciente(e) {
-            e.preventDefault();
-            const fecha = document.getElementById('regPensFecha').value.trim();
-            const situacion = document.getElementById('regPensSituacion').value.trim();
-            const pensamiento = document.getElementById('regPensPensamiento').value.trim();
-            const emocion = document.getElementById('regPensEmocion').value.trim();
-            const conducta = document.getElementById('regPensConducta').value.trim();
-            const animo = parseInt(document.getElementById('regPensAnimo').value);
-
-            if (!fecha || !situacion || !pensamiento || !emocion || !conducta || isNaN(animo)) {
-                alert("Por favor completa todos los campos.");
-                return;
-            }
-
-            if (!pacienteData.registroPensamientos) pacienteData.registroPensamientos = [];
-
-            const nuevoRegistro = {
-                id: 'rp_' + Math.random().toString(36).substr(2, 9),
-                fecha: fecha,
-                situacion: situacion,
-                pensamiento: pensamiento,
-                emocion: emocion,
-                conducta: conducta,
-                animo: animo,
-                timestamp: new Date().toISOString()
-            };
-
-            pacienteData.registroPensamientos.unshift(nuevoRegistro);
-
-            document.getElementById('regPensSituacion').value = '';
-            document.getElementById('regPensPensamiento').value = '';
-            document.getElementById('regPensEmocion').value = '';
-            document.getElementById('regPensConducta').value = '';
-            document.getElementById('regPensAnimo').value = '';
-
-            sincronizarGarantizado();
-            renderRegistroPensamientosPaciente();
-            alert("¡Registro de pensamiento enviado exitosamente!");
-        }
-
         // NOTAS PACIENTE
+        function agregarNotaPaciente(e) {
+            e.preventDefault();
+            const titulo = document.getElementById('inputNotaTitulo').value.trim();
+            const contenido = document.getElementById('inputNotaContenido').value.trim();
+            if (!titulo || !contenido) return;
+
+            const now = new Date();
+            const fechaFormateada = `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+
+            if (!pacienteData.notasPaciente) pacienteData.notasPaciente = [];
+            pacienteData.notasPaciente.unshift({ id: 'nota_' + Math.random().toString(36).substr(2, 9), titulo, contenido, fecha: fechaFormateada });
+
+            document.getElementById('inputNotaTitulo').value = '';
+            document.getElementById('inputNotaContenido').value = '';
+            modoPacienteGuardando = true;
+            sincronizarGarantizado();
+            renderNotasPaciente();
+        }
+
         function renderNotasPaciente() {
             const container = document.getElementById('containerNotasPaciente');
             container.innerHTML = '';
             const notas = pacienteData.notasPaciente || [];
 
             if (notas.length === 0) {
-                container.innerHTML = `<div class="col-span-full p-8 text-center text-slate-400 bg-slate-50 border border-dashed border-slate-300 rounded-2xl text-xs">No me has guardado notas aún.</div>`;
+                container.innerHTML = `<div class="col-span-full p-8 text-center text-slate-400 bg-slate-50 border border-dashed border-slate-300 rounded-2xl text-xs">No has redactado notas aún.</div>`;
                 return;
             }
 
-            notas.forEach((nota) => {
+            notas.forEach(nota => {
                 const card = document.createElement('div');
                 card.className = "bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-2 flex flex-col justify-between";
                 card.innerHTML = `
                     <div class="space-y-2">
                         <div class="flex justify-between items-start gap-2 border-b border-slate-100 pb-2">
-                            <h4 class="font-bold text-slate-900 text-sm">${escapeHtml(nota.titulo)}</h4>
-                            <span class="text-[10px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded border border-slate-200 shrink-0"><i class="fa-regular fa-clock mr-1"></i>${nota.fecha || '--'}</span>
+                            <h4 class="font-extrabold text-slate-900 text-sm">${escapeHtml(nota.titulo)}</h4>
+                            <span class="text-[10px] text-slate-500 font-semibold bg-slate-100 px-2 py-0.5 rounded">${nota.fecha || '--'}</span>
                         </div>
                         <p class="text-xs text-slate-700 whitespace-pre-wrap leading-relaxed">${escapeHtml(nota.contenido)}</p>
                     </div>
@@ -2872,86 +3379,22 @@
             });
         }
 
-        function agregarNotaPaciente(e) {
-            e.preventDefault();
-            const inputTit = document.getElementById('inputNotaTitulo');
-            const inputCont = document.getElementById('inputNotaContenido');
-            const titulo = inputTit.value.trim();
-            const contenido = inputCont.value.trim();
-
-            if (!titulo || !contenido) return;
-            if (!pacienteData.notasPaciente) pacienteData.notasPaciente = [];
-
-            const now = new Date();
-            const fechaFormateada = `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
-
-            pacienteData.notasPaciente.unshift({
-                id: 'n_' + Math.random().toString(36).substr(2, 9),
-                titulo: titulo,
-                contenido: contenido,
-                fecha: fechaFormateada
-            });
-
-            inputTit.value = '';
-            inputCont.value = '';
-            sincronizarGarantizado();
-            renderNotasPaciente();
-        }
-
-        // JERARQUÍA PACIENTE
-        function renderJerarquiaPaciente() {
-            const tbody = document.getElementById('tablaJerarquiaPacienteBody');
-            tbody.innerHTML = '';
-            const items = pacienteData.jerarquiaActividades || [];
-
-            if (items.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-400">Aún no has agregado actividades.</td></tr>`;
-                return;
-            }
-
-            const itemsAsc = [...items].sort((a, b) => parseFloat(a.importancia) - parseFloat(b.importancia));
-            itemsAsc.forEach((item, idx) => { item.rankJerarquia = idx + 1; });
-            const itemsOrganizados = [...itemsAsc].sort((a, b) => parseFloat(b.importancia) - parseFloat(a.importancia));
-
-            itemsOrganizados.forEach((item) => {
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-50 transition";
-                const deleteBtn = pacienteData.jerarquiaBloqueada ? 
-                    `<span class="text-[10px] text-slate-400 font-bold"><i class="fa-solid fa-lock"></i> Fijo</span>` :
-                    `<button onclick="eliminarActividadJerarquiaPaciente('${item.id}')" class="text-xs bg-rose-50 text-rose-700 border border-rose-200 px-2.5 py-1 rounded-lg"><i class="fa-solid fa-trash-can"></i></button>`;
-
-                tr.innerHTML = `
-                    <td class="p-3 text-center"><span class="font-black text-cyan-800 bg-cyan-100 border border-cyan-300 px-2 py-0.5 rounded-lg text-xs">Nivel #${item.rankJerarquia}</span></td>
-                    <td class="p-3 font-bold text-slate-900 text-xs">${escapeHtml(item.actividad)}</td>
-                    <td class="p-3 text-center font-extrabold text-xs text-emerald-800"><span class="bg-emerald-50 border border-emerald-300 px-2.5 py-1 rounded-lg">${item.importancia} / 15</span></td>
-                    <td class="p-3 text-xs text-slate-500">${item.fecha || '--'}</td>
-                    <td class="p-3 text-center no-print">${deleteBtn}</td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
+        // JERARQUIA PACIENTE
         function agregarActividadJerarquiaPaciente(e) {
             e.preventDefault();
-            const actTexto = document.getElementById('inputJerarquiaActividad').value.trim();
-            const impValor = parseInt(document.getElementById('inputJerarquiaImportancia').value);
-
-            if (!actTexto || isNaN(impValor)) return;
-            if (!pacienteData.jerarquiaActividades) pacienteData.jerarquiaActividades = [];
+            const actividad = document.getElementById('inputJerarquiaActividad').value.trim();
+            const importancia = parseInt(document.getElementById('inputJerarquiaImportancia').value);
+            if (!actividad || isNaN(importancia)) return;
 
             const now = new Date();
             const fechaFormateada = `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
 
-            pacienteData.jerarquiaActividades.push({
-                id: 'j_' + Math.random().toString(36).substr(2, 9),
-                actividad: actTexto,
-                importancia: impValor,
-                fecha: fechaFormateada,
-                esAdicional: pacienteData.jerarquiaBloqueada || false
-            });
+            if (!pacienteData.jerarquiaActividades) pacienteData.jerarquiaActividades = [];
+            pacienteData.jerarquiaActividades.push({ id: 'jer_' + Math.random().toString(36).substr(2, 9), actividad, importancia, fecha: fechaFormateada, esAdicional: false });
 
             document.getElementById('inputJerarquiaActividad').value = '';
             document.getElementById('inputJerarquiaImportancia').value = '';
+            modoPacienteGuardando = true;
             sincronizarGarantizado();
             renderJerarquiaPaciente();
         }
@@ -2959,339 +3402,209 @@
         function eliminarActividadJerarquiaPaciente(id) {
             if (pacienteData.jerarquiaBloqueada) return;
             pacienteData.jerarquiaActividades = (pacienteData.jerarquiaActividades || []).filter(item => item.id !== id);
+            modoPacienteGuardando = true;
             sincronizarGarantizado();
             renderJerarquiaPaciente();
         }
 
-        // IDENTIFICACIÓN PACIENTE
+        function renderJerarquiaPaciente() {
+            const bloqueado = pacienteData.jerarquiaBloqueada || false;
+            const items = pacienteData.jerarquiaActividades || [];
+            const principales = items.filter(x => !x.esAdicional);
+
+            const principalesAsc = [...principales].sort((a, b) => parseFloat(a.importancia) - parseFloat(b.importancia));
+            principalesAsc.forEach((item, index) => { item.rankJerarquia = index + 1; });
+            const principalesDesc = [...principalesAsc].sort((a, b) => parseFloat(b.importancia) - parseFloat(a.importancia));
+
+            const tbodyP = document.getElementById('tablaJerarquiaPacienteBody');
+            tbodyP.innerHTML = '';
+            principalesDesc.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="p-3 text-center"><span class="font-black text-cyan-800 bg-cyan-100 px-2 py-0.5 rounded">Nivel #${item.rankJerarquia}</span></td>
+                    <td class="p-3 font-semibold text-slate-900">${escapeHtml(item.actividad)}</td>
+                    <td class="p-3 text-center font-extrabold text-emerald-700">${item.importancia} / 15</td>
+                    <td class="p-3 text-slate-500">${item.fecha || '--'}</td>
+                    <td class="p-3 text-center no-print">${bloqueado ? '<i class="fa-solid fa-lock text-slate-400"></i>' : `<button onclick="eliminarActividadJerarquiaPaciente('${item.id}')" class="text-rose-600"><i class="fa-solid fa-trash-can"></i></button>`}</td>
+                `;
+                tbodyP.appendChild(tr);
+            });
+        }
+
+        // IDENTIFICACION PACIENTE
+        function agregarActividadIdentificacionPaciente(e) {
+            e.preventDefault();
+            const categoria = document.getElementById('selectIdentificacionCategoria').value;
+            const actividad = document.getElementById('inputIdentificacionActividad').value.trim();
+            if (!actividad) return;
+
+            const now = new Date();
+            const fechaFormateada = `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()}`;
+            if (!pacienteData.identificacionActividades) pacienteData.identificacionActividades = [];
+            pacienteData.identificacionActividades.push({ id: 'ide_' + Math.random().toString(36).substr(2, 9), categoria, actividad, fecha: fechaFormateada, esAdicional: false });
+
+            document.getElementById('inputIdentificacionActividad').value = '';
+            modoPacienteGuardando = true;
+            sincronizarGarantizado();
+            renderIdentificacionPaciente();
+        }
+
         function renderIdentificacionPaciente() {
+            const bloqueado = pacienteData.identificacionBloqueada || false;
+            const items = pacienteData.identificacionActividades || [];
             const container = document.getElementById('containerPacienteCategoriasIdentificacion');
             container.innerHTML = '';
-            const items = pacienteData.identificacionActividades || [];
 
             CATEGORIAS_IDENTIFICACION.forEach(cat => {
                 const itemsCat = items.filter(x => x.categoria === cat.id);
-                const card = document.createElement('div');
-                card.className = "bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4";
-
-                let htmlItems = '';
-                if (itemsCat.length === 0) {
-                    htmlItems = `<div class="p-4 text-center text-slate-400 text-xs bg-slate-50 rounded-xl border border-dashed border-slate-200">No has registrado actividades.</div>`;
-                } else {
-                    htmlItems = `<div class="divide-y divide-slate-200 border border-slate-200 rounded-xl overflow-hidden">`;
-                    itemsCat.forEach(item => {
-                        const deleteBtn = pacienteData.identificacionBloqueada ? `<span class="text-[10px] text-slate-400 font-bold"><i class="fa-solid fa-lock"></i> Fijo</span>` :
-                            `<button onclick="eliminarActividadIdentificacionPaciente('${item.id}')" class="text-xs bg-rose-50 text-rose-700 border border-rose-200 px-2 py-1 rounded-lg"><i class="fa-solid fa-trash-can"></i></button>`;
-
-                        htmlItems += `
-                            <div class="p-3 bg-white hover:bg-slate-50 transition flex justify-between items-center gap-3">
-                                <div><span class="font-bold text-slate-900 text-xs block">${escapeHtml(item.actividad)}</span><span class="text-[10px] text-slate-500">${item.fecha || '--'}</span></div>
-                                <div class="no-print">${deleteBtn}</div>
-                            </div>
-                        `;
-                    });
-                    htmlItems += `</div>`;
-                }
-
-                card.innerHTML = `
-                    <div class="flex justify-between items-start border-b border-slate-100 pb-2.5">
-                        <div><h3 class="font-bold text-slate-900 text-sm">${cat.nombre}</h3><p class="text-xs text-slate-500">${cat.desc}</p></div>
-                        <span class="text-xs bg-cyan-50 text-cyan-800 border border-cyan-200 px-2.5 py-0.5 rounded-full font-bold">${itemsCat.length}</span>
-                    </div>
-                    ${htmlItems}
-                `;
-                container.appendChild(card);
+                const block = document.createElement('div');
+                block.className = "bg-white p-5 rounded-2xl border border-slate-200 space-y-3";
+                let filas = itemsCat.map(item => `<tr><td class="p-2.5 text-xs font-semibold">${escapeHtml(item.actividad)}</td><td class="p-2.5 text-xs text-slate-500 text-right">${item.fecha}</td></tr>`).join('');
+                block.innerHTML = `<h4 class="font-bold text-sm text-slate-900">${cat.nombre}</h4><table class="w-full divide-y divide-slate-200">${filas || '<tr><td class="p-2 text-xs text-slate-400">Sin actividades aún</td></tr>'}</table>`;
+                container.appendChild(block);
             });
         }
 
-        function agregarActividadIdentificacionPaciente(e) {
-            e.preventDefault();
-            const catSel = document.getElementById('selectIdentificacionCategoria').value;
-            const actTexto = document.getElementById('inputIdentificacionActividad').value.trim();
-            if (!actTexto) return;
-            if (!pacienteData.identificacionActividades) pacienteData.identificacionActividades = [];
-
-            const now = new Date();
-            const fechaFormateada = `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
-
-            pacienteData.identificacionActividades.push({
-                id: 'i_' + Math.random().toString(36).substr(2, 9),
-                categoria: catSel,
-                actividad: actTexto,
-                fecha: fechaFormateada,
-                esAdicional: pacienteData.identificacionBloqueada || false
-            });
-
-            document.getElementById('inputIdentificacionActividad').value = '';
-            sincronizarGarantizado();
-            renderIdentificacionPaciente();
-        }
-
-        function eliminarActividadIdentificacionPaciente(id) {
-            if (pacienteData.identificacionBloqueada) return;
-            pacienteData.identificacionActividades = (pacienteData.identificacionActividades || []).filter(item => item.id !== id);
-            sincronizarGarantizado();
-            renderIdentificacionPaciente();
-        }
-
+        // PROGRAMACION PACIENTE
         function renderProgramacionPaciente() {
             const container = document.getElementById('containerProgramadasPaciente');
             container.innerHTML = '';
             const programadas = pacienteData.programacionActividades || [];
-
             if (programadas.length === 0) {
-                container.innerHTML = `<div class="p-8 text-center text-slate-400 bg-slate-50 border border-dashed border-slate-300 rounded-2xl text-xs">No tienes actividades programadas por tu terapeuta aún.</div>`;
+                container.innerHTML = `<div class="p-8 text-center text-slate-400 text-xs">No hay actividades programadas aún.</div>`;
                 return;
             }
-
-            programadas.forEach((prg) => {
+            programadas.forEach(prg => {
                 const jerItem = (pacienteData.jerarquiaActividades || []).find(x => x.id === prg.actividadJerarquiaId) || {};
                 const card = document.createElement('div');
-                card.className = "bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4";
-                
-                let horariosHtml = (prg.horarios && Array.isArray(prg.horarios)) ? prg.horarios.map(h => `
-                    <div class="bg-white px-2.5 py-1 rounded-lg border border-slate-200 text-slate-800 font-bold inline-flex items-center gap-1.5 text-xs">
-                        <i class="fa-regular fa-calendar text-cyan-600"></i><span>${h.fecha}</span>
-                        <i class="fa-regular fa-clock text-cyan-600 ml-1"></i><span>${h.hora}</span>
-                        <span class="bg-cyan-50 text-cyan-800 px-1.5 py-0.5 rounded text-[10px]">${h.duracionMin} min</span>
-                    </div>`).join(' ') : escapeHtml(prg.cuandoDia);
-
-                card.innerHTML = `
-                    <div class="flex justify-between items-start border-b border-slate-200 pb-3 gap-3">
-                        <div>
-                            <h4 class="font-extrabold text-slate-900 text-lg">${escapeHtml(jerItem.actividad || 'Actividad')}</h4>
-                            <p class="text-xs text-cyan-800 font-semibold mt-0.5"><strong>¿Por qué es importante?:</strong> ${escapeHtml(prg.importanciaPorQue)}</p>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
-                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200"><span class="font-bold text-slate-700 uppercase block text-[10px]">Acción Concreta:</span><span class="text-slate-900 font-semibold">${escapeHtml(prg.accionConcreta)}</span></div>
-                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 md:col-span-2"><span class="font-bold text-slate-700 uppercase block text-[10px] mb-1">Horarios:</span><div class="flex flex-wrap gap-2">${horariosHtml}</div></div>
-                    </div>
-                `;
+                card.className = "bg-white p-5 rounded-2xl border border-slate-200 space-y-2";
+                card.innerHTML = `<h4 class="font-extrabold text-slate-900">${escapeHtml(jerItem.actividad || 'Actividad')}</h4><p class="text-xs text-slate-700"><strong>Acción:</strong> ${escapeHtml(prg.accionConcreta)}</p><p class="text-xs text-slate-600"><strong>Obstáculo & Solución:</strong> ${escapeHtml(prg.obstaculo)} -> ${escapeHtml(prg.comoLibrar)}</p>`;
                 container.appendChild(card);
             });
         }
 
-        // MONITOREO PACIENTE
-        function renderDiasTabs() {
-            const container = document.getElementById('diasTabsContainer');
-            container.innerHTML = '';
-            const fechaInicio = parseFechaLocal(obtenerLunes(semanaSeleccionadaKey || pacienteData.fechaInicio));
+        // MONITOREO DIARIO PACIENTE
+        function cambiarSemanaPaciente(semanaKey) { semanaSeleccionadaKey = semanaKey; renderFormularioPaciente(); }
+
+        function renderFormularioPaciente() {
+            const select = document.getElementById('selectSemanaPacienteForm');
+            select.innerHTML = '';
+            const semanasKeys = obtenerSemanasOrdenadas(pacienteData);
+            if (!semanaSeleccionadaKey || !semanasKeys.includes(semanaSeleccionadaKey)) semanaSeleccionadaKey = semanasKeys[semanasKeys.length - 1];
+
+            semanasKeys.forEach((sk, idx) => {
+                const opt = document.createElement('option');
+                opt.value = sk;
+                opt.innerText = `Semana ${idx + 1} (${formatBloqueSemanal(sk)})${pacienteData.semanas[sk]?.bloqueada ? ' 🔒' : ''}`;
+                if (sk === semanaSeleccionadaKey) opt.selected = true;
+                select.appendChild(opt);
+            });
+
+            const semActual = pacienteData.semanas[semanaSeleccionadaKey];
+            const estaBloqueada = semActual ? semActual.bloqueada : false;
+            document.getElementById('bannerSemanaBloqueada').classList.toggle('hidden', !estaBloqueada);
+
+            const tabs = document.getElementById('diasTabsContainer');
+            tabs.innerHTML = '';
+            const fechaInicio = parseFechaLocal(obtenerLunes(semanaSeleccionadaKey));
 
             DIAS_NOMBRE.forEach((dia, idx) => {
-                const fechaDia = new Date(fechaInicio);
-                fechaDia.setDate(fechaDia.getDate() + idx);
-                const dateStr = fechaDia.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
-
+                const f = new Date(fechaInicio); f.setDate(f.getDate() + idx);
                 const btn = document.createElement('button');
-                btn.className = `flex-1 min-w-[95px] py-2.5 px-3 rounded-xl border text-center transition ${idx === diaSeleccionadoIndex ? 'bg-cyan-700 text-white font-bold border-cyan-800 shadow-sm' : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'}`;
-                btn.onclick = () => cargarDiaPaciente(idx);
-                btn.innerHTML = `<div class="text-[11px] uppercase tracking-wider">${dia}</div><div class="text-xs font-semibold mt-0.5">${dateStr}</div>`;
-                container.appendChild(btn);
+                btn.className = `px-4 py-2 rounded-xl text-xs font-bold shrink-0 ${diaSeleccionadoIndex === idx ? 'bg-cyan-700 text-white' : 'bg-white text-slate-600 border'}`;
+                btn.innerHTML = `${dia} (${f.getDate()}/${f.getMonth()+1})`;
+                btn.onclick = () => { diaSeleccionadoIndex = idx; renderFormularioPaciente(); };
+                tabs.appendChild(btn);
             });
-        }
 
-        function cargarDiaPaciente(diaIdx) {
-            diaSeleccionadoIndex = diaIdx;
-            renderDiasTabs();
-
-            const fechaInicio = parseFechaLocal(obtenerLunes(semanaSeleccionadaKey || pacienteData.fechaInicio));
-            const fechaDia = new Date(fechaInicio);
-            fechaDia.setDate(fechaDia.getDate() + diaIdx);
-            document.getElementById('diaActualNombre').innerText = `${DIAS_NOMBRE[diaIdx]} ${fechaDia.getDate()} de ${fechaDia.toLocaleDateString('es-ES', {month:'long'})}`;
-
-            const semanaData = pacienteData.semanas[semanaSeleccionadaKey] || crearSemanaVacia();
-            const diaData = semanaData.dias[diaIdx] || { horas: {}, animo: 5 };
-            const esBloqueada = semanaData.bloqueada || false;
-
-            const listContainer = document.getElementById('listaHorasPaciente');
-            listContainer.innerHTML = '';
+            const diaData = semActual.dias[diaSeleccionadoIndex];
+            document.getElementById('diaActualNombre').innerText = `${DIAS_NOMBRE[diaSeleccionadoIndex]}`;
+            const lista = document.getElementById('listaHorasPaciente');
+            lista.innerHTML = '';
 
             HORAS_12H.forEach(h => {
-                const item = diaData.horas[h] || { act: '', d: '', i: '' };
+                const hVal = diaData.horas[h] || { act: '', d: '', i: '' };
                 const row = document.createElement('div');
-                row.className = "p-3 sm:p-4 hover:bg-slate-50 transition flex flex-col sm:flex-row items-start sm:items-center gap-3";
+                row.className = "p-3 flex flex-col sm:flex-row items-center gap-2";
                 row.innerHTML = `
-                    <div class="w-24 font-extrabold text-slate-800 text-xs bg-slate-100 border border-slate-300 px-2 py-1.5 rounded-lg text-center shrink-0">${h}</div>
-                    <div class="flex-1 w-full"><input type="text" value="${escapeHtml(item.act)}" ${esBloqueada ? 'disabled' : ''} placeholder="¿Qué actividad realizaste?" class="w-full px-3 py-1.5 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-cyan-600 focus:outline-none disabled:opacity-60" oninput="guardarEntradaHora('${h}', 'act', this.value)"></div>
-                    <div class="flex items-center space-x-3 w-full sm:w-auto shrink-0">
-                        <div class="flex items-center space-x-1"><span class="text-xs font-bold text-cyan-900 bg-cyan-100 px-2 py-1 rounded border border-cyan-300">D</span><input type="number" min="0" max="10" value="${item.d}" ${esBloqueada ? 'disabled' : ''} placeholder="0-10" class="w-12 text-center py-1 bg-slate-50 border border-slate-300 rounded-lg text-sm font-bold text-cyan-800" oninput="guardarEntradaHora('${h}', 'd', this.value)"></div>
-                        <div class="flex items-center space-x-1"><span class="text-xs font-bold text-emerald-900 bg-emerald-100 px-2 py-1 rounded border border-emerald-300">I</span><input type="number" min="0" max="10" value="${item.i}" ${esBloqueada ? 'disabled' : ''} placeholder="0-10" class="w-12 text-center py-1 bg-slate-50 border border-slate-300 rounded-lg text-sm font-bold text-emerald-800" oninput="guardarEntradaHora('${h}', 'i', this.value)"></div>
-                    </div>
+                    <div class="w-24 text-xs font-bold text-slate-700">${h}</div>
+                    <input type="text" ${estaBloqueada ? 'disabled' : ''} value="${escapeHtml(hVal.act)}" placeholder="Actividad..." class="flex-1 text-xs p-2 border rounded-xl" onchange="actualizarHoraData('${h}', 'act', this.value)">
+                    <input type="number" min="0" max="10" ${estaBloqueada ? 'disabled' : ''} value="${hVal.d}" placeholder="D" class="w-12 text-center text-xs p-1.5 border rounded" onchange="actualizarHoraData('${h}', 'd', this.value)">
+                    <input type="number" min="0" max="10" ${estaBloqueada ? 'disabled' : ''} value="${hVal.i}" placeholder="I" class="w-12 text-center text-xs p-1.5 border rounded" onchange="actualizarHoraData('${h}', 'i', this.value)">
                 `;
-                listContainer.appendChild(row);
+                lista.appendChild(row);
             });
 
-            const animoSlider = document.getElementById('inputAnimoDia');
-            animoSlider.value = diaData.animo !== undefined ? diaData.animo : 5;
-            animoSlider.disabled = esBloqueada;
-            document.getElementById('animoValueDisplay').innerText = `${diaData.animo !== undefined ? diaData.animo : 5} / 10`;
-            actualizarEstadoFormularioPaciente();
+            const inputAnimo = document.getElementById('inputAnimoDia');
+            inputAnimo.value = diaData.animo !== undefined ? diaData.animo : 5;
+            inputAnimo.disabled = estaBloqueada;
+            document.getElementById('animoValueDisplay').innerText = `${inputAnimo.value} / 10`;
         }
 
-        function actualizarEstadoFormularioPaciente() {
-            const semanaData = pacienteData.semanas[semanaSeleccionadaKey] || {};
-            const banner = document.getElementById('bannerSemanaBloqueada');
-            if (semanaData.bloqueada) banner.classList.remove('hidden');
-            else banner.classList.add('hidden');
-        }
-
-        function guardarEntradaHora(hora, campo, valor) {
-            if (pacienteData.semanas[semanaSeleccionadaKey]?.bloqueada) return;
+        function actualizarHoraData(horaKey, campo, valor) {
+            const sem = pacienteData.semanas[semanaSeleccionadaKey];
+            if (!sem || sem.bloqueada) return;
+            sem.dias[diaSeleccionadoIndex].horas[horaKey][campo] = valor;
             modoPacienteGuardando = true;
-            if (!pacienteData.semanas[semanaSeleccionadaKey]) pacienteData.semanas[semanaSeleccionadaKey] = crearSemanaVacia();
-            if (!pacienteData.semanas[semanaSeleccionadaKey].dias[diaSeleccionadoIndex].horas[hora]) pacienteData.semanas[semanaSeleccionadaKey].dias[diaSeleccionadoIndex].horas[hora] = { act: '', d: '', i: '' };
-
-            pacienteData.semanas[semanaSeleccionadaKey].dias[diaSeleccionadoIndex].horas[hora][campo] = valor;
-            pacienteData.updatedAt = new Date().toISOString();
-            sincronizarGarantizado();
+            programarAutoguardado();
         }
 
         function actualizarAnimoDia(valor) {
-            if (pacienteData.semanas[semanaSeleccionadaKey]?.bloqueada) return;
-            modoPacienteGuardando = true;
+            const sem = pacienteData.semanas[semanaSeleccionadaKey];
+            if (!sem || sem.bloqueada) return;
             document.getElementById('animoValueDisplay').innerText = `${valor} / 10`;
-            if (!pacienteData.semanas[semanaSeleccionadaKey]) pacienteData.semanas[semanaSeleccionadaKey] = crearSemanaVacia();
-            pacienteData.semanas[semanaSeleccionadaKey].dias[diaSeleccionadoIndex].animo = parseInt(valor);
-            pacienteData.updatedAt = new Date().toISOString();
-            sincronizarGarantizado();
+            sem.dias[diaSeleccionadoIndex].animo = parseInt(valor);
+            modoPacienteGuardando = true;
+            programarAutoguardado();
         }
 
-        function sincronizarGarantizado() {
-            localStorage.setItem('backup_' + pacienteActualId, JSON.stringify(pacienteData));
-            let local = JSON.parse(localStorage.getItem('demo_pacientes') || '[]');
-            const idx = local.findIndex(p => p.id === pacienteActualId);
-            if (idx !== -1) local[idx] = pacienteData;
-            else local.push(pacienteData);
-            localStorage.setItem('demo_pacientes', JSON.stringify(local));
+        function programarAutoguardado() { clearTimeout(saveTimeout); saveTimeout = setTimeout(() => sincronizarGarantizado(), 500); }
 
-            actualizarStatusSync("Guardando...", "bg-amber-500");
-
-            clearTimeout(saveTimeout);
-            saveTimeout = setTimeout(async () => {
-                if (firebaseActivo) {
-                    try {
-                        await db.collection('pacientes').doc(pacienteActualId).set(pacienteData, { merge: true });
-                        actualizarStatusSync("Sincronizado", "bg-cyan-500");
-                    } catch (err) {
-                        actualizarStatusSync("Guardado Local", "bg-amber-500");
-                    }
-                } else {
-                    actualizarStatusSync("Guardado Local", "bg-cyan-500");
-                }
+        async function sincronizarGarantizado() {
+            if (!pacienteData || !pacienteActualId) return;
+            if (firebaseActivo) {
+                await db.collection('pacientes').doc(pacienteActualId).set(pacienteData, { merge: true });
                 modoPacienteGuardando = false;
-            }, 1000);
-        }
-
-        function actualizarStatusSync(texto, colorBg) {
-            const txtEl = document.getElementById('syncText');
-            const dotEl = document.getElementById('syncDot');
-            const statusLabel = document.getElementById('statusGuardadoText');
-            if (txtEl) txtEl.innerText = texto;
-            if (dotEl) dotEl.className = `w-2.5 h-2.5 rounded-full ${colorBg} animate-pulse`;
-            if (statusLabel) statusLabel.innerText = texto;
-        }
-
-        function ocultarTodasLasSecciones() {
-            document.getElementById('secLoginTerapeuta').classList.add('hidden');
-            document.getElementById('secPanelTerapeuta').classList.add('hidden');
-            document.getElementById('secDetallePacienteTerapeuta').classList.add('hidden');
-            document.getElementById('secPacienteDashboard').classList.add('hidden');
-            document.getElementById('secPacienteFormMonitoreo').classList.add('hidden');
-            document.getElementById('secPacienteFormJerarquia').classList.add('hidden');
-            document.getElementById('secPacienteFormIdentificacion').classList.add('hidden');
-            document.getElementById('secPacienteFormProgramacion').classList.add('hidden');
-            document.getElementById('secPacienteFormNotas').classList.add('hidden');
-            document.getElementById('secPacienteFormRegistroPensamientos').classList.add('hidden');
-            document.getElementById('secPacienteFormDialogoMente').classList.add('hidden');
+            } else {
+                let local = JSON.parse(localStorage.getItem('demo_pacientes') || '[]');
+                const idx = local.findIndex(item => item.id === pacienteActualId);
+                if (idx >= 0) local[idx] = pacienteData; else local.push(pacienteData);
+                localStorage.setItem('demo_pacientes', JSON.stringify(local));
+                modoPacienteGuardando = false;
+            }
         }
 
         function crearSemanaVacia() {
             const dias = [];
             for (let i = 0; i < 7; i++) {
-                const horas = {};
-                HORAS_12H.forEach(h => horas[h] = { act: '', d: '', i: '' });
-                dias.push({ horas, animo: 5 });
+                const horasObj = {};
+                HORAS_12H.forEach(h => horasObj[h] = { act: '', d: '', i: '' });
+                dias.push({ horas: horasObj, animo: 5 });
             }
-            return { dias, bloqueada: false };
+            return { dias: dias, bloqueada: false };
+        }
+
+        function ocultarTodasLasSecciones() {
+            ['secLoginTerapeuta', 'secPanelTerapeuta', 'secDetallePacienteTerapeuta', 'secPacienteDashboard', 'secPacienteFormMonitoreo', 'secPacienteFormJerarquia', 'secPacienteFormIdentificacion', 'secPacienteFormProgramacion', 'secPacienteFormNotas', 'secPacienteFormRegistroPensamientos', 'secPacienteFormDialogoMente', 'secPacienteFormJerarquiaTemores'].forEach(id => {
+                const el = document.getElementById(id); if (el) el.classList.add('hidden');
+            });
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+            return text.toString().replace(/[&<>"']/g, m => map[m]);
         }
 
         function getPacientesEjemplo() {
             return [{
-                id: 'p_ejemplo1',
-                nombre: 'Carlos Mendoza Pérez (Ejemplo)',
-                edad: 32,
-                fechaNacimiento: '1994-05-14',
-                fechaInicio: '2026-10-26',
-                updatedAt: new Date().toISOString(),
-                notasClinicas: 'Paciente en monitoreo activo.',
-                modulosAsignados: ['monitoreo', 'identificacion_actividades', 'jerarquia_actividades', 'programacion_actividades', 'notas_paciente', 'registro_pensamientos', 'dialogo_mente'],
-                jerarquiaBloqueada: false,
-                jerarquiaActividades: [],
-                identificacionBloqueada: false,
-                identificacionActividades: [],
-                programacionActividades: [],
-                notasPaciente: [],
-                registroPensamientos: [],
-                dialogoMente: [],
+                id: 'demo123', nombre: 'Paciente Ejemplo (Demo)', edad: 30, fechaNacimiento: '1996-05-15',
+                fechaInicio: '2026-10-26', notasClinicas: 'Evaluación inicial.',
+                modulosAsignados: [...TODOS_MODULOS_DEFAULT],
+                jerarquiaActividades: [], identificacionActividades: [], programacionActividades: [],
+                notasPaciente: [], registroPensamientos: [], dialogoMente: [], jerarquiaTemores: [],
                 semanas: { '2026-10-26': crearSemanaVacia() }
             }];
-        }
-
-        async function exportarBackupJSON() {
-            let datosAExportar = [];
-            if (firebaseActivo) {
-                try {
-                    const snapshot = await db.collection('pacientes').get();
-                    snapshot.forEach(doc => datosAExportar.push({ id: doc.id, ...doc.data() }));
-                } catch (e) { datosAExportar = pacientesCache; }
-            } else {
-                datosAExportar = JSON.parse(localStorage.getItem('demo_pacientes') || '[]');
-            }
-
-            if (datosAExportar.length === 0) return alert("No hay datos para respaldar.");
-
-            const backupObj = { version: "2.0", fechaExportacion: new Date().toISOString(), terapeuta: "Oscar Steven Rodriguez Bustos", totalPacientes: datosAExportar.length, pacientes: datosAExportar };
-            const blob = new Blob([JSON.stringify(backupObj, null, 2)], { type: "application/json" });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `Backup_Plataforma_Terapeutica_${new Date().getTime()}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
-
-        function importarBackupJSON(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = async function(event) {
-                try {
-                    const parsed = JSON.parse(event.target.result);
-                    let listaPacientes = Array.isArray(parsed) ? parsed : (parsed.pacientes || []);
-                    if (listaPacientes.length === 0) return alert("Backup vacío.");
-
-                    if (!confirm(`¿Restaurar ${listaPacientes.length} paciente(s)?`)) return;
-
-                    if (firebaseActivo) {
-                        for (const p of listaPacientes) {
-                            if (p.id) await db.collection('pacientes').doc(p.id).set(p, { merge: true });
-                        }
-                    }
-                    localStorage.setItem('demo_pacientes', JSON.stringify(listaPacientes));
-                    cargarDashboardTerapeuta({ email: auth && auth.currentUser ? auth.currentUser.email : 'psicologoorodriguez@gmail.com' });
-                } catch (err) {
-                    alert("Error al leer el archivo JSON.");
-                }
-            };
-            reader.readAsText(file);
-        }
-
-        function escapeHtml(str) {
-            return (str || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
         }
     </script>
 </body>
