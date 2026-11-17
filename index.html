@@ -292,7 +292,7 @@
                                     </div>
                                     <div>
                                         <h4 class="font-bold text-xs text-slate-900">Terapia de Exposición</h4>
-                                        <span class="text-[10px] text-amber-700 font-semibold">1 Tarea disponible</span>
+                                        <span class="text-[10px] text-amber-700 font-semibold">2 Tareas disponibles</span>
                                     </div>
                                 </div>
                                 <i id="iconCheckEX" class="fa-regular fa-circle text-slate-300 text-lg"></i>
@@ -397,6 +397,17 @@
                                 <div class="flex items-center space-x-1.5" onclick="event.stopPropagation()">
                                     <label class="flex items-center space-x-1 cursor-pointer bg-slate-50 hover:bg-slate-100 px-1.5 py-1 rounded border border-slate-200"><input type="checkbox" id="chkModJerarquiaTemores" onchange="toggleModuloAsignado('jerarquia_temores')" class="w-3.5 h-3.5 text-amber-600 rounded bg-white"><span class="text-[10px] font-bold text-slate-700">Asignada</span></label>
                                     <i id="iconCheckTareaJerarquiaTemores" class="fa-regular fa-circle text-slate-300 text-sm"></i>
+                                </div>
+                            </div>
+
+                            <div id="cardTareaGraficaExposicion" onclick="seleccionarTarea('grafica_exposicion')" class="cursor-pointer p-3 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-slate-200 hover:border-amber-400">
+                                <div class="flex items-center space-x-2.5">
+                                    <div class="w-8 h-8 bg-amber-50 text-amber-700 border border-amber-200 rounded-lg flex items-center justify-center text-sm font-bold shrink-0"><i class="fa-solid fa-chart-line"></i></div>
+                                    <div><h5 class="font-bold text-xs text-slate-900">Gráfica de Exposición</h5><p class="text-[10px] text-slate-500">Curva USA vs. Tiempo</p></div>
+                                </div>
+                                <div class="flex items-center space-x-1.5" onclick="event.stopPropagation()">
+                                    <span class="text-[10px] font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded border border-amber-200"><i class="fa-solid fa-user-doctor mr-1"></i>Solo Terapeuta</span>
+                                    <i id="iconCheckTareaGraficaExposicion" class="fa-regular fa-circle text-slate-300 text-sm"></i>
                                 </div>
                             </div>
                         </div>
@@ -986,6 +997,230 @@
                                     <tr class="h-9"><td class="border p-2 text-center font-bold">#8</td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td></tr>
                                     <tr class="h-9"><td class="border p-2 text-center font-bold">#9</td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td></tr>
                                     <tr class="h-9"><td class="border p-2 text-center font-bold">#10 (Mayor)</td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DESGLOSE TAREA 9: GRÁFICA DE EXPOSICIÓN (SOLO TERAPEUTA - SIN CICLOS SEMANALES) -->
+                <div id="secDesgloseGraficaExposicion" class="hidden space-y-6">
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-200 pb-4">
+                            <div>
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <h3 class="font-bold text-lg text-slate-900 flex items-center gap-2">
+                                        <i class="fa-solid fa-chart-line text-amber-600"></i> Gráfica de Exposición — Curva USA vs. Tiempo
+                                    </h3>
+                                    <span class="text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-900 border border-amber-300 px-2.5 py-0.5 rounded-full">
+                                        <i class="fa-solid fa-user-doctor mr-1"></i>Solo Terapeuta · Sin Ciclos Semanales
+                                    </span>
+                                </div>
+                                <p class="text-xs text-slate-500 mt-1">Selecciona la actividad conforme al orden de la Jerarquía de Temores, define las escalas de tiempo en el eje inferior y asigna los valores USA (0–100) en el eje izquierdo. Los puntos se unirán automáticamente formando la curva de habituación.</p>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-2 no-print shrink-0">
+                                <button type="button" onclick="exportarPDFTarea('diligenciado')" class="text-xs bg-amber-600 hover:bg-amber-700 text-white px-3 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shadow-sm">
+                                    <i class="fa-solid fa-file-pdf"></i> Descargar (Diligenciado)
+                                </button>
+                                <button type="button" onclick="exportarPDFTarea('limpio')" class="text-xs bg-slate-200 hover:bg-slate-300 text-slate-800 px-3 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shadow-sm">
+                                    <i class="fa-solid fa-print"></i> Descargar (Plantilla en Limpio)
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- NOTIFICACIÓN DE ENVÍO EXITOSO -->
+                        <div id="geAlertaGuardado" class="hidden bg-emerald-50 border border-emerald-300 text-emerald-900 px-4 py-3 rounded-xl text-xs font-semibold flex items-center justify-between no-print">
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-circle-check text-emerald-600 text-base"></i>
+                                <span>¡Registro de Gráfica de Exposición enviado y guardado exitosamente en la plataforma!</span>
+                            </div>
+                            <button type="button" onclick="document.getElementById('geAlertaGuardado').classList.add('hidden')" class="text-emerald-700 hover:text-emerald-950 font-bold px-2">✕</button>
+                        </div>
+
+                        <!-- FORMULARIO DE REGISTRO EN VIVO (DILIGENCIADO) -->
+                        <form id="formGraficaExposicion" onsubmit="guardarGraficaExposicion(event)" class="space-y-5 datos-diligenciados no-print">
+                            <!-- PASO 1: SELECCIÓN DE ACTIVIDAD (JERARQUÍA DE TEMORES) Y FECHA -->
+                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+                                <div class="md:col-span-8">
+                                    <div class="flex flex-wrap justify-between items-center gap-1 mb-1">
+                                        <label class="block text-xs font-bold text-slate-700 uppercase">
+                                            1. Actividad / Estímulo (Orden de Jerarquía de Temores)
+                                        </label>
+                                        <span id="geBadgeJerarquiaInfo" class="text-[10px] font-bold px-2.5 py-0.5 rounded-full border bg-amber-50 text-amber-900 border-amber-300">
+                                            Selecciona una actividad de la jerarquía
+                                        </span>
+                                    </div>
+                                    <select id="geSelectJerarquiaTemores" onchange="actualizarActividadSeleccionadaGE()" required class="w-full px-3.5 py-2.5 bg-white text-slate-900 border border-slate-300 rounded-xl text-xs font-bold focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                                    </select>
+                                    <div id="geAvisoSinJerarquia" class="hidden mt-2 bg-amber-50 border border-amber-300 text-amber-900 p-2.5 rounded-lg text-[11px] flex flex-wrap items-center justify-between gap-2">
+                                        <span><i class="fa-solid fa-triangle-exclamation mr-1"></i>Aún no hay ítems en <strong>Jerarquía de Temores</strong> para este paciente.</span>
+                                        <button type="button" onclick="seleccionarTarea('jerarquia_temores')" class="bg-amber-600 hover:bg-amber-700 text-white font-bold px-2.5 py-1 rounded-lg text-[10px] transition">
+                                            Ir a Jerarquía de Temores
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="md:col-span-4">
+                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Fecha de la Actividad</label>
+                                    <input type="date" id="geFechaSesion" required class="w-full px-3.5 py-2 bg-white text-slate-900 border border-slate-300 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                                </div>
+                            </div>
+
+                            <!-- PASO 2: CONFIGURADOR RÁPIDO DE ESCALA DE TIEMPO -->
+                            <div class="bg-amber-50/60 p-4 rounded-xl border border-amber-200 flex flex-col lg:flex-row lg:items-end justify-between gap-3">
+                                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 flex-1">
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-amber-950 uppercase mb-1">Unidad de Tiempo</label>
+                                        <input type="text" id="geUnidadTiempo" value="min" oninput="geDraftUnidad = this.value" placeholder="Ej: min, seg, hrs" class="w-full px-3 py-1.5 bg-white text-slate-900 border border-amber-300 rounded-lg text-xs font-bold focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-amber-950 uppercase mb-1">Tiempo Inicial</label>
+                                        <input type="number" min="0" step="any" id="geTiempoInicial" value="0" class="w-full px-3 py-1.5 bg-white text-slate-900 border border-amber-300 rounded-lg text-xs font-bold text-center focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-amber-950 uppercase mb-1">Intervalo (+)</label>
+                                        <input type="number" min="0.5" step="any" id="geIntervaloTiempo" value="5" oninput="geDraftIntervalo = parseFloat(this.value) || 5" class="w-full px-3 py-1.5 bg-white text-slate-900 border border-amber-300 rounded-lg text-xs font-bold text-center focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-amber-950 uppercase mb-1">Cant. de Puntos</label>
+                                        <input type="number" min="2" max="30" id="geCantidadPuntos" value="6" class="w-full px-3 py-1.5 bg-white text-slate-900 border border-amber-300 rounded-lg text-xs font-bold text-center focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                                    </div>
+                                </div>
+                                <div class="flex flex-wrap items-center gap-2 shrink-0">
+                                    <button type="button" onclick="generarEscalaTiempoGE()" class="bg-amber-600 hover:bg-amber-700 text-white font-bold px-3.5 py-2 rounded-xl text-xs shadow-sm transition flex items-center gap-1.5">
+                                        <i class="fa-solid fa-clock"></i> Aplicar Escala de Tiempo
+                                    </button>
+                                    <button type="button" onclick="reiniciarBorradorGraficaExposicion()" class="bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-semibold px-3 py-2 rounded-xl text-xs transition flex items-center gap-1">
+                                        <i class="fa-solid fa-rotate-left"></i> Reiniciar
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- PASO 3: TABLA DE REGISTRO (TIEMPO vs USA) + GRÁFICA DE LÍNEAS EN VIVO -->
+                            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                                <!-- COLUMNA IZQUIERDA: PUNTOS TIEMPO vs USA -->
+                                <div class="lg:col-span-5 bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
+                                    <div class="flex justify-between items-center border-b border-slate-200 pb-2">
+                                        <div>
+                                            <h4 class="font-bold text-xs text-slate-900 uppercase">2. Puntos de Medición</h4>
+                                            <p class="text-[10px] text-slate-500">Edita cada etiqueta de tiempo y su valor USA (0–100).</p>
+                                        </div>
+                                        <button type="button" onclick="agregarPuntoGraficaExposicion()" class="bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 font-bold px-2.5 py-1.5 rounded-lg text-[11px] transition flex items-center gap-1 shrink-0">
+                                            <i class="fa-solid fa-plus"></i> Agregar Punto
+                                        </button>
+                                    </div>
+
+                                    <div class="grid grid-cols-12 gap-2 text-[10px] font-bold uppercase text-slate-500 px-1">
+                                        <div class="col-span-1 text-center">#</div>
+                                        <div class="col-span-5">Tiempo (Eje Inf.)</div>
+                                        <div class="col-span-4 text-center">USA (Eje Izq.)</div>
+                                        <div class="col-span-2 text-center">Quitar</div>
+                                    </div>
+
+                                    <div id="gePuntosContainer" class="space-y-2 max-h-[370px] overflow-y-auto pr-1"></div>
+
+                                    <button type="button" onclick="agregarPuntoGraficaExposicion()" class="w-full py-2 border border-dashed border-amber-400 hover:bg-amber-50 text-amber-800 font-bold rounded-xl text-xs transition flex items-center justify-center gap-1.5">
+                                        <i class="fa-solid fa-plus-circle"></i> Añadir siguiente punto de tiempo
+                                    </button>
+                                </div>
+
+                                <!-- COLUMNA DERECHA: GRÁFICA DE LÍNEAS UNIDAS EN TIEMPO REAL -->
+                                <div class="lg:col-span-7 bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                                    <div class="flex flex-wrap justify-between items-center gap-2 border-b border-slate-100 pb-2">
+                                        <h4 class="font-bold text-xs text-slate-900 uppercase flex items-center gap-1.5">
+                                            <i class="fa-solid fa-wave-square text-amber-600"></i> 3. Gráfica de Líneas (Vista en Vivo)
+                                        </h4>
+                                        <span class="text-[10px] text-slate-500 font-medium">Eje Izquierdo: Valor USA (0–100) · Eje Inferior: Tiempo</span>
+                                    </div>
+
+                                    <!-- MÉTRICAS EN VIVO -->
+                                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 text-center">
+                                            <span class="text-[10px] text-slate-500 font-bold uppercase block">USA Inicial</span>
+                                            <span id="geLiveStatInicial" class="text-lg font-extrabold text-slate-900">--</span>
+                                        </div>
+                                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 text-center">
+                                            <span class="text-[10px] text-slate-500 font-bold uppercase block">USA Pico (Máx)</span>
+                                            <span id="geLiveStatPico" class="text-lg font-extrabold text-rose-700">--</span>
+                                        </div>
+                                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 text-center">
+                                            <span class="text-[10px] text-slate-500 font-bold uppercase block">USA Final</span>
+                                            <span id="geLiveStatFinal" class="text-lg font-extrabold text-amber-700">--</span>
+                                        </div>
+                                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 text-center">
+                                            <span class="text-[10px] text-slate-500 font-bold uppercase block">Habituación</span>
+                                            <span id="geLiveStatCambio" class="text-sm font-extrabold text-emerald-700">--</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- LIENZO DE GRÁFICA DE LÍNEAS -->
+                                    <div class="relative w-full h-72 sm:h-80 bg-slate-50/40 rounded-xl border border-slate-100 p-2">
+                                        <canvas id="chartGraficaExposicionLive"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- PASO 4: OBSERVACIONES Y ENVÍO FINAL A LA PLATAFORMA -->
+                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-col md:flex-row items-stretch md:items-end justify-between gap-4">
+                                <div class="flex-1">
+                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Observaciones Clínicas de la Exposición (Opcional)</label>
+                                    <input type="text" id="geObservaciones" placeholder="Ej: Se mantuvo exposición sin conductas de seguridad hasta lograr reducción significativa de USA..." class="w-full px-3.5 py-2.5 bg-white text-slate-900 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                                </div>
+                                <button type="submit" class="bg-amber-600 hover:bg-amber-700 text-white font-bold px-6 py-2.5 rounded-xl text-xs shadow-md transition flex items-center justify-center gap-2 shrink-0">
+                                    <i class="fa-solid fa-paper-plane"></i> Enviar y Guardar Registro
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- HISTORIAL DE GRÁFICAS DE EXPOSICIÓN GUARDADAS EN LA PLATAFORMA -->
+                        <div class="space-y-4 pt-4 border-t border-slate-200 datos-diligenciados">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                                <div>
+                                    <h4 class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                                        <i class="fa-solid fa-folder-open text-amber-600"></i> Registros de Exposición Guardados en la Plataforma
+                                    </h4>
+                                    <p class="text-[11px] text-slate-500">Historial permanente de sesiones de exposición registradas por el terapeuta.</p>
+                                </div>
+                                <span id="geContadorHistorial" class="text-xs font-bold bg-amber-50 text-amber-900 border border-amber-200 px-3 py-1 rounded-full">0 registro(s)</span>
+                            </div>
+
+                            <div id="containerHistorialGraficasExposicion" class="space-y-5"></div>
+                        </div>
+
+                        <!-- PLANTILLA EN LIMPIO PARA IMPRESIÓN -->
+                        <div class="plantilla-limpia-block space-y-4">
+                            <div class="grid grid-cols-2 gap-4 border border-slate-300 p-3 rounded-lg text-xs">
+                                <div><strong>Actividad (Jerarquía de Temores):</strong> _______________________________</div>
+                                <div><strong>Orden Jerarquía / USA Basal:</strong> _______ / _______ &nbsp;&nbsp; <strong>Fecha:</strong> ____/____/20____</div>
+                            </div>
+                            <div class="border border-slate-300 p-3 rounded-lg">
+                                <div class="text-xs font-bold uppercase text-slate-800 mb-2">Gráfica de Exposición (Eje Izquierdo: Valor USA 0–100 | Eje Inferior: Escala de Tiempo)</div>
+                                <div class="h-56 border-l-2 border-b-2 border-slate-700 ml-8 mb-6 relative flex flex-col justify-between text-[10px] text-slate-600">
+                                    <span class="-ml-7">100</span>
+                                    <span class="-ml-6">80</span>
+                                    <span class="-ml-6">60</span>
+                                    <span class="-ml-6">40</span>
+                                    <span class="-ml-6">20</span>
+                                    <span class="-ml-5">0</span>
+                                </div>
+                            </div>
+                            <table class="w-full text-left text-xs border-collapse border border-slate-300">
+                                <thead class="bg-slate-100 uppercase font-bold">
+                                    <tr>
+                                        <th class="p-2 border border-slate-300 w-16 text-center">Punto</th>
+                                        <th class="p-2 border border-slate-300 w-40">Tiempo (Eje Inferior)</th>
+                                        <th class="p-2 border border-slate-300 w-36 text-center">Valor USA (0–100)</th>
+                                        <th class="p-2 border border-slate-300">Observaciones Clínicas</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="h-8"><td class="border p-2 text-center">1</td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td></tr>
+                                    <tr class="h-8"><td class="border p-2 text-center">2</td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td></tr>
+                                    <tr class="h-8"><td class="border p-2 text-center">3</td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td></tr>
+                                    <tr class="h-8"><td class="border p-2 text-center">4</td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td></tr>
+                                    <tr class="h-8"><td class="border p-2 text-center">5</td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td></tr>
+                                    <tr class="h-8"><td class="border p-2 text-center">6</td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td></tr>
+                                    <tr class="h-8"><td class="border p-2 text-center">7</td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td></tr>
+                                    <tr class="h-8"><td class="border p-2 text-center">8</td><td class="border p-2"></td><td class="border p-2"></td><td class="border p-2"></td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -1811,6 +2046,20 @@
         let chartInstance = null;
         let chartHistogramaInstance = null;
         let chartHistoricoInstance = null;
+        let chartGraficaExposicionLive = null;
+        let chartsSavedGraficaExposicion = {};
+
+        let geDraftActividadId = '';
+        let geDraftUnidad = 'min';
+        let geDraftIntervalo = 5;
+        let geDraftPuntos = [
+            { tiempo: '0 min', usa: '' },
+            { tiempo: '5 min', usa: '' },
+            { tiempo: '10 min', usa: '' },
+            { tiempo: '15 min', usa: '' },
+            { tiempo: '20 min', usa: '' },
+            { tiempo: '25 min', usa: '' }
+        ];
         let modoPacienteGuardando = false;
         let pacientesCache = [];
 
@@ -2033,6 +2282,7 @@
                 registroPensamientos: [],
                 dialogoMente: [],
                 jerarquiaTemores: [],
+                graficasExposicion: [],
                 semanas: { [fechaStr]: crearSemanaVacia() }
             };
 
@@ -2136,6 +2386,8 @@
                 renderDialogoMenteTerapeuta(p);
             } else if (tareaSeleccionada === 'jerarquia_temores') {
                 renderJerarquiaTemoresTerapeuta(p);
+            } else if (tareaSeleccionada === 'grafica_exposicion') {
+                renderGraficaExposicionTerapeuta(p);
             }
         }
 
@@ -2203,11 +2455,33 @@
             const secRP = document.getElementById('secDesgloseRegistroPensamientos');
             const secDM = document.getElementById('secDesgloseDialogoMente');
             const secJT = document.getElementById('secDesgloseJerarquiaTemores');
+            const secGE = document.getElementById('secDesgloseGraficaExposicion');
             const msgVacio = document.getElementById('mensajeSinTareaSeleccionada');
             const ctrlSemanas = document.getElementById('containerControlBloqueSemanal');
 
-            [secMon, secJer, secIde, secPrg, secNot, secRP, secDM, secJT].forEach(s => s?.classList.add('hidden'));
+            [secMon, secJer, secIde, secPrg, secNot, secRP, secDM, secJT, secGE].forEach(s => s?.classList.add('hidden'));
             ctrlSemanas.classList.add('hidden');
+
+            const cardJT = document.getElementById('cardTareaJerarquiaTemores');
+            const iconJT = document.getElementById('iconCheckTareaJerarquiaTemores');
+            const cardGE = document.getElementById('cardTareaGraficaExposicion');
+            const iconGE = document.getElementById('iconCheckTareaGraficaExposicion');
+            if (cardJT && iconJT) {
+                cardJT.className = (tareaSeleccionada === 'jerarquia_temores')
+                    ? "cursor-pointer p-3 rounded-xl border transition flex items-center justify-between shadow-sm bg-amber-50/40 border-amber-500 ring-2 ring-amber-500/20"
+                    : "cursor-pointer p-3 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-slate-200 hover:border-amber-400";
+                iconJT.className = (tareaSeleccionada === 'jerarquia_temores')
+                    ? "fa-solid fa-circle-check text-amber-600 text-sm"
+                    : "fa-regular fa-circle text-slate-300 text-sm";
+            }
+            if (cardGE && iconGE) {
+                cardGE.className = (tareaSeleccionada === 'grafica_exposicion')
+                    ? "cursor-pointer p-3 rounded-xl border transition flex items-center justify-between shadow-sm bg-amber-50/40 border-amber-500 ring-2 ring-amber-500/20"
+                    : "cursor-pointer p-3 rounded-xl border transition flex items-center justify-between shadow-sm bg-white border-slate-200 hover:border-amber-400";
+                iconGE.className = (tareaSeleccionada === 'grafica_exposicion')
+                    ? "fa-solid fa-circle-check text-amber-600 text-sm"
+                    : "fa-regular fa-circle text-slate-300 text-sm";
+            }
 
             if (tareaSeleccionada === 'monitoreo') {
                 secMon.classList.remove('hidden');
@@ -2233,6 +2507,9 @@
                 msgVacio.classList.add('hidden');
             } else if (tareaSeleccionada === 'jerarquia_temores') {
                 secJT.classList.remove('hidden');
+                msgVacio.classList.add('hidden');
+            } else if (tareaSeleccionada === 'grafica_exposicion') {
+                secGE.classList.remove('hidden');
                 msgVacio.classList.add('hidden');
             } else {
                 msgVacio.classList.remove('hidden');
@@ -2482,6 +2759,599 @@
             const ordenados = obtenerJerarquiaTemoresOrdenada(pacienteData);
             actualizarEstadisticasJerarquiaTemores(ordenados, 'jtPaciente');
             renderTablaJerarquiaTemores(ordenados, 'tablaJerarquiaTemoresPacienteBody', 'Paciente');
+        }
+
+        // ============================================================
+        // LÓGICA TERAPIA DE EXPOSICIÓN: GRÁFICA DE EXPOSICIÓN (SOLO TERAPEUTA)
+        // ============================================================
+        const gePointLabelsPlugin = {
+            id: 'gePointLabelsPlugin',
+            afterDatasetsDraw(chart) {
+                const { ctx } = chart;
+                const meta = chart.getDatasetMeta(0);
+                if (!meta || !meta.data) return;
+                const dataset = chart.data.datasets[0];
+                ctx.save();
+                ctx.font = 'bold 11px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'bottom';
+                meta.data.forEach((element, idx) => {
+                    const val = dataset.data[idx];
+                    if (val !== null && val !== undefined && !isNaN(val)) {
+                        const pos = element.tooltipPosition();
+                        ctx.fillStyle = '#78350f';
+                        ctx.fillText(String(val), pos.x, pos.y - 8);
+                    }
+                });
+                ctx.restore();
+            }
+        };
+
+        function construirDatasetsGraficaExposicion(labels, usaValues, usaJerarquiaBasal) {
+            const datasets = [
+                {
+                    label: 'Nivel de Ansiedad (USA)',
+                    data: usaValues,
+                    borderColor: '#d97706',
+                    backgroundColor: 'rgba(217, 119, 6, 0.14)',
+                    borderWidth: 3,
+                    pointRadius: 6,
+                    pointHoverRadius: 8,
+                    pointBackgroundColor: '#b45309',
+                    pointBorderColor: '#ffffff',
+                    pointBorderWidth: 2,
+                    showLine: true,
+                    spanGaps: true,
+                    tension: 0.15,
+                    fill: true
+                }
+            ];
+
+            if (usaJerarquiaBasal !== null && usaJerarquiaBasal !== undefined && !isNaN(usaJerarquiaBasal) && labels.length > 0) {
+                datasets.push({
+                    label: `USA Jerarquía Basal (${usaJerarquiaBasal})`,
+                    data: labels.map(() => Number(usaJerarquiaBasal)),
+                    borderColor: '#64748b',
+                    borderWidth: 1.5,
+                    borderDash: [6, 6],
+                    pointRadius: 0,
+                    pointHoverRadius: 0,
+                    showLine: true,
+                    fill: false
+                });
+            }
+
+            return datasets;
+        }
+
+        function obtenerOpcionesGraficaExposicion() {
+            return {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: { duration: 200 },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            boxWidth: 14,
+                            font: { size: 11, weight: 'bold' },
+                            color: '#334155'
+                        }
+                    },
+                    tooltip: {
+                        enabled: true,
+                        callbacks: {
+                            label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y} USA`
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        min: 0,
+                        max: 100,
+                        ticks: {
+                            stepSize: 10,
+                            color: '#334155',
+                            font: { size: 11, weight: 'bold' }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Valor USA (0 – 100)',
+                            color: '#0f172a',
+                            font: { size: 12, weight: 'bold' }
+                        },
+                        grid: { color: 'rgba(148, 163, 184, 0.25)' }
+                    },
+                    x: {
+                        ticks: {
+                            color: '#334155',
+                            font: { size: 11, weight: 'bold' }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Escala de Tiempo',
+                            color: '#0f172a',
+                            font: { size: 12, weight: 'bold' }
+                        },
+                        grid: { color: 'rgba(148, 163, 184, 0.2)' }
+                    }
+                }
+            };
+        }
+
+        function poblarSelectorJerarquiaEnGE(p) {
+            const selectEl = document.getElementById('geSelectJerarquiaTemores');
+            const avisoEl = document.getElementById('geAvisoSinJerarquia');
+            if (!selectEl) return;
+
+            const ordenados = obtenerJerarquiaTemoresOrdenada(p);
+            const valorPrevio = geDraftActividadId || selectEl.value;
+            selectEl.innerHTML = '';
+
+            if (ordenados.length === 0) {
+                const opt = document.createElement('option');
+                opt.value = '';
+                opt.innerText = '-- Sin actividades registradas en Jerarquía de Temores --';
+                selectEl.appendChild(opt);
+                if (avisoEl) avisoEl.classList.remove('hidden');
+                geDraftActividadId = '';
+                actualizarActividadSeleccionadaGE();
+                return;
+            }
+
+            if (avisoEl) avisoEl.classList.add('hidden');
+
+            ordenados.forEach((item, idx) => {
+                const info = obtenerInfoUsa(item.usa);
+                const opt = document.createElement('option');
+                opt.value = item.id;
+                opt.dataset.orden = String(idx + 1);
+                opt.dataset.categoria = item.categoria;
+                opt.dataset.usa = String(item.usa);
+                opt.innerText = `#${idx + 1} — ${item.categoria} (USA Jerarquía: ${item.usa} · ${info.label})`;
+                selectEl.appendChild(opt);
+            });
+
+            const existePrevio = ordenados.some(x => x.id === valorPrevio);
+            if (existePrevio) {
+                selectEl.value = valorPrevio;
+            } else {
+                selectEl.selectedIndex = 0;
+                geDraftActividadId = selectEl.value;
+            }
+            actualizarActividadSeleccionadaGE();
+        }
+
+        function actualizarActividadSeleccionadaGE() {
+            const selectEl = document.getElementById('geSelectJerarquiaTemores');
+            const badgeEl = document.getElementById('geBadgeJerarquiaInfo');
+            if (!selectEl || !badgeEl) return;
+
+            geDraftActividadId = selectEl.value;
+            const opt = selectEl.options[selectEl.selectedIndex];
+
+            if (!opt || !opt.value) {
+                badgeEl.innerText = 'Sin actividad seleccionada';
+                badgeEl.className = 'text-[10px] font-bold px-2.5 py-0.5 rounded-full border bg-slate-100 text-slate-600 border-slate-300';
+            } else {
+                const orden = opt.dataset.orden || '-';
+                const usa = opt.dataset.usa || '0';
+                const info = obtenerInfoUsa(usa);
+                badgeEl.innerText = `Orden #${orden} · USA Basal: ${usa} (${info.label})`;
+                badgeEl.className = `text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${info.badgeClass}`;
+            }
+
+            renderChartGraficaExposicionLive();
+        }
+
+        function generarEscalaTiempoGE() {
+            const unidad = (document.getElementById('geUnidadTiempo')?.value || 'min').trim();
+            const inicio = parseFloat(document.getElementById('geTiempoInicial')?.value);
+            const intervalo = parseFloat(document.getElementById('geIntervaloTiempo')?.value);
+            const cantidad = parseInt(document.getElementById('geCantidadPuntos')?.value, 10);
+
+            const t0 = isNaN(inicio) ? 0 : inicio;
+            const step = (isNaN(intervalo) || intervalo <= 0) ? 5 : intervalo;
+            const count = (isNaN(cantidad) || cantidad < 2) ? 6 : Math.min(30, cantidad);
+
+            geDraftUnidad = unidad;
+            geDraftIntervalo = step;
+
+            const nuevosPuntos = [];
+            for (let i = 0; i < count; i++) {
+                const valTiempo = Number((t0 + i * step).toFixed(2));
+                const etiqueta = unidad ? `${valTiempo} ${unidad}` : `${valTiempo}`;
+                const usaExistente = (geDraftPuntos[i] && geDraftPuntos[i].usa !== '') ? geDraftPuntos[i].usa : '';
+                nuevosPuntos.push({ tiempo: etiqueta, usa: usaExistente });
+            }
+
+            geDraftPuntos = nuevosPuntos;
+            renderPuntosGraficaExposicion();
+            renderChartGraficaExposicionLive();
+        }
+
+        function agregarPuntoGraficaExposicion() {
+            const unidad = (document.getElementById('geUnidadTiempo')?.value || geDraftUnidad || 'min').trim();
+            const intervalo = parseFloat(document.getElementById('geIntervaloTiempo')?.value) || geDraftIntervalo || 5;
+
+            let siguienteEtiqueta = '';
+            if (geDraftPuntos.length === 0) {
+                siguienteEtiqueta = unidad ? `0 ${unidad}` : '0';
+            } else {
+                const ultimaStr = String(geDraftPuntos[geDraftPuntos.length - 1].tiempo || '').trim();
+                const matchNum = ultimaStr.match(/^(-?\d+(?:\.\d+)?)/);
+                if (matchNum) {
+                    const nextNum = Number((parseFloat(matchNum[1]) + intervalo).toFixed(2));
+                    siguienteEtiqueta = unidad ? `${nextNum} ${unidad}` : `${nextNum}`;
+                } else {
+                    siguienteEtiqueta = `Punto ${geDraftPuntos.length + 1}`;
+                }
+            }
+
+            geDraftPuntos.push({ tiempo: siguienteEtiqueta, usa: '' });
+            renderPuntosGraficaExposicion();
+            renderChartGraficaExposicionLive();
+        }
+
+        function eliminarPuntoGraficaExposicion(idx) {
+            if (geDraftPuntos.length <= 2) {
+                alert("La gráfica de exposición requiere al menos 2 puntos para trazar la línea.");
+                return;
+            }
+            geDraftPuntos.splice(idx, 1);
+            renderPuntosGraficaExposicion();
+            renderChartGraficaExposicionLive();
+        }
+
+        function actualizarPuntoGE(idx, campo, valor) {
+            if (!geDraftPuntos[idx]) return;
+            if (campo === 'tiempo') {
+                geDraftPuntos[idx].tiempo = valor;
+            } else if (campo === 'usa') {
+                if (valor === '' || valor === null) {
+                    geDraftPuntos[idx].usa = '';
+                } else {
+                    let num = parseInt(valor, 10);
+                    if (isNaN(num)) {
+                        geDraftPuntos[idx].usa = '';
+                    } else {
+                        num = Math.max(0, Math.min(100, num));
+                        geDraftPuntos[idx].usa = num;
+                    }
+                }
+            }
+            renderChartGraficaExposicionLive();
+        }
+
+        function reiniciarBorradorGraficaExposicion() {
+            const unidad = (document.getElementById('geUnidadTiempo')?.value || 'min').trim();
+            const step = parseFloat(document.getElementById('geIntervaloTiempo')?.value) || 5;
+            geDraftPuntos = [];
+            for (let i = 0; i < 6; i++) {
+                const t = Number((i * step).toFixed(2));
+                geDraftPuntos.push({ tiempo: unidad ? `${t} ${unidad}` : `${t}`, usa: '' });
+            }
+            const obsEl = document.getElementById('geObservaciones');
+            if (obsEl) obsEl.value = '';
+            renderPuntosGraficaExposicion();
+            renderChartGraficaExposicionLive();
+        }
+
+        function renderPuntosGraficaExposicion() {
+            const container = document.getElementById('gePuntosContainer');
+            if (!container) return;
+            container.innerHTML = '';
+
+            geDraftPuntos.forEach((pt, idx) => {
+                const row = document.createElement('div');
+                row.className = 'grid grid-cols-12 gap-2 items-center bg-white p-2 rounded-xl border border-slate-200 shadow-xs';
+                row.innerHTML = `
+                    <div class="col-span-1 text-center">
+                        <span class="text-[10px] font-black text-amber-900 bg-amber-100 border border-amber-300 px-1.5 py-0.5 rounded">${idx + 1}</span>
+                    </div>
+                    <div class="col-span-5">
+                        <input type="text" value="${escapeHtml(pt.tiempo)}" oninput="actualizarPuntoGE(${idx}, 'tiempo', this.value)" placeholder="Ej: 5 min" class="w-full px-2.5 py-1.5 bg-slate-50 focus:bg-white text-slate-900 border border-slate-300 focus:border-amber-500 rounded-lg text-xs font-bold focus:outline-none">
+                    </div>
+                    <div class="col-span-4">
+                        <input type="number" min="0" max="100" value="${pt.usa !== '' ? pt.usa : ''}" oninput="actualizarPuntoGE(${idx}, 'usa', this.value)" placeholder="0 - 100" class="w-full px-2 py-1.5 bg-slate-50 focus:bg-white text-slate-900 border border-slate-300 focus:border-amber-500 rounded-lg text-xs font-extrabold text-center focus:outline-none">
+                    </div>
+                    <div class="col-span-2 text-center">
+                        <button type="button" onclick="eliminarPuntoGraficaExposicion(${idx})" title="Eliminar punto" class="text-xs bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 px-2 py-1.5 rounded-lg transition font-bold">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function calcularMetricasCurvaUSA(valoresValidos) {
+            if (!valoresValidos || valoresValidos.length === 0) {
+                return { inicial: '--', pico: '--', final: '--', cambioTexto: '--', cambioClase: 'text-slate-600' };
+            }
+            const inicial = valoresValidos[0];
+            const pico = Math.max(...valoresValidos);
+            const final = valoresValidos[valoresValidos.length - 1];
+            const diff = final - inicial;
+
+            let cambioTexto = '0 pts (0%)';
+            let cambioClase = 'text-slate-700';
+            if (inicial > 0) {
+                const pct = Math.round((diff / inicial) * 100);
+                if (diff < 0) {
+                    cambioTexto = `${diff} pts (${pct}%)`;
+                    cambioClase = 'text-emerald-700';
+                } else if (diff > 0) {
+                    cambioTexto = `+${diff} pts (+${pct}%)`;
+                    cambioClase = 'text-rose-700';
+                }
+            } else if (diff > 0) {
+                cambioTexto = `+${diff} pts`;
+                cambioClase = 'text-rose-700';
+            }
+
+            return { inicial, pico, final, cambioTexto, cambioClase };
+        }
+
+        function renderChartGraficaExposicionLive() {
+            const canvas = document.getElementById('chartGraficaExposicionLive');
+            if (!canvas) return;
+
+            const labels = geDraftPuntos.map((pt, i) => (pt.tiempo || '').trim() || `T${i + 1}`);
+            const dataPoints = geDraftPuntos.map(pt => (pt.usa === '' || pt.usa === null || isNaN(Number(pt.usa))) ? null : Number(pt.usa));
+            const validNums = dataPoints.filter(v => v !== null);
+
+            const stats = calcularMetricasCurvaUSA(validNums);
+            const elIni = document.getElementById('geLiveStatInicial');
+            const elPic = document.getElementById('geLiveStatPico');
+            const elFin = document.getElementById('geLiveStatFinal');
+            const elCam = document.getElementById('geLiveStatCambio');
+            if (elIni) elIni.innerText = stats.inicial;
+            if (elPic) elPic.innerText = stats.pico;
+            if (elFin) elFin.innerText = stats.final;
+            if (elCam) {
+                elCam.innerText = stats.cambioTexto;
+                elCam.className = `text-sm font-extrabold ${stats.cambioClase}`;
+            }
+
+            const selectEl = document.getElementById('geSelectJerarquiaTemores');
+            const opt = selectEl ? selectEl.options[selectEl.selectedIndex] : null;
+            const usaBasal = (opt && opt.value && opt.dataset.usa !== undefined) ? Number(opt.dataset.usa) : null;
+
+            const ctx = canvas.getContext('2d');
+            if (chartGraficaExposicionLive) {
+                chartGraficaExposicionLive.destroy();
+            }
+
+            chartGraficaExposicionLive = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: construirDatasetsGraficaExposicion(labels, dataPoints, usaBasal)
+                },
+                options: obtenerOpcionesGraficaExposicion(),
+                plugins: [gePointLabelsPlugin]
+            });
+        }
+
+        function guardarGraficaExposicion(e) {
+            e.preventDefault();
+            if (!pacienteData) return;
+
+            const selectEl = document.getElementById('geSelectJerarquiaTemores');
+            const opt = selectEl ? selectEl.options[selectEl.selectedIndex] : null;
+            if (!opt || !opt.value) {
+                alert("Por favor selecciona una actividad de la Jerarquía de Temores antes de enviar el registro.");
+                return;
+            }
+
+            const puntosValidos = geDraftPuntos
+                .map((pt, i) => ({
+                    tiempo: (pt.tiempo || '').trim() || `T${i + 1}`,
+                    usa: (pt.usa === '' || pt.usa === null || isNaN(Number(pt.usa))) ? null : Math.max(0, Math.min(100, Number(pt.usa)))
+                }))
+                .filter(pt => pt.usa !== null);
+
+            if (puntosValidos.length < 2) {
+                alert("Por favor registra al menos 2 puntos con su tiempo y valor USA (0 a 100) para construir y guardar la gráfica de exposición.");
+                return;
+            }
+
+            const fechaSesion = document.getElementById('geFechaSesion')?.value || new Date().toISOString().split('T')[0];
+            const observaciones = (document.getElementById('geObservaciones')?.value || '').trim();
+
+            const now = new Date();
+            const horaRegistro = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+
+            if (!pacienteData.graficasExposicion) pacienteData.graficasExposicion = [];
+
+            const nuevoRegistro = {
+                id: 'ge_' + Math.random().toString(36).substr(2, 9),
+                jerarquiaItemId: opt.value,
+                ordenJerarquia: parseInt(opt.dataset.orden, 10) || 1,
+                actividad: opt.dataset.categoria || 'Actividad de exposición',
+                usaJerarquiaBasal: parseInt(opt.dataset.usa, 10) || 0,
+                fechaSesion: fechaSesion,
+                horaRegistro: horaRegistro,
+                timestamp: now.toISOString(),
+                puntos: puntosValidos,
+                observaciones: observaciones
+            };
+
+            pacienteData.graficasExposicion.unshift(nuevoRegistro);
+            sincronizarGarantizado();
+
+            const alerta = document.getElementById('geAlertaGuardado');
+            if (alerta) alerta.classList.remove('hidden');
+
+            reiniciarBorradorGraficaExposicion();
+            renderHistorialGraficasExposicion(pacienteData);
+        }
+
+        function duplicarEscalaGraficaExposicion(regId) {
+            if (!pacienteData || !pacienteData.graficasExposicion) return;
+            const reg = pacienteData.graficasExposicion.find(r => r.id === regId);
+            if (!reg) return;
+
+            geDraftActividadId = reg.jerarquiaItemId || '';
+            const selectEl = document.getElementById('geSelectJerarquiaTemores');
+            if (selectEl && geDraftActividadId) {
+                selectEl.value = geDraftActividadId;
+            }
+            geDraftPuntos = (reg.puntos || []).map(pt => ({ tiempo: pt.tiempo, usa: '' }));
+            if (geDraftPuntos.length < 2) {
+                geDraftPuntos = [{ tiempo: '0 min', usa: '' }, { tiempo: '5 min', usa: '' }];
+            }
+            const obsEl = document.getElementById('geObservaciones');
+            if (obsEl) obsEl.value = '';
+
+            actualizarActividadSeleccionadaGE();
+            renderPuntosGraficaExposicion();
+            renderChartGraficaExposicionLive();
+            document.getElementById('secDesgloseGraficaExposicion')?.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function eliminarGraficaExposicion(regId) {
+            if (!confirm("¿Eliminar este registro guardado de Gráfica de Exposición?")) return;
+            pacienteData.graficasExposicion = (pacienteData.graficasExposicion || []).filter(r => r.id !== regId);
+            sincronizarGarantizado();
+            renderHistorialGraficasExposicion(pacienteData);
+        }
+
+        function renderHistorialGraficasExposicion(p) {
+            const container = document.getElementById('containerHistorialGraficasExposicion');
+            const contadorEl = document.getElementById('geContadorHistorial');
+            if (!container) return;
+
+            Object.values(chartsSavedGraficaExposicion).forEach(ch => {
+                try { ch.destroy(); } catch (err) {}
+            });
+            chartsSavedGraficaExposicion = {};
+
+            const registros = p.graficasExposicion || [];
+            if (contadorEl) contadorEl.innerText = `${registros.length} registro(s)`;
+
+            if (registros.length === 0) {
+                container.innerHTML = `
+                    <div class="p-8 text-center bg-slate-50 border border-dashed border-slate-300 rounded-2xl text-slate-400 text-xs">
+                        <i class="fa-solid fa-chart-line text-2xl mb-2 text-slate-300 block"></i>
+                        Aún no se han enviado registros de Gráfica de Exposición para este paciente.
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = '';
+
+            registros.forEach((reg, idx) => {
+                const pts = reg.puntos || [];
+                const validNums = pts.map(x => Number(x.usa)).filter(v => !isNaN(v));
+                const stats = calcularMetricasCurvaUSA(validNums);
+                const canvasId = `chartSavedGE_${reg.id}`;
+
+                const card = document.createElement('div');
+                card.className = 'bg-slate-50/70 border border-slate-200 rounded-2xl p-5 space-y-4 shadow-xs';
+
+                const celdasTiempo = pts.map(pt => `<th class="p-2 border border-slate-300 text-center bg-slate-100 text-slate-800 font-bold">${escapeHtml(pt.tiempo)}</th>`).join('');
+                const celdasUsa = pts.map(pt => {
+                    const info = obtenerInfoUsa(pt.usa);
+                    return `<td class="p-2 border border-slate-300 text-center font-extrabold text-slate-900">${pt.usa} <span class="block text-[9px] font-bold px-1.5 py-0.5 rounded-full border mt-0.5 ${info.badgeClass}">${info.label}</span></td>`;
+                }).join('');
+
+                card.innerHTML = `
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 border-b border-slate-200 pb-3">
+                        <div class="space-y-1">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span class="text-[10px] font-black uppercase bg-amber-600 text-white px-2.5 py-0.5 rounded-full">Exposición #${registros.length - idx}</span>
+                                <span class="text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300 px-2.5 py-0.5 rounded-full">Jerarquía #${reg.ordenJerarquia || '-'} (USA Basal: ${reg.usaJerarquiaBasal ?? '--'})</span>
+                                <span class="text-xs text-slate-500 font-semibold"><i class="fa-regular fa-calendar mr-1"></i>${escapeHtml(reg.fechaSesion || '--')} · ${escapeHtml(reg.horaRegistro || '')}</span>
+                            </div>
+                            <h5 class="font-extrabold text-sm text-slate-900">${escapeHtml(reg.actividad)}</h5>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-2 no-print shrink-0">
+                            <button type="button" onclick="duplicarEscalaGraficaExposicion('${reg.id}')" class="text-xs bg-white hover:bg-amber-50 text-amber-800 border border-amber-300 px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1">
+                                <i class="fa-solid fa-copy"></i> Reutilizar Escala
+                            </button>
+                            <button type="button" onclick="eliminarGraficaExposicion('${reg.id}')" class="text-xs bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 px-2.5 py-1.5 rounded-xl font-bold transition">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                        <div class="bg-white p-2.5 rounded-xl border border-slate-200 text-center">
+                            <span class="text-[10px] text-slate-500 font-bold uppercase block">USA Inicial</span>
+                            <span class="text-base font-extrabold text-slate-900">${stats.inicial}</span>
+                        </div>
+                        <div class="bg-white p-2.5 rounded-xl border border-slate-200 text-center">
+                            <span class="text-[10px] text-slate-500 font-bold uppercase block">USA Pico</span>
+                            <span class="text-base font-extrabold text-rose-700">${stats.pico}</span>
+                        </div>
+                        <div class="bg-white p-2.5 rounded-xl border border-slate-200 text-center">
+                            <span class="text-[10px] text-slate-500 font-bold uppercase block">USA Final</span>
+                            <span class="text-base font-extrabold text-amber-700">${stats.final}</span>
+                        </div>
+                        <div class="bg-white p-2.5 rounded-xl border border-slate-200 text-center">
+                            <span class="text-[10px] text-slate-500 font-bold uppercase block">Habituación</span>
+                            <span class="text-xs font-extrabold ${stats.cambioClase}">${stats.cambioTexto}</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-3 rounded-xl border border-slate-200">
+                        <div class="relative w-full h-64 sm:h-72">
+                            <canvas id="${canvasId}"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto bg-white rounded-xl border border-slate-200">
+                        <table class="w-full text-xs border-collapse">
+                            <thead>
+                                <tr>
+                                    <th class="p-2 border border-slate-300 bg-slate-800 text-white uppercase font-bold w-32 text-left">Tiempo (Inf.)</th>
+                                    ${celdasTiempo}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="p-2 border border-slate-300 bg-amber-50 text-amber-950 uppercase font-bold text-left">Valor USA (Izq.)</th>
+                                    ${celdasUsa}
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    ${reg.observaciones ? `<div class="bg-white p-3 rounded-xl border border-slate-200 text-xs text-slate-700"><strong class="text-slate-900">Observaciones clínicas:</strong> ${escapeHtml(reg.observaciones)}</div>` : ''}
+                `;
+
+                container.appendChild(card);
+
+                const savedCanvas = document.getElementById(canvasId);
+                if (savedCanvas) {
+                    const labels = pts.map(pt => pt.tiempo);
+                    const vals = pts.map(pt => Number(pt.usa));
+                    chartsSavedGraficaExposicion[reg.id] = new Chart(savedCanvas.getContext('2d'), {
+                        type: 'line',
+                        data: {
+                            labels: labels,
+                            datasets: construirDatasetsGraficaExposicion(labels, vals, reg.usaJerarquiaBasal)
+                        },
+                        options: obtenerOpcionesGraficaExposicion(),
+                        plugins: [gePointLabelsPlugin]
+                    });
+                }
+            });
+        }
+
+        function renderGraficaExposicionTerapeuta(p) {
+            const fechaEl = document.getElementById('geFechaSesion');
+            if (fechaEl && !fechaEl.value) {
+                fechaEl.value = new Date().toISOString().split('T')[0];
+            }
+            poblarSelectorJerarquiaEnGE(p);
+            renderPuntosGraficaExposicion();
+            renderChartGraficaExposicionLive();
+            renderHistorialGraficasExposicion(p);
         }
 
         // RENDERING REGISTRO DE PENSAMIENTOS TERAPEUTA
@@ -3608,7 +4478,7 @@
                 fechaInicio: '2026-10-26', notasClinicas: 'Evaluación inicial.',
                 modulosAsignados: [...TODOS_MODULOS_DEFAULT],
                 jerarquiaActividades: [], identificacionActividades: [], programacionActividades: [],
-                notasPaciente: [], registroPensamientos: [], dialogoMente: [], jerarquiaTemores: [],
+                notasPaciente: [], registroPensamientos: [], dialogoMente: [], jerarquiaTemores: [], graficasExposicion: [],
                 semanas: { '2026-10-26': crearSemanaVacia() }
             }];
         }
