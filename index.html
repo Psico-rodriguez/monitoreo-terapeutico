@@ -2155,7 +2155,7 @@
         const DIAS_NOMBRE = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 
         const CATEGORIAS_IDENTIFICACION = [
-            { id: 'cuidado_personal', nombre: '1. Rutina de Cuidado Personal', desc: 'Hábitos de sueño, alimentación, ejercicio e higiene diaria descidados.', preguntas: ["¿Cuáles rutinas se han interrumpido?", "¿Qué actividades podrías empezar a realizar para retomar hábitos?"] },
+            { id: 'cuidado_personal', nombre: '1. Rutina de Cuidado Personal', desc: 'Hábitos de sueño, alimentación, ejercicio e higiene diaria descuidados.', preguntas: ["¿Cuáles rutinas se han interrumpido?", "¿Qué actividades podrías empezar a realizar para retomar hábitos?"] },
             { id: 'disfrutaba_antes', nombre: '2. Actividades que Solías Disfrutar', desc: 'Actividades gratificantes que constituían tu vida antes.', preguntas: ["¿Qué actividades disfrutabas hacer antes?"] },
             { id: 'nuevas_actividades', nombre: '3. Nuevas Actividades a Empezar', desc: 'Nuevos comienzos o pasatiempos que te gustaría iniciar.', preguntas: ["¿Qué cosas te gustaría empezar a hacer de nuevo?"] },
             { id: 'evitando_realizar', nombre: '4. Actividades Evitadas por Malestar', desc: 'Cosas que evitas o postergas.', preguntas: ["¿Con qué frecuencia te notas evitando actividades?"] },
@@ -2202,6 +2202,88 @@
         let terapiaSeleccionada = 'activacion_conductual';
         let tareaSeleccionada = 'monitoreo';
 
+        // ============================================================
+        // NORMALIZACIÓN DE DATOS (COMPATIBILIDAD CON FIRESTORE Y BACKUPS)
+        // ============================================================
+        function normalizarSemanaObj(semRaw) {
+            const base = crearSemanaVacia();
+            if (!semRaw || typeof semRaw !== 'object') return base;
+            base.bloqueada = !!semRaw.bloqueada;
+
+            const diasRaw = semRaw.dias;
+            for (let d = 0; d < 7; d++) {
+                let dSrc = null;
+                if (Array.isArray(diasRaw)) {
+                    dSrc = diasRaw[d];
+                } else if (diasRaw && typeof diasRaw === 'object') {
+                    dSrc = diasRaw[d] || diasRaw[String(d)];
+                }
+                if (!dSrc || typeof dSrc !== 'object') continue;
+
+                const animoNum = parseInt(dSrc.animo, 10);
+                base.dias[d].animo = isNaN(animoNum) ? 5 : animoNum;
+
+                const horasSrc = dSrc.horas;
+                if (horasSrc && typeof horasSrc === 'object') {
+                    HORAS_12H.forEach((hLabel, hIdx) => {
+                        let cSrc = null;
+                        if (Array.isArray(horasSrc)) {
+                            cSrc = horasSrc[hIdx];
+                        } else {
+                            cSrc = horasSrc[hLabel] || horasSrc[hIdx] || horasSrc[String(hIdx)];
+                        }
+                        if (cSrc && typeof cSrc === 'object') {
+                            const actVal = (cSrc.act !== undefined && cSrc.act !== null) ? cSrc.act : (cSrc.actividad || '');
+                            const dVal = (cSrc.d !== undefined && cSrc.d !== null) ? cSrc.d : (cSrc.D !== undefined && cSrc.D !== null ? cSrc.D : '');
+                            const iVal = (cSrc.i !== undefined && cSrc.i !== null) ? cSrc.i : (cSrc.I !== undefined && cSrc.I !== null ? cSrc.I : '');
+                            base.dias[d].horas[hLabel] = {
+                                act: String(actVal),
+                                d: dVal === '' ? '' : String(dVal),
+                                i: iVal === '' ? '' : String(iVal)
+                            };
+                        }
+                    });
+                }
+            }
+            return base;
+        }
+
+        function normalizarPacienteData(p) {
+            if (!p || typeof p !== 'object') return p;
+            if (!Array.isArray(p.modulosAsignados)) {
+                p.modulosAsignados = [...TODOS_MODULOS_DEFAULT];
+            }
+            if (!Array.isArray(p.jerarquiaActividades)) p.jerarquiaActividades = [];
+            if (!Array.isArray(p.identificacionActividades)) p.identificacionActividades = [];
+            if (!Array.isArray(p.programacionActividades)) p.programacionActividades = [];
+            if (!Array.isArray(p.notasPaciente)) p.notasPaciente = [];
+            if (!Array.isArray(p.registroPensamientos)) p.registroPensamientos = [];
+            if (!Array.isArray(p.dialogoMente)) p.dialogoMente = [];
+            if (!Array.isArray(p.jerarquiaTemores)) p.jerarquiaTemores = [];
+            if (!Array.isArray(p.graficasExposicion)) p.graficasExposicion = [];
+
+            p.jerarquiaBloqueada = !!p.jerarquiaBloqueada;
+            p.identificacionBloqueada = !!p.identificacionBloqueada;
+            p.jerarquiaTemoresBloqueada = !!p.jerarquiaTemoresBloqueada;
+            if (p.notasClinicas === undefined || p.notasClinicas === null) p.notasClinicas = '';
+
+            if (!p.semanas || typeof p.semanas !== 'object' || Array.isArray(p.semanas)) {
+                const fIni = obtenerLunes(p.fechaInicio || '2026-10-26');
+                p.semanas = { [fIni]: crearSemanaVacia() };
+            } else {
+                const keys = Object.keys(p.semanas);
+                if (keys.length === 0) {
+                    const fIni = obtenerLunes(p.fechaInicio || '2026-10-26');
+                    p.semanas[fIni] = crearSemanaVacia();
+                } else {
+                    keys.forEach(k => {
+                        p.semanas[k] = normalizarSemanaObj(p.semanas[k]);
+                    });
+                }
+            }
+            return p;
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
             const params = new URLSearchParams(window.location.search);
             const pId = params.get('p');
@@ -2229,6 +2311,7 @@
 
         function parseFechaLocal(fechaStr) {
             if (!fechaStr) return new Date();
+            if (fechaStr instanceof Date) return new Date(fechaStr.getTime());
             if (typeof fechaStr === 'string' && fechaStr.length >= 10) {
                 const part = fechaStr.substring(0, 10);
                 if (part.includes('-')) {
@@ -2321,11 +2404,12 @@
             if (firebaseActivo) {
                 try {
                     const snapshot = await db.collection('pacientes').get();
-                    snapshot.forEach(doc => pacientesCache.push({ id: doc.id, ...doc.data() }));
+                    snapshot.forEach(doc => pacientesCache.push(normalizarPacienteData({ id: doc.id, ...doc.data() })));
                 } catch(e) {}
             } else {
                 const localData = localStorage.getItem('demo_pacientes');
-                pacientesCache = localData ? JSON.parse(localData) : getPacientesEjemplo();
+                const parsed = localData ? JSON.parse(localData) : getPacientesEjemplo();
+                pacientesCache = parsed.map(p => normalizarPacienteData(p));
             }
 
             renderTablaPacientes(pacientesCache);
@@ -2433,23 +2517,28 @@
             }
 
             cerrarModalNuevoPaciente();
-            cargarDashboardTerapeuta({ email: auth ? auth.currentUser.email : 'psicologoorodriguez@gmail.com' });
+            cargarDashboardTerapeuta({ email: (auth && auth.currentUser) ? auth.currentUser.email : 'psicologoorodriguez@gmail.com' });
         }
 
         async function verDetalleClinico(pId) {
+            if (pacienteActualId !== pId) {
+                semanaSeleccionadaKey = null;
+                diaSeleccionadoIndex = 0;
+            }
             pacienteActualId = pId;
 
             if (firebaseActivo) {
                 if (unsubscribeRealtime) unsubscribeRealtime();
                 unsubscribeRealtime = db.collection('pacientes').doc(pId).onSnapshot(doc => {
                     if (doc.exists) {
-                        pacienteData = doc.data();
+                        pacienteData = normalizarPacienteData({ id: doc.id, ...doc.data() });
                         renderizarFichaClinica();
                     }
                 });
             } else {
                 let local = JSON.parse(localStorage.getItem('demo_pacientes') || '[]');
-                pacienteData = local.find(item => item.id === pId) || getPacientesEjemplo()[0];
+                const found = local.find(item => item.id === pId) || pacientesCache.find(item => item.id === pId) || getPacientesEjemplo()[0];
+                pacienteData = normalizarPacienteData(found);
                 renderizarFichaClinica();
             }
         }
@@ -2461,7 +2550,7 @@
         }
 
         function renderizarFichaClinica() {
-            const p = pacienteData;
+            const p = normalizarPacienteData(pacienteData);
             ocultarTodasLasSecciones();
             document.getElementById('secDetallePacienteTerapeuta').classList.remove('hidden');
 
@@ -2469,7 +2558,11 @@
             document.getElementById('detEdadPaciente').innerText = p.edad || "--";
             document.getElementById('detFechaNacPaciente').innerText = p.fechaNacimiento || "--";
             document.getElementById('detIdPaciente').innerText = p.id;
-            document.getElementById('detNotasClinicas').value = p.notasClinicas || "";
+
+            const notasClinicasEl = document.getElementById('detNotasClinicas');
+            if (notasClinicasEl && document.activeElement !== notasClinicasEl) {
+                notasClinicasEl.value = p.notasClinicas || "";
+            }
 
             const mods = p.modulosAsignados || [...TODOS_MODULOS_DEFAULT];
             if (document.getElementById('chkModMonitoreo')) document.getElementById('chkModMonitoreo').checked = mods.includes('monitoreo');
@@ -2594,7 +2687,6 @@
                 iconEX.className = "fa-solid fa-circle-check text-amber-600 text-lg";
                 grupoEX.classList.remove('hidden');
             } else {
-                // Cuando se selecciona la tarea independiente (Notas y Reflexiones), mantenemos visible la lista por defecto sin marcar terapia como anclada
                 grupoAC.classList.remove('hidden');
             }
 
@@ -2613,7 +2705,6 @@
             [secMon, secJer, secIde, secPrg, secNot, secRP, secDM, secJT, secGE].forEach(s => s?.classList.add('hidden'));
             ctrlSemanas.classList.add('hidden');
 
-            // Resaltado visual de tarjetas individuales de tareas
             const tareasAC = [
                 { id: 'monitoreo', card: 'cardTareaMonitoreo', icon: 'iconCheckTareaMonitoreo' },
                 { id: 'identificacion_actividades', card: 'cardTareaIdentificacion', icon: 'iconCheckTareaIdentificacion' },
@@ -2715,14 +2806,12 @@
             }
         }
 
-        // FUNCIÓN DE IMPRESIÓN SOLUCIONADA
         function exportarPDFTarea(modo = 'diligenciado') {
             if (modo === 'limpio') {
                 document.body.classList.add('print-modo-limpio');
             } else {
                 document.body.classList.remove('print-modo-limpio');
             }
-            
             setTimeout(() => {
                 window.print();
                 setTimeout(() => {
@@ -2772,7 +2861,6 @@
 
         function obtenerJerarquiaTemoresOrdenada(p) {
             const lista = [...(p.jerarquiaTemores || [])];
-            // Ordenamiento estricto de menor a mayor según puntuación USA
             lista.sort((a, b) => {
                 const diff = parseFloat(a.usa) - parseFloat(b.usa);
                 if (diff !== 0) return diff;
@@ -3469,7 +3557,7 @@
                 return;
             }
 
-            registros.forEach((reg, idx) => {
+            registros.forEach((reg) => {
                 const valores = (reg.puntos || []).map(pt => Number(pt.usa));
                 const ini = valores.length ? valores[0] : 0;
                 const pico = valores.length ? Math.max(...valores) : 0;
@@ -3973,7 +4061,7 @@
         }
 
         // ============================================================
-        // RESTANTES FUNCIONES ORIGINALES
+        // ACTIVACIÓN CONDUCTUAL: JERARQUÍA, IDENTIFICACIÓN, PROGRAMACIÓN Y NOTAS
         // ============================================================
         function toggleModuloAsignado(moduloId) {
             if (!pacienteData) return;
@@ -3995,7 +4083,7 @@
         }
 
         function renderJerarquiaTerapeuta(p) {
-            const lista = [...(p.jerarquiaActividades || [])].sort((a, b) => b.importancia - a.importancia);
+            const lista = [...(p.jerarquiaActividades || [])].sort((a, b) => parseFloat(b.importancia) - parseFloat(a.importancia));
             const btnLock = document.getElementById('btnLockJerarquia');
             if (p.jerarquiaBloqueada) {
                 btnLock.className = "text-xs px-3.5 py-1.5 rounded-xl font-bold bg-emerald-600 text-white shadow-sm no-print";
@@ -4061,12 +4149,36 @@
             });
         }
 
+        function resolverNombreActividadProgramada(p, item) {
+            if (!item) return 'Actividad';
+            if (item.actividadJerarquiaId && Array.isArray(p.jerarquiaActividades)) {
+                const found = p.jerarquiaActividades.find(x => x.id === item.actividadJerarquiaId);
+                if (found && found.actividad) return found.actividad;
+            }
+            if (item.actividadJerarquia) {
+                const foundById = (p.jerarquiaActividades || []).find(x => x.id === item.actividadJerarquia);
+                if (foundById && foundById.actividad) return foundById.actividad;
+                return item.actividadJerarquia;
+            }
+            return 'Actividad';
+        }
+
+        function formatearDuracionHorario(h) {
+            if (!h) return '';
+            if (h.duracion) return String(h.duracion);
+            if (h.duracionMin !== undefined && h.duracionMin !== null && h.duracionMin !== '') {
+                const dStr = String(h.duracionMin).trim();
+                return /min/i.test(dStr) ? dStr : `${dStr} min`;
+            }
+            return '';
+        }
+
         function crearFilaHorarioHTML(fecha = '', hora = '08:00', duracion = '30 min') {
             return `
                 <div class="fila-horario grid grid-cols-1 sm:grid-cols-12 gap-2 items-center bg-slate-50 p-2 rounded-xl border border-slate-200">
                     <div class="sm:col-span-5"><input type="date" value="${fecha}" required class="h-fecha w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-xs"></div>
                     <div class="sm:col-span-3"><input type="time" value="${hora}" required class="h-hora w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-xs"></div>
-                    <div class="sm:col-span-3"><input type="text" value="${escapeHtml(duracion)}" required class="h-duracion w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-xs"></div>
+                    <div class="sm:col-span-3"><input type="text" value="${escapeHtml(duracion)}" required placeholder="Ej: 30 min" class="h-duracion w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-xs"></div>
                     <div class="sm:col-span-1 text-center"><button type="button" onclick="eliminarFilaHorario(this)" class="text-rose-600 p-1"><i class="fa-solid fa-trash-can"></i></button></div>
                 </div>
             `;
@@ -4084,10 +4196,18 @@
 
         function renderProgramacionTerapeuta(p) {
             const selectJer = document.getElementById('progSelectJerarquia');
-            const listaJer = [...(p.jerarquiaActividades || [])].sort((a, b) => b.importancia - a.importancia);
+            const listaJer = [...(p.jerarquiaActividades || [])].sort((a, b) => parseFloat(b.importancia) - parseFloat(a.importancia));
             selectJer.innerHTML = '';
-            if (listaJer.length === 0) selectJer.innerHTML = `<option value="">-- Primero el paciente debe crear actividades en Jerarquía --</option>`;
-            else listaJer.forEach(item => { selectJer.innerHTML += `<option value="${escapeHtml(item.actividad)}">[Nivel ${item.importancia}/15] ${escapeHtml(item.actividad)}</option>`; });
+            if (listaJer.length === 0) {
+                selectJer.innerHTML = `<option value="">-- Primero el paciente debe crear actividades en Jerarquía --</option>`;
+            } else {
+                listaJer.forEach(item => {
+                    const opt = document.createElement('option');
+                    opt.value = item.id || item.actividad;
+                    opt.innerText = `[Nivel ${item.importancia}/15] ${item.actividad}`;
+                    selectJer.appendChild(opt);
+                });
+            }
 
             const containerHorarios = document.getElementById('containerHorariosForm');
             if (containerHorarios && containerHorarios.children.length === 0) agregarFilaHorarioProg();
@@ -4100,14 +4220,23 @@
                 return;
             }
             listaProg.forEach((item, index) => {
-                const horariosText = (item.horarios || []).map(h => `${h.fecha} (${h.hora} - ${h.duracion})`).join(' | ');
+                const tituloAct = resolverNombreActividadProgramada(p, item);
+                const horariosText = (item.horarios || []).map(h => {
+                    const dur = formatearDuracionHorario(h);
+                    return `${h.fecha || ''} (${h.hora || ''}${dur ? ' - ' + dur : ''})`;
+                }).join(' | ') || item.cuandoDia || '';
+                const cap = item.capacidad !== undefined ? item.capacidad : (item.capacidadPorcentaje !== undefined ? item.capacidadPorcentaje : '--');
+
                 container.innerHTML += `
                     <div class="border border-slate-200 rounded-2xl bg-slate-50 p-4 space-y-2 shadow-sm">
                         <div class="flex justify-between items-start border-b border-slate-200 pb-2">
-                            <h5 class="font-bold text-sm text-cyan-800">${escapeHtml(item.actividadJerarquia)}</h5>
+                            <div>
+                                <h5 class="font-bold text-sm text-cyan-800">${escapeHtml(tituloAct)}</h5>
+                                ${cap !== '--' ? `<span class="text-[10px] font-bold bg-cyan-100 text-cyan-900 px-2 py-0.5 rounded-full">Capacidad percibida: ${cap}%</span>` : ''}
+                            </div>
                             <div class="flex gap-1 no-print">
-                                <button onclick="editarProgramacionActividad(${index})" class="text-xs bg-amber-100 text-amber-800 px-2 py-1 rounded">Editar</button>
-                                <button onclick="eliminarProgramacionActividad(${index})" class="text-xs bg-rose-100 text-rose-700 px-2 py-1 rounded">Eliminar</button>
+                                <button onclick="editarProgramacionActividad(${index})" class="text-xs bg-amber-100 text-amber-800 px-2 py-1 rounded font-semibold">Editar</button>
+                                <button onclick="eliminarProgramacionActividad(${index})" class="text-xs bg-rose-100 text-rose-700 px-2 py-1 rounded font-semibold">Eliminar</button>
                             </div>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
@@ -4125,8 +4254,12 @@
 
         function guardarProgramacionActividad(e) {
             e.preventDefault();
-            const actJer = document.getElementById('progSelectJerarquia').value;
-            if (!actJer) { alert("Selecciona actividad base."); return; }
+            const selVal = document.getElementById('progSelectJerarquia').value;
+            if (!selVal) { alert("Selecciona actividad base."); return; }
+
+            const jerFound = (pacienteData.jerarquiaActividades || []).find(x => x.id === selVal || x.actividad === selVal);
+            const actNombre = jerFound ? jerFound.actividad : selVal;
+            const actId = jerFound ? jerFound.id : '';
 
             const filas = document.querySelectorAll('#containerHorariosForm .fila-horario');
             const horariosArr = [];
@@ -4134,20 +4267,23 @@
                 const fe = f.querySelector('.h-fecha').value;
                 const ho = f.querySelector('.h-hora').value;
                 const du = f.querySelector('.h-duracion').value.trim();
-                if (fe) horariosArr.push({ fecha: fe, hora: ho, duracion: du });
+                if (fe) horariosArr.push({ fecha: fe, hora: ho, duracion: du, duracionMin: du.replace(/\D+/g, '') || du });
             });
 
-            const editIndex = parseInt(document.getElementById('progEditIndex').value);
+            const editIndex = parseInt(document.getElementById('progEditIndex').value, 10);
+            const capVal = parseInt(document.getElementById('progCapacidad').value, 10) || 80;
             const obj = {
                 id: editIndex >= 0 ? pacienteData.programacionActividades[editIndex].id : 'prog_' + Math.random().toString(36).substr(2, 9),
-                actividadJerarquia: actJer,
+                actividadJerarquiaId: actId,
+                actividadJerarquia: actNombre,
                 areaActivacion: document.getElementById('progAreaActivacion').value.trim(),
                 importanciaPorQue: document.getElementById('progImportanciaPorQue').value.trim(),
                 accionConcreta: document.getElementById('progAccionConcreta').value.trim(),
                 horarios: horariosArr,
                 donde: document.getElementById('progDonde').value.trim(),
                 queNecesito: document.getElementById('progQueNecesito').value.trim(),
-                capacidad: document.getElementById('progCapacidad').value,
+                capacidad: capVal,
+                capacidadPorcentaje: capVal,
                 obstaculo: document.getElementById('progObstaculo').value.trim(),
                 comoLibrar: document.getElementById('progComoLibrar').value.trim()
             };
@@ -4165,19 +4301,35 @@
             const item = pacienteData.programacionActividades[idx];
             if (!item) return;
             document.getElementById('progEditIndex').value = idx;
-            document.getElementById('progSelectJerarquia').value = item.actividadJerarquia;
-            document.getElementById('progAreaActivacion').value = item.areaActivacion;
-            document.getElementById('progImportanciaPorQue').value = item.importanciaPorQue;
-            document.getElementById('progAccionConcreta').value = item.accionConcreta;
-            document.getElementById('progDonde').value = item.donde;
-            document.getElementById('progQueNecesito').value = item.queNecesito;
-            document.getElementById('progCapacidad').value = item.capacidad;
-            document.getElementById('progObstaculo').value = item.obstaculo;
-            document.getElementById('progComoLibrar').value = item.comoLibrar;
+            const selectEl = document.getElementById('progSelectJerarquia');
+            const targetId = item.actividadJerarquiaId || item.actividadJerarquia || '';
+            selectEl.value = targetId;
+            if (!selectEl.value && item.actividadJerarquia) {
+                const matchByName = (pacienteData.jerarquiaActividades || []).find(x => x.actividad === item.actividadJerarquia);
+                if (matchByName) selectEl.value = matchByName.id;
+            }
+
+            document.getElementById('progAreaActivacion').value = item.areaActivacion || '';
+            document.getElementById('progImportanciaPorQue').value = item.importanciaPorQue || '';
+            document.getElementById('progAccionConcreta').value = item.accionConcreta || '';
+            document.getElementById('progDonde').value = item.donde || '';
+            document.getElementById('progQueNecesito').value = item.queNecesito || '';
+            const cap = item.capacidad !== undefined ? item.capacidad : (item.capacidadPorcentaje || 80);
+            document.getElementById('progCapacidad').value = cap;
+            const dispCap = document.getElementById('displayCapacidadVal');
+            if (dispCap) dispCap.innerText = `${cap}%`;
+            document.getElementById('progObstaculo').value = item.obstaculo || '';
+            document.getElementById('progComoLibrar').value = item.comoLibrar || '';
 
             const containerHor = document.getElementById('containerHorariosForm');
             containerHor.innerHTML = '';
-            (item.horarios || []).forEach(h => agregarFilaHorarioProg(h.fecha, h.hora, h.duracion));
+            if (item.horarios && item.horarios.length > 0) {
+                item.horarios.forEach(h => agregarFilaHorarioProg(h.fecha || '', h.hora || '08:00', formatearDuracionHorario(h) || '30 min'));
+            } else {
+                agregarFilaHorarioProg();
+            }
+            const formTit = document.getElementById('formProgTitulo');
+            if (formTit) formTit.innerText = "Editar Actividad Programada";
             document.getElementById('btnCancelarEditProg').classList.remove('hidden');
         }
 
@@ -4185,6 +4337,10 @@
             document.getElementById('formProgramacionTerapeuta').reset();
             document.getElementById('progEditIndex').value = "-1";
             document.getElementById('btnCancelarEditProg').classList.add('hidden');
+            const formTit = document.getElementById('formProgTitulo');
+            if (formTit) formTit.innerText = "Programar Nueva Actividad";
+            const dispCap = document.getElementById('displayCapacidadVal');
+            if (dispCap) dispCap.innerText = "80%";
             const containerHor = document.getElementById('containerHorariosForm');
             containerHor.innerHTML = '';
             agregarFilaHorarioProg();
@@ -4208,11 +4364,14 @@
             notas.forEach(nota => {
                 container.innerHTML += `
                     <div class="p-4 border border-slate-200 rounded-xl bg-slate-50 space-y-2 shadow-sm">
-                        <div class="flex justify-between items-start border-b border-slate-200 pb-1.5">
-                            <h5 class="font-bold text-sm text-teal-800">${escapeHtml(nota.titulo)}</h5>
+                        <div class="flex justify-between items-start border-b border-slate-200 pb-1.5 gap-2">
+                            <div>
+                                <h5 class="font-bold text-sm text-teal-800">${escapeHtml(nota.titulo)}</h5>
+                                ${nota.fecha ? `<span class="text-[10px] text-slate-400 font-medium">${escapeHtml(nota.fecha)}</span>` : ''}
+                            </div>
                             <button onclick="eliminarNotaTerapeuta('${nota.id}')" class="text-rose-600 text-xs no-print"><i class="fa-solid fa-trash-can"></i></button>
                         </div>
-                        <p class="text-xs text-slate-700 whitespace-pre-wrap">${escapeHtml(nota.contenido)}</p>
+                        <p class="text-xs text-slate-700 whitespace-pre-wrap leading-relaxed">${escapeHtml(nota.contenido)}</p>
                     </div>
                 `;
             });
@@ -4231,6 +4390,9 @@
             renderNotasTerapeuta(pacienteData);
         }
 
+        // ============================================================
+        // MONITOREO DIARIO DE ACTIVIDADES (VISTA TERAPEUTA)
+        // ============================================================
         function actualizarEstadoBotonBloqueo() {
             const btn = document.getElementById('btnToggleBloqueoSemana');
             const sem = pacienteData.semanas[semanaSeleccionadaKey];
@@ -4301,28 +4463,35 @@
                 const d = new Date(fechaBase);
                 d.setDate(d.getDate() + i);
                 headerTr.innerHTML += `<th class="p-2 border border-slate-700 min-w-[115px]">${DIAS_NOMBRE[i]}<br><span class="text-[10px] font-normal text-cyan-200">${d.getDate()}/${d.getMonth()+1}</span></th>`;
-                const diaObj = semData.dias[i] || { animo: 5, horas: [] };
-                if (diaObj.animo !== undefined) { sumA += parseInt(diaObj.animo); countA++; }
+                const diaObj = semData.dias[i] || { animo: 5, horas: {} };
+                if (diaObj.animo !== undefined && diaObj.animo !== null) {
+                    sumA += parseInt(diaObj.animo, 10);
+                    countA++;
+                }
             }
 
             const tbody = document.getElementById('bodySupervision');
             tbody.innerHTML = '';
-            for (let h = 0; h < 24; h++) {
+            HORAS_12H.forEach(hLabel => {
                 const tr = document.createElement('tr');
-                let rowHtml = `<td class="p-1.5 font-bold bg-slate-50 border border-slate-200 text-slate-700 text-[11px]">${HORAS_12H[h]}</td>`;
+                let rowHtml = `<td class="p-1.5 font-bold bg-slate-50 border border-slate-200 text-slate-700 text-[11px]">${hLabel}</td>`;
                 for (let d = 0; d < 7; d++) {
-                    const celda = semData.dias[d]?.horas[h] || { actividad: '', D: '', I: '' };
-                    if (celda.D !== '' && celda.D !== null) { sumD += parseFloat(celda.D); countD++; }
-                    if (celda.I !== '' && celda.I !== null) { sumI += parseFloat(celda.I); countI++; }
-                    const bgClass = celda.actividad ? 'bg-cyan-50/70' : '';
+                    const celda = semData.dias[d]?.horas?.[hLabel] || { act: '', d: '', i: '' };
+                    const valD = parseFloat(celda.d);
+                    const valI = parseFloat(celda.i);
+                    if (celda.d !== '' && celda.d !== null && !isNaN(valD)) { sumD += valD; countD++; }
+                    if (celda.i !== '' && celda.i !== null && !isNaN(valI)) { sumI += valI; countI++; }
+                    const actTexto = (celda.act || '').trim();
+                    const tieneTexto = actTexto !== '' && actTexto !== '-';
+                    const bgClass = tieneTexto ? 'bg-cyan-50/70' : '';
                     rowHtml += `<td class="p-1.5 border border-slate-200 align-top text-left ${bgClass}">
-                        ${celda.actividad ? `<div class="font-bold text-slate-900 truncate max-w-[110px]" title="${escapeHtml(celda.actividad)}">${escapeHtml(celda.actividad)}</div>` : '<span class="text-slate-300">-</span>'}
-                        ${(celda.D !== '' || celda.I !== '') ? `<div class="text-[9px] mt-1 font-bold text-cyan-800">D:${celda.D || 0} | I:${celda.I || 0}</div>` : ''}
+                        ${actTexto ? `<div class="font-bold text-slate-900 truncate max-w-[125px]" title="${escapeHtml(actTexto)}">${escapeHtml(actTexto)}</div>` : '<span class="text-slate-300">-</span>'}
+                        ${(celda.d !== '' || celda.i !== '') ? `<div class="text-[9px] mt-1 font-bold text-cyan-800">D:${celda.d || 0} | I:${celda.i || 0}</div>` : ''}
                     </td>`;
                 }
                 tr.innerHTML = rowHtml;
                 tbody.appendChild(tr);
-            }
+            });
 
             document.getElementById('statAvgD').innerText = (countD > 0 ? (sumD / countD).toFixed(1) : '0.0') + ' / 10';
             document.getElementById('statAvgI').innerText = (countI > 0 ? (sumI / countI).toFixed(1) : '0.0') + ' / 10';
@@ -4334,15 +4503,17 @@
             if (!semData) return;
             const dD = [], dI = [], dA = [];
             for (let d = 0; d < 7; d++) {
-                const diaObj = semData.dias[d] || { animo: 5, horas: [] };
+                const diaObj = semData.dias[d] || { animo: 5, horas: {} };
                 let sD = 0, cD = 0, sI = 0, cI = 0;
-                (diaObj.horas || []).forEach(h => {
-                    if (h.D !== '') { sD += parseFloat(h.D); cD++; }
-                    if (h.I !== '') { sI += parseFloat(h.I); cI++; }
+                Object.values(diaObj.horas || {}).forEach(h => {
+                    const vd = parseFloat(h.d);
+                    const vi = parseFloat(h.i);
+                    if (h.d !== '' && h.d !== null && !isNaN(vd)) { sD += vd; cD++; }
+                    if (h.i !== '' && h.i !== null && !isNaN(vi)) { sI += vi; cI++; }
                 });
-                dD.push(cD > 0 ? Number((sD/cD).toFixed(1)) : 0);
-                dI.push(cI > 0 ? Number((sI/cI).toFixed(1)) : 0);
-                dA.push(diaObj.animo || 0);
+                dD.push(cD > 0 ? Number((sD / cD).toFixed(1)) : null);
+                dI.push(cI > 0 ? Number((sI / cI).toFixed(1)) : null);
+                dA.push(diaObj.animo !== undefined ? Number(diaObj.animo) : 5);
             }
             const ctx = document.getElementById('chartEvolucion').getContext('2d');
             if (chartInstance) chartInstance.destroy();
@@ -4351,8 +4522,8 @@
                 data: {
                     labels: DIAS_NOMBRE,
                     datasets: [
-                        { label: 'Disfrute (D)', data: dD, borderColor: '#0284c7', tension: 0.3 },
-                        { label: 'Importancia (I)', data: dI, borderColor: '#059669', tension: 0.3 },
+                        { label: 'Disfrute (D)', data: dD, borderColor: '#0284c7', backgroundColor: 'rgba(2,132,199,0.12)', spanGaps: true, tension: 0.3 },
+                        { label: 'Importancia (I)', data: dI, borderColor: '#059669', backgroundColor: 'rgba(5,150,105,0.12)', spanGaps: true, tension: 0.3 },
                         { label: 'Ánimo General', data: dA, borderColor: '#d97706', borderDash: [5, 5], tension: 0.3 }
                     ]
                 },
@@ -4363,18 +4534,60 @@
         function renderAnalisisGlobalHistograma(p) {
             const keys = obtenerSemanasOrdenadas(p);
             document.getElementById('statCantSemanasGlobal').innerText = `${keys.length} semana(s)`;
+            let sumTotalD = 0, cD = 0, sumTotalI = 0, cI = 0;
+            const histogramaCounts = { '0 - 2': 0, '3 - 4': 0, '5 - 6': 0, '7 - 8': 0, '9 - 10': 0 };
+
+            keys.forEach(sk => {
+                const diasArr = Array.isArray(p.semanas[sk].dias) ? p.semanas[sk].dias : Object.values(p.semanas[sk].dias || {});
+                diasArr.forEach(dia => {
+                    const aVal = dia.animo !== undefined ? parseInt(dia.animo, 10) : 5;
+                    if (aVal <= 2) histogramaCounts['0 - 2']++;
+                    else if (aVal <= 4) histogramaCounts['3 - 4']++;
+                    else if (aVal <= 6) histogramaCounts['5 - 6']++;
+                    else if (aVal <= 8) histogramaCounts['7 - 8']++;
+                    else histogramaCounts['9 - 10']++;
+
+                    Object.values(dia.horas || {}).forEach(h => {
+                        const vd = parseFloat(h.d);
+                        const vi = parseFloat(h.i);
+                        if (h.d !== '' && h.d !== null && !isNaN(vd)) { sumTotalD += vd; cD++; }
+                        if (h.i !== '' && h.i !== null && !isNaN(vi)) { sumTotalI += vi; cI++; }
+                    });
+                });
+            });
+
+            const elMedia = document.getElementById('statMediaGlobal');
+            if (elMedia) elMedia.innerText = `D: ${cD > 0 ? (sumTotalD / cD).toFixed(1) : '0.0'} | I: ${cI > 0 ? (sumTotalI / cI).toFixed(1) : '0.0'}`;
+
+            const elTend = document.getElementById('statTendenciaGlobal');
+            if (elTend) {
+                if (keys.length >= 2) {
+                    const promSem = sk => {
+                        const dias = Array.isArray(p.semanas[sk].dias) ? p.semanas[sk].dias : Object.values(p.semanas[sk].dias || {});
+                        const s = dias.reduce((acc, d) => acc + (d.animo !== undefined ? parseInt(d.animo, 10) : 5), 0);
+                        return s / Math.max(1, dias.length);
+                    };
+                    const diff = promSem(keys[keys.length - 1]) - promSem(keys[0]);
+                    elTend.innerText = diff > 0.2 ? 'En ascenso ↗' : (diff < -0.2 ? 'En descenso ↘' : 'Estable →');
+                } else {
+                    elTend.innerText = 'Línea base';
+                }
+            }
+
             const ctx = document.getElementById('chartHistogramaMensual').getContext('2d');
             if (chartHistogramaInstance) chartHistogramaInstance.destroy();
-            const labels = keys.map((_, i) => `Sem ${i+1}`);
-            const medA = keys.map(sk => {
-                let s = 0;
-                for(let d=0; d<7; d++) s += parseInt(p.semanas[sk].dias[d]?.animo || 5);
-                return Number((s/7).toFixed(1));
-            });
             chartHistogramaInstance = new Chart(ctx, {
                 type: 'bar',
-                data: { labels, datasets: [{ label: 'Promedio Ánimo Semanal', data: medA, backgroundColor: '#0284c7' }] },
-                options: { responsive: true, maintainAspectRatio: false, scales: { y: { min: 0, max: 10 } } }
+                data: {
+                    labels: Object.keys(histogramaCounts),
+                    datasets: [{
+                        label: 'Frecuencia de Días por Rango de Ánimo',
+                        data: Object.values(histogramaCounts),
+                        backgroundColor: ['#ef4444', '#f97316', '#eab308', '#22c55e', '#0284c7'],
+                        borderRadius: 6
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
             });
         }
 
@@ -4382,15 +4595,36 @@
             const keys = obtenerSemanasOrdenadas(p);
             const ctx = document.getElementById('chartEvolucionHistorica').getContext('2d');
             if (chartHistoricoInstance) chartHistoricoInstance.destroy();
-            const labels = keys.map((_, i) => `Semana ${i+1}`);
-            const animos = keys.map(sk => {
-                let s = 0;
-                for(let d=0; d<7; d++) s += parseInt(p.semanas[sk].dias[d]?.animo || 5);
-                return Number((s/7).toFixed(1));
+            const labels = keys.map((_, i) => `Semana ${i + 1}`);
+            const histD = [], histI = [], animos = [];
+
+            keys.forEach(sk => {
+                const diasArr = Array.isArray(p.semanas[sk].dias) ? p.semanas[sk].dias : Object.values(p.semanas[sk].dias || {});
+                let sD = 0, cD = 0, sI = 0, cI = 0, sA = 0;
+                diasArr.forEach(dia => {
+                    sA += (dia.animo !== undefined ? parseInt(dia.animo, 10) : 5);
+                    Object.values(dia.horas || {}).forEach(h => {
+                        const vd = parseFloat(h.d);
+                        const vi = parseFloat(h.i);
+                        if (h.d !== '' && h.d !== null && !isNaN(vd)) { sD += vd; cD++; }
+                        if (h.i !== '' && h.i !== null && !isNaN(vi)) { sI += vi; cI++; }
+                    });
+                });
+                histD.push(cD > 0 ? Number((sD / cD).toFixed(1)) : null);
+                histI.push(cI > 0 ? Number((sI / cI).toFixed(1)) : null);
+                animos.push(Number((sA / Math.max(1, diasArr.length)).toFixed(1)));
             });
+
             chartHistoricoInstance = new Chart(ctx, {
                 type: 'line',
-                data: { labels, datasets: [{ label: 'Ánimo Histórico', data: animos, borderColor: '#0284c7', fill: true, backgroundColor: 'rgba(2,132,199,0.1)' }] },
+                data: {
+                    labels,
+                    datasets: [
+                        { label: 'Disfrute Medio', data: histD, borderColor: '#0284c7', spanGaps: true, tension: 0.3, fill: false },
+                        { label: 'Importancia Media', data: histI, borderColor: '#059669', spanGaps: true, tension: 0.3, fill: false },
+                        { label: 'Ánimo Histórico', data: animos, borderColor: '#d97706', borderDash: [5, 5], tension: 0.3, fill: true, backgroundColor: 'rgba(217,119,6,0.08)' }
+                    ]
+                },
                 options: { responsive: true, maintainAspectRatio: false, scales: { y: { min: 0, max: 10 } } }
             });
         }
@@ -4406,12 +4640,12 @@
                 if (unsubscribeRealtime) unsubscribeRealtime();
                 unsubscribeRealtime = db.collection('pacientes').doc(pId).onSnapshot(doc => {
                     if (doc.exists) {
-                        pacienteData = doc.data();
+                        pacienteData = normalizarPacienteData({ id: doc.id, ...doc.data() });
                         if (modoPacienteGuardando) {
                             modoPacienteGuardando = false;
                             return;
                         }
-                        mostrarDashboardPaciente();
+                        refrescarVistaActualPaciente();
                     } else {
                         ocultarTodasLasSecciones();
                         alert("No se encontró el expediente del paciente asociado a este enlace.");
@@ -4419,7 +4653,50 @@
                 });
             } else {
                 let local = JSON.parse(localStorage.getItem('demo_pacientes') || '[]');
-                pacienteData = local.find(item => item.id === pId) || getPacientesEjemplo()[0];
+                const found = local.find(item => item.id === pId) || getPacientesEjemplo()[0];
+                pacienteData = normalizarPacienteData(found);
+                mostrarDashboardPaciente();
+            }
+        }
+
+        function refrescarVistaActualPaciente() {
+            const isVisible = id => {
+                const el = document.getElementById(id);
+                return el && !el.classList.contains('hidden');
+            };
+            if (isVisible('secPacienteFormMonitoreo')) {
+                const keys = obtenerSemanasOrdenadas(pacienteData);
+                if (!semanaSeleccionadaKey || !keys.includes(semanaSeleccionadaKey)) {
+                    semanaSeleccionadaKey = keys[keys.length - 1];
+                }
+                const selectSem = document.getElementById('selectSemanaPacienteForm');
+                if (selectSem) {
+                    selectSem.innerHTML = '';
+                    keys.forEach((sk, idx) => {
+                        selectSem.innerHTML += `<option value="${sk}" ${sk === semanaSeleccionadaKey ? 'selected' : ''}>Semana ${idx + 1} (${formatBloqueSemanal(sk)})${pacienteData.semanas[sk]?.bloqueada ? ' 🔒' : ''}</option>`;
+                    });
+                }
+                renderTabsDiasPaciente();
+                if (!document.activeElement || !document.activeElement.closest('#listaHorasPaciente')) {
+                    renderHorasPaciente();
+                }
+            } else if (isVisible('secPacienteFormJerarquia')) {
+                renderJerarquiaPaciente();
+            } else if (isVisible('secPacienteFormIdentificacion')) {
+                renderIdentificacionPaciente();
+            } else if (isVisible('secPacienteFormProgramacion')) {
+                renderProgramacionPaciente();
+            } else if (isVisible('secPacienteFormNotas')) {
+                renderNotasPaciente();
+            } else if (isVisible('secPacienteFormRegistroPensamientos')) {
+                renderRegistroPensamientosPaciente();
+            } else if (isVisible('secPacienteFormDialogoMente')) {
+                renderDialogoMentePaciente();
+            } else if (isVisible('secPacienteFormJerarquiaTemores')) {
+                renderJerarquiaTemoresPaciente();
+            } else if (isVisible('secPacienteFormGraficaExposicion')) {
+                renderGraficaExposicionPaciente();
+            } else {
                 mostrarDashboardPaciente();
             }
         }
@@ -4439,7 +4716,6 @@
             document.getElementById('cardModJerarquiaTemores').classList.toggle('hidden', !mods.includes('jerarquia_temores'));
             document.getElementById('cardModGraficaExposicion').classList.toggle('hidden', !mods.includes('grafica_exposicion'));
 
-            // Tarea independiente: Notas y Reflexiones
             const tieneNotas = mods.includes('notas_paciente');
             document.getElementById('cardModNotas').classList.toggle('hidden', !tieneNotas);
             const wrapperNotas = document.getElementById('secModuloNotasPacienteWrapper');
@@ -4460,7 +4736,7 @@
             const selectSem = document.getElementById('selectSemanaPacienteForm');
             selectSem.innerHTML = '';
             keys.forEach((sk, idx) => {
-                selectSem.innerHTML += `<option value="${sk}" ${sk === semanaSeleccionadaKey ? 'selected' : ''}>Semana ${idx + 1} (${formatBloqueSemanal(sk)})</option>`;
+                selectSem.innerHTML += `<option value="${sk}" ${sk === semanaSeleccionadaKey ? 'selected' : ''}>Semana ${idx + 1} (${formatBloqueSemanal(sk)})${pacienteData.semanas[sk]?.bloqueada ? ' 🔒' : ''}</option>`;
             });
             renderTabsDiasPaciente();
             renderHorasPaciente();
@@ -4492,45 +4768,73 @@
 
             const lista = document.getElementById('listaHorasPaciente');
             lista.innerHTML = '';
-            for (let h = 0; h < 24; h++) {
-                const celda = diaObj.horas[h] || { actividad: '', D: '', I: '' };
+            HORAS_12H.forEach((hLabel, hIdx) => {
+                const celda = diaObj.horas[hLabel] || { act: '', d: '', i: '' };
                 lista.innerHTML += `
                     <div class="p-3 bg-white flex flex-col sm:flex-row items-center gap-3">
-                        <span class="text-xs font-bold text-slate-600 w-24 shrink-0">${HORAS_12H[h]}</span>
-                        <input type="text" placeholder="¿Qué actividad realizaste?" value="${escapeHtml(celda.actividad)}" ${isLocked?'disabled':''} onchange="actualizarCelda(${h}, 'actividad', this.value)" class="flex-1 w-full px-3 py-1.5 border border-slate-300 rounded-lg text-xs">
+                        <span class="text-xs font-bold text-slate-600 w-24 shrink-0">${hLabel}</span>
+                        <input type="text" placeholder="¿Qué actividad realizaste?" value="${escapeHtml(celda.act)}" ${isLocked?'disabled':''} onchange="actualizarCelda(${hIdx}, 'act', this.value)" class="flex-1 w-full px-3 py-1.5 border border-slate-300 rounded-lg text-xs">
                         <div class="flex gap-2">
-                            <input type="number" min="0" max="10" placeholder="D" value="${celda.D}" ${isLocked?'disabled':''} onchange="actualizarCelda(${h}, 'D', this.value)" class="w-14 px-2 py-1.5 border border-slate-300 rounded-lg text-xs text-center font-bold">
-                            <input type="number" min="0" max="10" placeholder="I" value="${celda.I}" ${isLocked?'disabled':''} onchange="actualizarCelda(${h}, 'I', this.value)" class="w-14 px-2 py-1.5 border border-slate-300 rounded-lg text-xs text-center font-bold">
+                            <input type="number" min="0" max="10" placeholder="D" value="${escapeHtml(celda.d)}" ${isLocked?'disabled':''} onchange="actualizarCelda(${hIdx}, 'd', this.value)" class="w-14 px-2 py-1.5 border border-slate-300 rounded-lg text-xs text-center font-bold">
+                            <input type="number" min="0" max="10" placeholder="I" value="${escapeHtml(celda.i)}" ${isLocked?'disabled':''} onchange="actualizarCelda(${hIdx}, 'i', this.value)" class="w-14 px-2 py-1.5 border border-slate-300 rounded-lg text-xs text-center font-bold">
                         </div>
                     </div>
                 `;
-            }
+            });
             const inputAnimo = document.getElementById('inputAnimoDia');
-            inputAnimo.value = diaObj.animo || 5;
+            inputAnimo.value = diaObj.animo !== undefined ? diaObj.animo : 5;
             inputAnimo.disabled = isLocked;
             document.getElementById('animoValueDisplay').innerText = `${inputAnimo.value} / 10`;
         }
 
-        function actualizarCelda(h, campo, val) {
-            if (pacienteData.semanas[semanaSeleccionadaKey].bloqueada) return;
-            pacienteData.semanas[semanaSeleccionadaKey].dias[diaSeleccionadoIndex].horas[h][campo] = val;
+        function actualizarCelda(hIdx, campo, val) {
+            const sem = pacienteData.semanas[semanaSeleccionadaKey];
+            if (!sem || sem.bloqueada) return;
+            const hLabel = HORAS_12H[hIdx];
+            if (!sem.dias[diaSeleccionadoIndex].horas[hLabel]) {
+                sem.dias[diaSeleccionadoIndex].horas[hLabel] = { act: '', d: '', i: '' };
+            }
+            const keyNorm = (campo === 'actividad') ? 'act' : (campo === 'D' ? 'd' : (campo === 'I' ? 'i' : campo));
+            sem.dias[diaSeleccionadoIndex].horas[hLabel][keyNorm] = val;
             modoPacienteGuardando = true;
-            sincronizarGarantizado();
+            programarAutoguardado();
         }
 
         function actualizarAnimoDia(val) {
+            const sem = pacienteData.semanas[semanaSeleccionadaKey];
+            if (!sem || sem.bloqueada) return;
             document.getElementById('animoValueDisplay').innerText = `${val} / 10`;
-            pacienteData.semanas[semanaSeleccionadaKey].dias[diaSeleccionadoIndex].animo = parseInt(val);
+            sem.dias[diaSeleccionadoIndex].animo = parseInt(val, 10);
             modoPacienteGuardando = true;
-            sincronizarGarantizado();
+            programarAutoguardado();
+        }
+
+        function programarAutoguardado() {
+            const statusEl = document.getElementById('statusGuardadoText');
+            if (statusEl) statusEl.innerText = 'Guardando...';
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(async () => {
+                await sincronizarGarantizado();
+                if (statusEl) statusEl.innerText = 'Guardado automáticamente';
+            }, 400);
         }
 
         function abrirModuloJerarquiaPaciente() { ocultarTodasLasSecciones(); document.getElementById('secPacienteFormJerarquia').classList.remove('hidden'); renderJerarquiaPaciente(); }
 
         function renderJerarquiaPaciente() {
-            const lista = [...(pacienteData.jerarquiaActividades || [])].sort((a, b) => b.importancia - a.importancia);
+            const bloqueado = !!pacienteData.jerarquiaBloqueada;
+            const inputAct = document.getElementById('inputJerarquiaActividad');
+            const inputImp = document.getElementById('inputJerarquiaImportancia');
+            if (inputAct) inputAct.disabled = bloqueado;
+            if (inputImp) inputImp.disabled = bloqueado;
+
+            const lista = [...(pacienteData.jerarquiaActividades || [])].sort((a, b) => parseFloat(b.importancia) - parseFloat(a.importancia));
             const tbody = document.getElementById('tablaJerarquiaPacienteBody');
             tbody.innerHTML = '';
+            if (lista.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-400 text-xs">Aún no has agregado actividades a tu jerarquía.</td></tr>`;
+                return;
+            }
             lista.forEach((item, idx) => {
                 tbody.innerHTML += `
                     <tr>
@@ -4538,7 +4842,7 @@
                         <td class="p-3 font-bold">${escapeHtml(item.actividad)}</td>
                         <td class="p-3 text-center">${item.importancia}/15</td>
                         <td class="p-3 text-xs text-slate-500">${item.fecha || '--'}</td>
-                        <td class="p-3 text-center no-print">${pacienteData.jerarquiaBloqueada ? '<i class="fa-solid fa-lock text-slate-400"></i>' : `<button onclick="eliminarActividadJerarquiaPaciente('${item.id}')" class="text-rose-600"><i class="fa-solid fa-trash-can"></i></button>`}</td>
+                        <td class="p-3 text-center no-print">${bloqueado ? '<i class="fa-solid fa-lock text-slate-400"></i>' : `<button onclick="eliminarActividadJerarquiaPaciente('${item.id}')" class="text-rose-600"><i class="fa-solid fa-trash-can"></i></button>`}</td>
                     </tr>
                 `;
             });
@@ -4546,10 +4850,17 @@
 
         function agregarActividadJerarquiaPaciente(e) {
             e.preventDefault();
+            if (pacienteData.jerarquiaBloqueada) {
+                alert("La edición de Jerarquía de Actividades está bloqueada por tu terapeuta.");
+                return;
+            }
             const act = document.getElementById('inputJerarquiaActividad').value.trim();
-            const imp = parseInt(document.getElementById('inputJerarquiaImportancia').value);
+            const imp = parseInt(document.getElementById('inputJerarquiaImportancia').value, 10);
+            if (!act || isNaN(imp)) return;
+            const now = new Date();
+            const fechaFormateada = `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
             if (!pacienteData.jerarquiaActividades) pacienteData.jerarquiaActividades = [];
-            pacienteData.jerarquiaActividades.push({ id: 'j_' + Math.random().toString(36).substr(2, 9), actividad: act, importancia: imp, fecha: new Date().toLocaleDateString() });
+            pacienteData.jerarquiaActividades.push({ id: 'j_' + Math.random().toString(36).substr(2, 9), actividad: act, importancia: imp, fecha: fechaFormateada, esAdicional: false });
             document.getElementById('inputJerarquiaActividad').value = '';
             document.getElementById('inputJerarquiaImportancia').value = '';
             modoPacienteGuardando = true;
@@ -4558,7 +4869,8 @@
         }
 
         function eliminarActividadJerarquiaPaciente(id) {
-            pacienteData.jerarquiaActividades = pacienteData.jerarquiaActividades.filter(x => x.id !== id);
+            if (pacienteData.jerarquiaBloqueada) return;
+            pacienteData.jerarquiaActividades = (pacienteData.jerarquiaActividades || []).filter(x => x.id !== id);
             modoPacienteGuardando = true;
             sincronizarGarantizado();
             renderJerarquiaPaciente();
@@ -4567,15 +4879,25 @@
         function abrirModuloIdentificacionPaciente() { ocultarTodasLasSecciones(); document.getElementById('secPacienteFormIdentificacion').classList.remove('hidden'); renderIdentificacionPaciente(); }
 
         function renderIdentificacionPaciente() {
+            const bloqueado = !!pacienteData.identificacionBloqueada;
+            const selCat = document.getElementById('selectIdentificacionCategoria');
+            const inpAct = document.getElementById('inputIdentificacionActividad');
+            if (selCat) selCat.disabled = bloqueado;
+            if (inpAct) inpAct.disabled = bloqueado;
+
             const lista = pacienteData.identificacionActividades || [];
             const container = document.getElementById('containerPacienteCategoriasIdentificacion');
             container.innerHTML = '';
             CATEGORIAS_IDENTIFICACION.forEach(cat => {
                 const items = lista.filter(i => i.categoria === cat.id);
                 let html = `<div class="bg-white p-5 rounded-xl border border-slate-200 space-y-2"><h4 class="font-bold text-sm text-cyan-800">${cat.nombre}</h4><ul class="space-y-1">`;
-                items.forEach(i => {
-                    html += `<li class="flex justify-between text-xs bg-slate-50 p-2 rounded border border-slate-200"><span>${escapeHtml(i.actividad)}</span>${pacienteData.identificacionBloqueada ? '' : `<button onclick="eliminarActividadIdentificacionPaciente('${i.id}')" class="text-rose-600 no-print"><i class="fa-solid fa-trash-can"></i></button>`}</li>`;
-                });
+                if (items.length === 0) {
+                    html += `<li class="text-xs text-slate-400 italic">Sin actividades en esta categoría.</li>`;
+                } else {
+                    items.forEach(i => {
+                        html += `<li class="flex justify-between items-center text-xs bg-slate-50 p-2 rounded border border-slate-200"><span>${escapeHtml(i.actividad)}</span>${bloqueado ? '<i class="fa-solid fa-lock text-slate-400 text-[10px]"></i>' : `<button onclick="eliminarActividadIdentificacionPaciente('${i.id}')" class="text-rose-600 no-print"><i class="fa-solid fa-trash-can"></i></button>`}</li>`;
+                    });
+                }
                 html += `</ul></div>`;
                 container.innerHTML += html;
             });
@@ -4583,10 +4905,17 @@
 
         function agregarActividadIdentificacionPaciente(e) {
             e.preventDefault();
+            if (pacienteData.identificacionBloqueada) {
+                alert("La edición de Identificación de Actividades está bloqueada por tu terapeuta.");
+                return;
+            }
             const cat = document.getElementById('selectIdentificacionCategoria').value;
             const act = document.getElementById('inputIdentificacionActividad').value.trim();
+            if (!act) return;
+            const now = new Date();
+            const fechaFormateada = `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
             if (!pacienteData.identificacionActividades) pacienteData.identificacionActividades = [];
-            pacienteData.identificacionActividades.push({ id: 'id_' + Math.random().toString(36).substr(2, 9), categoria: cat, actividad: act, fecha: new Date().toLocaleDateString() });
+            pacienteData.identificacionActividades.push({ id: 'i_' + Math.random().toString(36).substr(2, 9), categoria: cat, actividad: act, fecha: fechaFormateada, esAdicional: false });
             document.getElementById('inputIdentificacionActividad').value = '';
             modoPacienteGuardando = true;
             sincronizarGarantizado();
@@ -4594,7 +4923,8 @@
         }
 
         function eliminarActividadIdentificacionPaciente(id) {
-            pacienteData.identificacionActividades = pacienteData.identificacionActividades.filter(x => x.id !== id);
+            if (pacienteData.identificacionBloqueada) return;
+            pacienteData.identificacionActividades = (pacienteData.identificacionActividades || []).filter(x => x.id !== id);
             modoPacienteGuardando = true;
             sincronizarGarantizado();
             renderIdentificacionPaciente();
@@ -4603,12 +4933,41 @@
         function abrirModuloProgramacionPaciente() {
             ocultarTodasLasSecciones();
             document.getElementById('secPacienteFormProgramacion').classList.remove('hidden');
+            renderProgramacionPaciente();
+        }
+
+        function renderProgramacionPaciente() {
             const lista = pacienteData.programacionActividades || [];
             const container = document.getElementById('containerProgramadasPaciente');
             container.innerHTML = '';
-            if (lista.length === 0) container.innerHTML = `<p class="text-center text-slate-500 text-xs">No tienes actividades programadas aún.</p>`;
-            else lista.forEach(item => {
-                container.innerHTML += `<div class="p-4 border border-slate-200 rounded-xl bg-slate-50 space-y-1 text-xs"><h4 class="font-bold text-sm text-cyan-800">${escapeHtml(item.actividadJerarquia)}</h4><p><strong>Acción:</strong> ${escapeHtml(item.accionConcreta)}</p><p><strong>Dónde:</strong> ${escapeHtml(item.donde)}</p></div>`;
+            if (lista.length === 0) {
+                container.innerHTML = `<p class="text-center text-slate-500 text-xs py-6">No tienes actividades programadas aún.</p>`;
+                return;
+            }
+            lista.forEach(item => {
+                const tituloAct = resolverNombreActividadProgramada(pacienteData, item);
+                const horariosText = (item.horarios || []).map(h => {
+                    const dur = formatearDuracionHorario(h);
+                    return `${h.fecha || ''} · ${h.hora || ''}${dur ? ' (' + dur + ')' : ''}`;
+                }).join(' | ') || item.cuandoDia || '';
+                const cap = item.capacidad !== undefined ? item.capacidad : (item.capacidadPorcentaje !== undefined ? item.capacidadPorcentaje : '');
+
+                container.innerHTML += `
+                    <div class="p-4 border border-slate-200 rounded-2xl bg-slate-50 space-y-2 text-xs shadow-sm">
+                        <div class="flex flex-wrap justify-between items-center gap-2 border-b border-slate-200 pb-2">
+                            <h4 class="font-extrabold text-sm text-cyan-800">${escapeHtml(tituloAct)}</h4>
+                            ${cap !== '' ? `<span class="text-[10px] font-bold bg-cyan-100 text-cyan-900 px-2.5 py-0.5 rounded-full">Capacidad: ${cap}%</span>` : ''}
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                            <p><strong>Área de acercamiento:</strong> ${escapeHtml(item.areaActivacion)}</p>
+                            <p><strong>¿Por qué es importante?:</strong> ${escapeHtml(item.importanciaPorQue)}</p>
+                            <p><strong>Acción concreta:</strong> ${escapeHtml(item.accionConcreta)}</p>
+                            <p><strong>Horarios:</strong> ${escapeHtml(horariosText)}</p>
+                            <p><strong>Dónde:</strong> ${escapeHtml(item.donde)} | <strong>Qué necesito:</strong> ${escapeHtml(item.queNecesito)}</p>
+                            <p><strong>Posible obstáculo:</strong> ${escapeHtml(item.obstaculo)} → <strong>Cómo librarlo:</strong> ${escapeHtml(item.comoLibrar)}</p>
+                        </div>
+                    </div>
+                `;
             });
         }
 
@@ -4618,8 +4977,20 @@
             const lista = pacienteData.notasPaciente || [];
             const container = document.getElementById('containerNotasPaciente');
             container.innerHTML = '';
+            if (lista.length === 0) {
+                container.innerHTML = `<p class="col-span-full text-center text-slate-400 text-xs py-6">Aún no has redactado notas personales.</p>`;
+                return;
+            }
             lista.forEach(n => {
-                container.innerHTML += `<div class="p-4 border border-slate-200 rounded-xl bg-slate-50 space-y-1"><h4 class="font-bold text-sm text-teal-800">${escapeHtml(n.titulo)}</h4><p class="text-xs text-slate-700 whitespace-pre-wrap">${escapeHtml(n.contenido)}</p></div>`;
+                container.innerHTML += `
+                    <div class="p-4 border border-slate-200 rounded-xl bg-slate-50 space-y-1.5 shadow-sm">
+                        <div class="flex justify-between items-start gap-2 border-b border-slate-200 pb-1">
+                            <h4 class="font-bold text-sm text-teal-800">${escapeHtml(n.titulo)}</h4>
+                            ${n.fecha ? `<span class="text-[10px] text-slate-400 font-medium shrink-0">${escapeHtml(n.fecha)}</span>` : ''}
+                        </div>
+                        <p class="text-xs text-slate-700 whitespace-pre-wrap leading-relaxed">${escapeHtml(n.contenido)}</p>
+                    </div>
+                `;
             });
         }
 
@@ -4627,8 +4998,11 @@
             e.preventDefault();
             const tit = document.getElementById('inputNotaTitulo').value.trim();
             const con = document.getElementById('inputNotaContenido').value.trim();
+            if (!tit || !con) return;
+            const now = new Date();
+            const fechaFormateada = `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
             if (!pacienteData.notasPaciente) pacienteData.notasPaciente = [];
-            pacienteData.notasPaciente.unshift({ id: 'n_' + Math.random().toString(36).substr(2, 9), titulo: tit, contenido: con, fecha: new Date().toLocaleDateString() });
+            pacienteData.notasPaciente.unshift({ id: 'n_' + Math.random().toString(36).substr(2, 9), titulo: tit, contenido: con, fecha: fechaFormateada });
             document.getElementById('inputNotaTitulo').value = '';
             document.getElementById('inputNotaContenido').value = '';
             modoPacienteGuardando = true;
@@ -4640,16 +5014,20 @@
         // SINCRONIZACIÓN Y BACKUP
         // ============================================================
         async function sincronizarGarantizado() {
-            if (!pacienteData) return;
+            if (!pacienteData || !pacienteActualId) return;
             pacienteData.updatedAt = new Date().toISOString();
             if (firebaseActivo) {
-                try { await db.collection('pacientes').doc(pacienteActualId).set(pacienteData); } catch(e) {}
+                try {
+                    await db.collection('pacientes').doc(pacienteActualId).set(pacienteData, { merge: true });
+                } catch(e) {}
+                modoPacienteGuardando = false;
             } else {
                 let local = JSON.parse(localStorage.getItem('demo_pacientes') || '[]');
                 const idx = local.findIndex(item => item.id === pacienteActualId);
                 if (idx >= 0) local[idx] = pacienteData;
                 else local.push(pacienteData);
                 localStorage.setItem('demo_pacientes', JSON.stringify(local));
+                modoPacienteGuardando = false;
             }
         }
 
@@ -4679,12 +5057,13 @@
             reader.onload = async function(ev) {
                 const parsed = JSON.parse(ev.target.result);
                 if (Array.isArray(parsed)) {
-                    for (const p of parsed) {
+                    const normalizados = parsed.map(p => normalizarPacienteData(p));
+                    for (const p of normalizados) {
                         if (firebaseActivo) await db.collection('pacientes').doc(p.id).set(p);
                     }
-                    if (!firebaseActivo) localStorage.setItem('demo_pacientes', JSON.stringify(parsed));
-                    alert("Backup restaurado.");
-                    cargarDashboardTerapeuta({ email: auth ? auth.currentUser.email : 'psicologoorodriguez@gmail.com' });
+                    if (!firebaseActivo) localStorage.setItem('demo_pacientes', JSON.stringify(normalizados));
+                    alert("Backup restaurado correctamente.");
+                    cargarDashboardTerapeuta({ email: (auth && auth.currentUser) ? auth.currentUser.email : 'psicologoorodriguez@gmail.com' });
                 }
             };
             reader.readAsText(file);
@@ -4713,16 +5092,16 @@
         }
 
         function escapeHtml(text) {
-            if (!text) return "";
+            if (text === undefined || text === null) return "";
             return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
         }
 
         function crearSemanaVacia() {
-            const dias = {};
+            const dias = [];
             for (let d = 0; d < 7; d++) {
-                const horas = [];
-                for (let h = 0; h < 24; h++) horas.push({ actividad: '', D: '', I: '' });
-                dias[d] = { animo: 5, horas: horas };
+                const horasObj = {};
+                HORAS_12H.forEach(h => { horasObj[h] = { act: '', d: '', i: '' }; });
+                dias.push({ animo: 5, horas: horasObj });
             }
             return { bloqueada: false, dias: dias };
         }
@@ -4750,6 +5129,6 @@
                 semanas: { '2026-10-26': crearSemanaVacia() }
             }];
         }
-    </script>
+</script>
 </body>
 </html>
