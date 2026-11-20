@@ -1733,12 +1733,12 @@
                     <h4 class="font-bold text-xs uppercase tracking-wider text-slate-800">Nuevo Registro de Pensamiento</h4>
 
                     <div class="grid grid-cols-1 md:grid-cols-6 gap-4">
-                        <div class="md:col-span-1">
-                            <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Fecha (MM/DD)</label>
-                            <input type="text" id="regPensFecha" required placeholder="MM/DD" class="w-full px-3 py-2 bg-white text-slate-900 border border-slate-300 rounded-xl text-xs font-bold focus:ring-2 focus:ring-purple-600 focus:outline-none">
+                        <div class="md:col-span-2">
+                            <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Fecha</label>
+                            <input type="date" id="regPensFecha" required class="w-full px-3 py-2 bg-white text-slate-900 border border-slate-300 rounded-xl text-xs font-bold focus:ring-2 focus:ring-purple-600 focus:outline-none">
                         </div>
 
-                        <div class="md:col-span-5">
+                        <div class="md:col-span-4">
                             <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Situación</label>
                             <input type="text" id="regPensSituacion" required placeholder="¿En qué momento ocurrió? ¿Qué estabas haciendo antes?" class="w-full px-3 py-2 bg-white text-slate-900 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-purple-600 focus:outline-none">
                         </div>
@@ -1837,8 +1837,8 @@
                     <div class="space-y-4">
                         <div class="grid grid-cols-1 md:grid-cols-6 gap-3">
                             <div class="md:col-span-2">
-                                <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Fecha (MM/DD)</label>
-                                <input type="text" id="diagFecha" required placeholder="Ej: 11/08" class="w-full px-3 py-2 bg-white text-slate-900 border border-slate-300 rounded-xl text-xs font-bold focus:ring-2 focus:ring-purple-600 focus:outline-none">
+                                <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Fecha</label>
+                                <input type="date" id="diagFecha" required class="w-full px-3 py-2 bg-white text-slate-900 border border-slate-300 rounded-xl text-xs font-bold focus:ring-2 focus:ring-purple-600 focus:outline-none">
                             </div>
                             <div class="md:col-span-4">
                                 <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Qué situación pasó:</label>
@@ -3008,6 +3008,18 @@
         // ============================================================
         // REGISTRO DE PENSAMIENTOS (DEFUSIÓN COGNITIVA)
         // ============================================================
+        function obtenerFechaHoyLocalInput() {
+            const hoy = new Date();
+            return `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}-${String(hoy.getDate()).padStart(2, '0')}`;
+        }
+
+        function formatearFechaCalendario(fechaStr) {
+            if (!fechaStr) return '';
+            const m = String(fechaStr).trim().match(/^(\d{4})-(\d{2})-(\d{2})$/);
+            if (m) return `${m[3]}/${m[2]}/${m[1]}`;
+            return String(fechaStr);
+        }
+
         function renderRegistroPensamientosTerapeuta(p) {
             const tbody = document.getElementById('tablaRegistroPensamientosTerapeutaBody');
             const badge = document.getElementById('cantRegistroPensamientosTerapeuta');
@@ -3027,7 +3039,7 @@
                 tr.className = "hover:bg-slate-50 transition";
                 tr.innerHTML = `
                     <td class="p-3 text-center">
-                        <div class="font-bold text-purple-800">${escapeHtml(reg.fecha)}</div>
+                        <div class="font-bold text-purple-800">${escapeHtml(formatearFechaCalendario(reg.fecha))}</div>
                         ${tsRegistro ? `<div class="text-[10px] text-slate-500 mt-1 leading-tight"><i class="fa-regular fa-clock mr-0.5 text-purple-600"></i>${escapeHtml(tsRegistro)}</div>` : ''}
                     </td>
                     <td class="p-3 font-medium text-slate-800">${escapeHtml(reg.situacion)}</td>
@@ -3055,6 +3067,8 @@
         function abrirModuloRegistroPensamientosPaciente() {
             ocultarTodasLasSecciones();
             document.getElementById('secPacienteFormRegistroPensamientos').classList.remove('hidden');
+            const inputFecha = document.getElementById('regPensFecha');
+            if (inputFecha && !inputFecha.value) inputFecha.value = obtenerFechaHoyLocalInput();
             renderRegistroPensamientosPaciente();
         }
 
@@ -3076,7 +3090,7 @@
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td class="p-3 text-center">
-                        <div class="font-bold text-purple-700">${escapeHtml(reg.fecha)}</div>
+                        <div class="font-bold text-purple-700">${escapeHtml(formatearFechaCalendario(reg.fecha))}</div>
                         ${tsRegistro ? `<div class="text-[10px] text-slate-500 mt-1 leading-tight"><i class="fa-regular fa-clock mr-0.5 text-purple-600"></i>${escapeHtml(tsRegistro)}</div>` : ''}
                     </td>
                     <td class="p-3 font-medium text-slate-800">${escapeHtml(reg.situacion)}</td>
@@ -3117,7 +3131,7 @@
 
             registrarActividadPaciente('Registro de Pensamientos');
 
-            document.getElementById('regPensFecha').value = '';
+            document.getElementById('regPensFecha').value = obtenerFechaHoyLocalInput();
             document.getElementById('regPensSituacion').value = '';
             document.getElementById('regPensPensamiento').value = '';
             document.getElementById('regPensEmocion').value = '';
@@ -3148,7 +3162,7 @@
                 card.innerHTML = `
                     <div class="flex flex-wrap justify-between items-center gap-2 border-b border-slate-200 pb-2">
                         <div class="flex flex-wrap items-center gap-2">
-                            <span class="text-xs font-extrabold text-purple-800 bg-purple-100 border border-purple-200 px-2.5 py-0.5 rounded-full">Fecha evento: ${escapeHtml(reg.fecha || '')}</span>
+                            <span class="text-xs font-extrabold text-purple-800 bg-purple-100 border border-purple-200 px-2.5 py-0.5 rounded-full">Fecha evento: ${escapeHtml(formatearFechaCalendario(reg.fecha || ''))}</span>
                             ${tsRegistro ? `<span class="text-[11px] font-semibold text-slate-600 bg-slate-100 border border-slate-200 px-2.5 py-0.5 rounded-full"><i class="fa-regular fa-clock mr-1 text-purple-600"></i>Registrado: ${escapeHtml(tsRegistro)}</span>` : ''}
                         </div>
                         <button onclick="eliminarDialogoMenteTerapeuta(${idx})" class="text-rose-500 hover:text-rose-700 text-xs no-print"><i class="fa-solid fa-trash"></i> Eliminar</button>
@@ -3186,6 +3200,8 @@
         function abrirModuloDialogoMentePaciente() {
             ocultarTodasLasSecciones();
             document.getElementById('secPacienteFormDialogoMente').classList.remove('hidden');
+            const inputFecha = document.getElementById('diagFecha');
+            if (inputFecha && !inputFecha.value) inputFecha.value = obtenerFechaHoyLocalInput();
             renderDialogoMentePaciente();
         }
 
@@ -3209,7 +3225,7 @@
                 card.innerHTML = `
                     <div class="flex flex-wrap justify-between items-center gap-2 border-b border-slate-200 pb-2">
                         <div class="flex flex-wrap items-center gap-2">
-                            <span class="text-xs font-extrabold text-purple-800">Fecha evento: ${escapeHtml(reg.fecha || '')}</span>
+                            <span class="text-xs font-extrabold text-purple-800">Fecha evento: ${escapeHtml(formatearFechaCalendario(reg.fecha || ''))}</span>
                             ${tsRegistro ? `<span class="text-[11px] text-slate-600 bg-white border border-slate-200 px-2 py-0.5 rounded-full"><i class="fa-regular fa-clock mr-1 text-purple-600"></i>Registrado: ${escapeHtml(tsRegistro)}</span>` : ''}
                         </div>
                         <span class="text-[10px] font-bold bg-slate-200 text-slate-700 px-2 py-0.5 rounded"><i class="fa-solid fa-lock text-[9px] mr-1"></i>Enviado y Bloqueado</span>
@@ -3256,7 +3272,7 @@
 
             registrarActividadPaciente('Diálogo con mi Mente');
 
-            document.getElementById('diagFecha').value = '';
+            document.getElementById('diagFecha').value = obtenerFechaHoyLocalInput();
             document.getElementById('diagSituacion').value = '';
             document.getElementById('diagQueDijoMente').value = '';
             document.getElementById('diagQueDijeYo').value = '';
